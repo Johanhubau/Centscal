@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'ldap',
     ];
 
     /**
@@ -36,4 +36,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * The associations for which the user is a president.
+     */
+    public function president_associations()
+    {
+        return $this->hasMany('App\Association', 'president_id');
+    }
+
+    /**
+     * The memberships of the user.
+     */
+    public function memberships()
+    {
+        return $this->hasMany('App\Member');
+    }
 }
