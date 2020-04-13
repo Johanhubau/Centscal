@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Event;
+use Illuminate\Http\Request;
+
+class EventController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Event[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function index()
+    {
+        return Event::all();
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+           'title' => 'required|min:2|max:255',
+           'desc' => 'min:2|max:255',
+            'begin' => 'required|date',
+            'end' => 'required|date',
+            'link' => 'url',
+            'location' => 'min:2|max:255',
+            'association_id' => 'exists:associations,id'
+        ]);
+
+        Event::create($validated);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param Event $event
+     * @return Event
+     */
+    public function show(Event $event)
+    {
+        return $event;
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param Event $event
+     * @return void
+     */
+    public function update(Request $request, Event $event)
+    {
+        $validated = $request->validate([
+            'title' => 'min:2|max:255',
+            'desc' => 'min:2|max:255',
+            'begin' => 'date',
+            'end' => 'date',
+            'link' => 'url',
+            'location' => 'min:2|max:255',
+            'association_id' => 'exists:associations,id'
+        ]);
+
+        $event->update($validated);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Event $event
+     * @return void
+     * @throws \Exception
+     */
+    public function destroy(Event $event)
+    {
+        $event->delete();
+    }
+}
