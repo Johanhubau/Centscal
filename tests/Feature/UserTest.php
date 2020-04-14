@@ -96,8 +96,6 @@ class UserTest extends TestCase
 
         $response = $this->deleteJson('/api/user/1');
 
-        dump($response);
-
         $response
             ->assertStatus(200)
             ->assertJson([
