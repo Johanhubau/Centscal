@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -40,7 +41,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required',
             'c_password' => 'required|same:password',
@@ -50,9 +52,8 @@ class UserController extends Controller
         }
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
-        $user = User::create($input);
-        $success['name'] =  $user->name;
-        return response()->json(['success'=>$success], 200);
+        User::create($input);
+        return response()->json(['created'=>true], 200);
     }
 
     /**
@@ -93,17 +94,19 @@ class UserController extends Controller
         ]);
 
         $user->update($validated);
+        return response()->json(['updated'=>true], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param User $user
-     * @return void
+     * @return JsonResponse
      * @throws Exception
      */
     public function destroy(User $user)
     {
         $user->delete();
+        return response()->json(['deleted'=>true], 200);
     }
 }
