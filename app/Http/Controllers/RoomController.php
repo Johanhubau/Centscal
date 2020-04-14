@@ -39,7 +39,7 @@ class RoomController extends Controller
         $validated = $request->validate([
             'name' => 'required|min:2|max:255',
             'location' => 'min:2|max:255',
-            'owner_id' => 'required|exists:users,id',
+            'owner_id' => 'required|exists:associations,id',
         ]);
 
         Room::create($validated);

@@ -12,7 +12,7 @@ class Rent extends Model
      * @var array
      */
     protected $fillable = [
-        'approved'
+        'approved', 'event_id', 'material_id'
     ];
 
     /**

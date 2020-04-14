@@ -39,7 +39,7 @@ class MaterialController extends Controller
            'name' => 'required|min:2|max:255',
            'desc' => 'min:2|max:255',
            'price' => 'min:1|max:255',
-           'association_id' => 'required|exists:association,id'
+           'association_id' => 'required|exists:associations,id'
         ]);
 
         Material::create($validated);

@@ -40,7 +40,7 @@ class MemberController extends Controller
            'role' => 'min:2|max:255',
            'desc' => 'min:2|max:255',
            'user_id' => 'required|exists:users,id',
-           'association_id' => 'required|exists:association,id'
+           'association_id' => 'required|exists:associations,id'
         ]);
 
         Member::create($validated);

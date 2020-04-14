@@ -42,7 +42,7 @@ class EventController extends Controller
             'end' => 'required|date',
             'link' => 'url',
             'location' => 'min:2|max:255',
-            'association_id' => 'exists:associations,id'
+            'association_id' => 'required|exists:associations,id'
         ]);
 
         Event::create($validated);

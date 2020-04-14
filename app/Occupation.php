@@ -12,7 +12,7 @@ class Occupation extends Model
      * @var array
      */
     protected $fillable = [
-        'approved',
+        'approved', 'room_id', 'event_id'
     ];
 
     /**
