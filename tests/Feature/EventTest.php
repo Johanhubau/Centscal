@@ -22,6 +22,11 @@ class EventTest extends TestCase
             'c_password' => 'password'
         ]);
 
+        $this->postJson('login', [
+            'email' => 'test@gmail.com',
+            'password' => 'password'
+        ]);
+
         $this->postJson('/api/association', [
             'name' => 'Association',
             'color' => '#FFFFFF',
@@ -47,6 +52,24 @@ class EventTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'created' => true,
+            ]);
+    }
+
+    public function testUnauthorizedStore(){
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/event', [
+            'title' => 'Party',
+            'begin' => '2019-12-07 15:00:00',
+            'end' => '2019-12-07 16:00:00',
+            'association_id' => '1'
+        ]);
+
+        $response
+            ->assertStatus(403)
+            ->assertJson([
+                'error' => 'User is unauthorized',
             ]);
     }
 
@@ -76,6 +99,7 @@ class EventTest extends TestCase
      * @return void
      */
     public function testUpdate(){
+
         $this->postJson('/api/event', [
             'title' => 'Party',
             'begin' => '2019-12-07 15:00:00',
@@ -93,6 +117,25 @@ class EventTest extends TestCase
                 'updated' => true,
             ]);
 
+    }
+
+    public function testUnauthorizedUpdate(){
+
+        $this->postJson('/api/event', [
+            'title' => 'Party',
+            'begin' => '2019-12-07 15:00:00',
+            'end' => '2019-12-07 15:00:00',
+            'association_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/event/1', [
+            'name' => 'G07'
+        ]);
+
+        $response
+            ->assertStatus(403);
     }
 
     /**
@@ -115,5 +158,21 @@ class EventTest extends TestCase
             ->assertJson([
                 'deleted' => true
             ]);
+    }
+
+    public function testUnauthorizedDelete(){
+        $this->postJson('/api/event', [
+            'title' => 'Party',
+            'begin' => '2019-12-07 15:00:00',
+            'end' => '2019-12-07 15:00:00',
+            'association_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->deleteJson('/api/event/1');
+
+        $response
+            ->assertStatus(403);
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Association;
 use App\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
@@ -45,8 +47,16 @@ class EventController extends Controller
             'association_id' => 'required|exists:associations,id'
         ]);
 
-        Event::create($validated);
-        return response()->json(['created'=>true], 200);
+        $user = Auth::user();
+        $association = Association::findOrFail($validated['association_id']);
+
+        if($user != null){
+            if($user->id == $association->president_id || $association->members->contains($user->memberships)){
+                Event::create($validated);
+                return response()->json(['created'=>true], 200);
+            }
+        }
+        return response()->json(['error'=>'User is unauthorized'], 403);
     }
 
     /**

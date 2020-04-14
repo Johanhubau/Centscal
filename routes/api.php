@@ -37,8 +37,8 @@ Route::delete('/association/{association}', 'AssociationController@destroy');
 Route::get('/events', 'EventController@index');
 Route::post('/event', 'EventController@store');
 Route::get('/event/{event}', 'EventController@show');
-Route::post('/event/{event}', 'EventController@update');
-Route::delete('/event/{event}', 'EventController@destroy');
+Route::post('/event/{event}', 'EventController@update')->middleware('can:update,event');
+Route::delete('/event/{event}', 'EventController@destroy')->middleware('can:delete,event');
 
 //MATERIAL ROUTES
 Route::get('/materials', 'MaterialController@index');
