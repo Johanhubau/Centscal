@@ -34,11 +34,11 @@ class Event extends Model
     ];
 
     /**
-     * The materials that event requested.
+     * The rents that event requested.
      */
-    public function materials()
+    public function rents()
     {
-        return $this->belongsToMany('App\Material', 'rents');
+        return $this->belongsToMany('App\Rents');
     }
 
     /**
@@ -46,7 +46,7 @@ class Event extends Model
      */
     public function rooms()
     {
-        return $this->belongsToMany('App\Room', 'occupations');
+        return $this->belongsToMany('App\Occupation');
     }
 
     /**

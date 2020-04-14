@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Occupation extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class Room extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'location', 'owner_id',
+        'approved',
     ];
 
     /**
@@ -32,18 +32,18 @@ class Room extends Model
     ];
 
     /**
-     * The the bookings for the rooms.
+     * The event that requested the rooms.
      */
-    public function occupations()
+    public function event()
     {
-        return $this->belongsToMany('App\Occupation');
+        return $this->hasOne('App\Event');
     }
 
     /**
-     * The association that owns the room.
+     * The room that has been requested.
      */
-    public function association()
+    public function room()
     {
-        return $this->belongsTo('App\Association');
+        return $this->hasOne('App\Room');
     }
 }

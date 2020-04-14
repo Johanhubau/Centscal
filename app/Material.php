@@ -32,11 +32,11 @@ class Material extends Model
     ];
 
     /**
-     * The events that requested the material.
+     * The rents for that material.
      */
-    public function events()
+    public function rents()
     {
-        return $this->belongsToMany('App\Event', 'rents');
+        return $this->belongsToMany('App\Rent');
     }
 
     /**
