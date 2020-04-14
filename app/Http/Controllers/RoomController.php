@@ -32,7 +32,7 @@ class RoomController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -41,6 +41,9 @@ class RoomController extends Controller
             'location' => 'min:2|max:255',
             'owner_id' => 'required|exists:users,id',
         ]);
+
+        Room::create($validated);
+        return response()->json(['created'=>true], 200);
     }
 
     /**
@@ -70,7 +73,7 @@ class RoomController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param Room $room
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Room $room)
     {
@@ -80,17 +83,19 @@ class RoomController extends Controller
         ]);
 
         $room->update($validated);
+        return response()->json(['updated'=>true], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Room $room
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(Room $room)
     {
         $room->delete();
+        return response()->json(['deleted'=>true], 200);
     }
 }

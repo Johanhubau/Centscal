@@ -31,7 +31,7 @@ class EventController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -46,6 +46,7 @@ class EventController extends Controller
         ]);
 
         Event::create($validated);
+        return response()->json(['created'=>true], 200);
     }
 
     /**
@@ -75,7 +76,7 @@ class EventController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param Event $event
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Event $event)
     {
@@ -90,17 +91,19 @@ class EventController extends Controller
         ]);
 
         $event->update($validated);
+        return response()->json(['updated'=>true], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Event $event
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(Event $event)
     {
         $event->delete();
+        return response()->json(['deleted'=>true], 200);
     }
 }

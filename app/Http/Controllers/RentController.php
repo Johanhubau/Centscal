@@ -31,7 +31,7 @@ class RentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -42,6 +42,7 @@ class RentController extends Controller
         ]);
 
         Rent::create($validated);
+        return response()->json(['created'=>true], 200);
     }
 
     /**
@@ -71,7 +72,7 @@ class RentController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param Rent $rent
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Rent $rent)
     {
@@ -80,17 +81,19 @@ class RentController extends Controller
         ]);
 
         $rent->update($validated);
+        return response()->json(['updated'=>true], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Rent $rent
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(Rent $rent)
     {
         $rent->delete();
+        return response()->json(['deleted'=>true], 200);
     }
 }

@@ -34,7 +34,7 @@ class AssociationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -45,6 +45,7 @@ class AssociationController extends Controller
         ]);
 
         Association::create($validated);
+        return response()->json(['created'=>true], 200);
     }
 
     /**
@@ -74,7 +75,7 @@ class AssociationController extends Controller
      *
      * @param Request $request
      * @param Association $association
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Association $association)
     {
@@ -85,17 +86,20 @@ class AssociationController extends Controller
         ]);
 
         $association->update($validated);
+        return response()->json(['updated'=>true], 200);
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Association $association
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      * @throws Exception
      */
     public function destroy(Association $association)
     {
         $association->delete();
+        return response()->json(['deleted'=>true], 200);
     }
 }

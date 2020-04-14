@@ -31,7 +31,7 @@ class OptionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -41,6 +41,7 @@ class OptionController extends Controller
         ]);
 
         Option::create($validated);
+        return response()->json(['created'=>true], 200);
     }
 
     /**
@@ -70,7 +71,7 @@ class OptionController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param Option $option
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Option $option)
     {
@@ -79,17 +80,19 @@ class OptionController extends Controller
         ]);
 
         $option->update($validated);
+        return response()->json(['updated'=>true], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Option $option
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(Option $option)
     {
         $option->delete();
+        return response()->json(['deleted'=>true], 200);
     }
 }

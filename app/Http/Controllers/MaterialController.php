@@ -31,7 +31,7 @@ class MaterialController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -43,6 +43,7 @@ class MaterialController extends Controller
         ]);
 
         Material::create($validated);
+        return response()->json(['created'=>true], 200);
     }
 
     /**
@@ -72,7 +73,7 @@ class MaterialController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Material $material)
     {
@@ -83,17 +84,19 @@ class MaterialController extends Controller
         ]);
 
         $material->update($validated);
+        return response()->json(['updated'=>true], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Material $material
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(Material $material)
     {
         $material->delete();
+        return response()->json(['deleted'=>true], 200);
     }
 }

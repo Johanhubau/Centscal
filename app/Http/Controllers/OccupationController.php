@@ -31,7 +31,7 @@ class OccupationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -42,6 +42,7 @@ class OccupationController extends Controller
         ]);
 
         Occupation::create($validated);
+        return response()->json(['created'=>true], 200);
     }
 
     /**
@@ -71,7 +72,7 @@ class OccupationController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Occupation $occupation)
     {
@@ -80,17 +81,19 @@ class OccupationController extends Controller
         ]);
 
         $occupation->update($validated);
+        return response()->json(['updated'=>true], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Occupation $occupation
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(Occupation $occupation)
     {
         $occupation->delete();
+        return response()->json(['deleted'=>true], 200);
     }
 }
