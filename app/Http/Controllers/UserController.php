@@ -46,6 +46,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required',
             'c_password' => 'required|same:password',
+            'role' => 'starts_with:ROLE_|max:255'
         ]);
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()], 401);

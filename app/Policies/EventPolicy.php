@@ -55,7 +55,7 @@ class EventPolicy
     {
         if($user != null){
             $association = $event->association;
-            return $user->id == $association->president_id || $association->members->contains($user->memberships);
+            return $user->id == $association->president_id || $association->members->contains($user->memberships) || $user->role == 'ROLE_ADMIN';
         }
         return false;
     }
@@ -71,7 +71,7 @@ class EventPolicy
     {
         if($user != null){
             $association = $event->association;
-            return $user->id == $association->president_id || $association->members->contains($user->memberships);
+            return $user->id == $association->president_id || $association->members->contains($user->memberships) || $user->role == 'ROLE_ADMIN';
         }
         return false;
     }

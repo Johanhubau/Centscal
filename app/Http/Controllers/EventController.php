@@ -51,7 +51,7 @@ class EventController extends Controller
         $association = Association::findOrFail($validated['association_id']);
 
         if($user != null){
-            if($user->id == $association->president_id || $association->members->contains($user->memberships)){
+            if($user->id == $association->president_id || $association->members->contains($user->memberships) || $user->role=='ROLE_ADMIN'){
                 Event::create($validated);
                 return response()->json(['created'=>true], 200);
             }
