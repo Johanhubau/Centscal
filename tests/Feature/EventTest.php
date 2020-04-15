@@ -19,7 +19,8 @@ class EventTest extends TestCase
             'last_name' => 'Smith',
             'email' => 'test@gmail.com',
             'password' => 'password',
-            'c_password' => 'password'
+            'c_password' => 'password',
+            'role' => 'ROLE_ADMIN'
         ]);
 
         $this->postJson('login', [

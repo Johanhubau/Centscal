@@ -19,7 +19,13 @@ class MaterialTest extends TestCase
             'last_name' => 'Smith',
             'email' => 'test@gmail.com',
             'password' => 'password',
-            'c_password' => 'password'
+            'c_password' => 'password',
+            'role' => 'ROLE_ADMIN'
+        ]);
+
+        $this->postJson('login', [
+           'email' => 'test@gmail.com',
+           'password' => 'password'
         ]);
 
         $this->postJson('/api/association', [
@@ -41,6 +47,8 @@ class MaterialTest extends TestCase
             'price' => 'Its Free',
             'association_id' => '1'
         ]);
+
+        dump($response);
 
         $response
             ->assertStatus(200)

@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class AssociationController extends Controller
 {
@@ -44,8 +45,16 @@ class AssociationController extends Controller
             'president_id' => 'required|exists:users,id'
         ]);
 
-        Association::create($validated);
-        return response()->json(['created'=>true], 200);
+        $user = Auth::user();
+
+        if($user != null){
+            if($user->role == 'ROLE_ADMIN'){
+                Association::create($validated);
+                return response()->json(['created'=>true], 200);
+            }
+        }
+
+        return response()->json(['error'=>'User is unauthorized'], 403);
     }
 
     /**

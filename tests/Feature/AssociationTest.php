@@ -19,7 +19,13 @@ class AssociationTest extends TestCase
             'last_name' => 'Smith',
             'email' => 'test@gmail.com',
             'password' => 'password',
-            'c_password' => 'password'
+            'c_password' => 'password',
+            'role' => 'ROLE_ADMIN'
+        ]);
+
+        $this->postJson('login', [
+           'email' => 'test@gmail.com',
+           'password' => 'password'
         ]);
     }
 
@@ -41,6 +47,26 @@ class AssociationTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'created' => true,
+            ]);
+
+    }
+
+    public function testUnauthorizedStore()
+    {
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/association', [
+            'name' => 'Association',
+            'color' => '#FFFFFF',
+            'president_id' => '1'
+        ]);
+
+        dump($response);
+
+        $response
+            ->assertStatus(403)
+            ->assertJson([
+                'error' => 'User is unauthorized',
             ]);
 
     }
@@ -88,6 +114,24 @@ class AssociationTest extends TestCase
 
     }
 
+    public function testUnauthorizedUpdate(){
+        $this->postJson('/api/association', [
+            'name' => 'Association',
+            'color' => '#FFFFFF',
+            'president_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/association/1', [
+            'color' => '#FAFAFA'
+        ]);
+
+        $response
+            ->assertStatus(403);
+
+    }
+
     /**
      * Test the deletion of the association.
      *
@@ -107,5 +151,20 @@ class AssociationTest extends TestCase
             ->assertJson([
                 'deleted' => true
             ]);
+    }
+
+    public function testUnauthorizedDelete(){
+        $this->postJson('/api/association', [
+            'name' => 'Association',
+            'color' => '#FFFFFF',
+            'president_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->deleteJson('/api/association/1');
+
+        $response
+            ->assertStatus(403);
     }
 }

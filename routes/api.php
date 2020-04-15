@@ -30,8 +30,8 @@ Route::delete('/user/{user}', 'UserController@destroy');
 Route::get('/associations', 'AssociationController@index');
 Route::post('/association', 'AssociationController@store');
 Route::get('/association/{association}', 'AssociationController@show');
-Route::post('/association/{association}', 'AssociationController@update');
-Route::delete('/association/{association}', 'AssociationController@destroy');
+Route::post('/association/{association}', 'AssociationController@update')->middleware('can:update,association');
+Route::delete('/association/{association}', 'AssociationController@destroy')->middleware('can:delete,association');
 
 //EVENT ROUTES
 Route::get('/events', 'EventController@index');
