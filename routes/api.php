@@ -44,8 +44,8 @@ Route::delete('/event/{event}', 'EventController@destroy')->middleware('can:dele
 Route::get('/materials', 'MaterialController@index');
 Route::post('/material', 'MaterialController@store');
 Route::get('/material/{material}', 'MaterialController@show');
-Route::post('/material/{material}', 'MaterialController@update');
-Route::delete('/material/{material}', 'MaterialController@destroy');
+Route::post('/material/{material}', 'MaterialController@update')->middleware('can:update,material');
+Route::delete('/material/{material}', 'MaterialController@destroy')->middleware('can:delete,material');
 
 //MATERIAL ROUTES
 Route::get('/members', 'MemberController@index');

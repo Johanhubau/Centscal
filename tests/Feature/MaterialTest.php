@@ -48,13 +48,26 @@ class MaterialTest extends TestCase
             'association_id' => '1'
         ]);
 
-        dump($response);
-
         $response
             ->assertStatus(200)
             ->assertJson([
                 'created' => true,
             ]);
+    }
+
+    public function testUnauthorizedStore(){
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/material', [
+            'name' => 'Projector',
+            'price' => 'Its Free',
+            'association_id' => '1'
+        ]);
+
+        $response
+            ->assertStatus(403)
+            ->assertJson(['error'=>'User is unauthorized']);
     }
 
     /**
@@ -100,6 +113,24 @@ class MaterialTest extends TestCase
 
     }
 
+    public function testUnauthorizedUpdate(){
+        $this->postJson('/api/material', [
+            'name' => 'Projector',
+            'price' => 'Its Free',
+            'association_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/material/1', [
+            'name' => 'Microphone'
+        ]);
+
+        $response
+            ->assertStatus(403);
+
+    }
+
     /**
      * Test the deletion of the material.
      *
@@ -119,5 +150,20 @@ class MaterialTest extends TestCase
             ->assertJson([
                 'deleted' => true
             ]);
+    }
+
+    public function testUnauthorizedDelete(){
+        $this->postJson('/api/material', [
+            'name' => 'Projector',
+            'price' => 'Its Free',
+            'association_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->deleteJson('/api/material/1');
+
+        $response
+            ->assertStatus(403);
     }
 }

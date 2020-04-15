@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Association;
 use App\Material;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MaterialController extends Controller
 {
@@ -42,8 +44,16 @@ class MaterialController extends Controller
            'association_id' => 'required|exists:associations,id'
         ]);
 
-        Material::create($validated);
-        return response()->json(['created'=>true], 200);
+        $user = Auth::user();
+
+        if($user != null){
+            if($user->id == Association::find($validated['association_id'])->president_id || $user->role=='ROLE_ADMIN'){
+                Material::create($validated);
+                return response()->json(['created'=>true], 200);
+            }
+        }
+
+        return response()->json(['error'=>'User is unauthorized'], 403);
     }
 
     /**
