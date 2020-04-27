@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Association;
+use App\Event;
 use App\Rent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RentController extends Controller
 {
@@ -41,8 +44,15 @@ class RentController extends Controller
             'approved' => 'boolean'
         ]);
 
-        Rent::create($validated);
-        return response()->json(['created'=>true], 200);
+        $user = Auth::user();
+
+        if($user != null) {
+            if ($user->id == Association::find(Event::find($validated['event_id'])->association_id)->president_id || $user->role == 'ROLE_ADMIN') {
+                Rent::create($validated);
+                return response()->json(['created' => true], 200);
+            }
+        }
+        return response()->json(['error'=>'User is unauthorized'], 403);
     }
 
     /**

@@ -107,6 +107,22 @@ class OccupationTest extends TestCase
 
     }
 
+    public function testUnauthorisedUpdate(){
+        $this->postJson('/api/occupation', [
+            'room_id' => '1',
+            'event_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/occupation/1', [
+            'approved' => true
+        ]);
+
+        $response
+            ->assertStatus(403);
+    }
+
     /**
      * Test the deletion of the occupation.
      *
@@ -125,5 +141,19 @@ class OccupationTest extends TestCase
             ->assertJson([
                 'deleted' => true
             ]);
+    }
+
+    public function testUnauthorisedDelete(){
+        $this->postJson('/api/occupation', [
+            'room_id' => '1',
+            'event_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->deleteJson('/api/occupation/1');
+
+        $response
+            ->assertStatus(403);
     }
 }

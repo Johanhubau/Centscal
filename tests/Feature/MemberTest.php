@@ -55,6 +55,21 @@ class MemberTest extends TestCase
             ]);
     }
 
+    public function testUnauthorizedStore(){
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/member', [
+            'role' => 'SUPER_ADMIN',
+            'user_id' => '1',
+            'association_id' => '1'
+        ]);
+
+        $response
+            ->assertStatus(403)
+            ->assertJson(['error'=>'User is unauthorized']);
+    }
+
     /**
      * Test show member.
      *
@@ -87,7 +102,7 @@ class MemberTest extends TestCase
         ]);
 
         $response = $this->postJson('/api/member/1', [
-            'name' => 'Microphone'
+            'desc' => 'Microphone'
         ]);
 
         $response
@@ -95,6 +110,24 @@ class MemberTest extends TestCase
             ->assertJson([
                 'updated' => true,
             ]);
+
+    }
+
+    public function testUnauthorizedUpdate(){
+        $this->postJson('/api/member', [
+            'role' => 'SUPER_ADMIN',
+            'user_id' => '1',
+            'association_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/member/1', [
+            'desc' => 'Microphone'
+        ]);
+
+        $response
+            ->assertStatus(403);
 
     }
 
@@ -117,5 +150,20 @@ class MemberTest extends TestCase
             ->assertJson([
                 'deleted' => true
             ]);
+    }
+
+    public function testUnauthorizedDelete(){
+        $this->postJson('/api/member', [
+            'role' => 'SUPER_ADMIN',
+            'user_id' => '1',
+            'association_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->deleteJson('/api/member/1');
+
+        $response
+            ->assertStatus(403);
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Association;
 use App\Room;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoomController extends Controller
 {
@@ -42,8 +44,15 @@ class RoomController extends Controller
             'owner_id' => 'required|exists:associations,id',
         ]);
 
-        Room::create($validated);
-        return response()->json(['created'=>true], 200);
+        $user = Auth::user();
+
+        if($user != null){
+            if($user->role == 'ROLE_ADMIN' || $user->id == Association::find($validated['owner_id'])->president_id){
+                Room::create($validated);
+                return response()->json(['created'=>true], 200);
+            }
+        }
+        return response()->json(['error'=>'User is unauthorized'], 403);
     }
 
     /**

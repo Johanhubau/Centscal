@@ -54,6 +54,20 @@ class OptionTest extends TestCase
             ]);
     }
 
+    public function testUnauthorisedStore(){
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/option', [
+            'name' => 'Premium',
+            'association_id' => '1'
+        ]);
+
+        $response
+            ->assertStatus(403)
+            ->assertJson(['error'=>'User is unauthorized']);
+    }
+
     /**
      * Test show option.
      *
@@ -95,6 +109,22 @@ class OptionTest extends TestCase
 
     }
 
+    public function testUnauthorisedUpdate(){
+        $this->postJson('/api/option', [
+            'name' => 'Premium',
+            'association_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/option/1', [
+            'name' => 'Microphone'
+        ]);
+
+        $response
+            ->assertStatus(403);
+    }
+
     /**
      * Test the deletion of the option.
      *
@@ -113,5 +143,19 @@ class OptionTest extends TestCase
             ->assertJson([
                 'deleted' => true
             ]);
+    }
+
+    public function testUnauthorisedDelete(){
+        $this->postJson('/api/option', [
+            'name' => 'Premium',
+            'association_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->deleteJson('/api/option/1');
+
+        $response
+            ->assertStatus(403);
     }
 }

@@ -70,8 +70,8 @@ class OccupationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param Occupation $occupation
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Occupation $occupation)

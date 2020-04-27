@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Association;
 use App\Option;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OptionController extends Controller
 {
@@ -40,8 +42,15 @@ class OptionController extends Controller
            'association_id' => 'required|exists:associations,id'
         ]);
 
-        Option::create($validated);
-        return response()->json(['created'=>true], 200);
+        $user = Auth::user();
+
+        if($user != null){
+            if($user->role == 'ROLE_ADMIN' || $user->id == Association::find($validated['association_id'])->president_id){
+                Option::create($validated);
+                return response()->json(['created'=>true], 200);
+            }
+        }
+        return response()->json(['error'=>'User is unauthorized'], 403);
     }
 
     /**

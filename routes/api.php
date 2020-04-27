@@ -51,33 +51,33 @@ Route::delete('/material/{material}', 'MaterialController@destroy')->middleware(
 Route::get('/members', 'MemberController@index');
 Route::post('/member', 'MemberController@store');
 Route::get('/member/{member}', 'MemberController@show');
-Route::post('/member/{member}', 'MemberController@update');
-Route::delete('/member/{member}', 'MemberController@destroy');
+Route::post('/member/{member}', 'MemberController@update')->middleware('can:update,member');
+Route::delete('/member/{member}', 'MemberController@destroy')->middleware('can:delete,member');
 
 //OCCUPATION ROUTES
 Route::get('/occupations', 'OccupationController@index');
 Route::post('/occupation', 'OccupationController@store');
 Route::get('/occupation/{occupation}', 'OccupationController@show');
-Route::post('/occupation/{occupation}', 'OccupationController@update');
-Route::delete('/occupation/{occupation}', 'OccupationController@destroy');
+Route::post('/occupation/{occupation}', 'OccupationController@update')->middleware('can:update,occupation');
+Route::delete('/occupation/{occupation}', 'OccupationController@destroy')->middleware('can:delete,occupation');
 
 //OPTION ROUTES
 Route::get('/options', 'OptionController@index');
 Route::post('/option', 'OptionController@store');
 Route::get('/option/{option}', 'OptionController@show');
-Route::post('/option/{option}', 'OptionController@update');
-Route::delete('/option/{option}', 'OptionController@destroy');
+Route::post('/option/{option}', 'OptionController@update')->middleware('can:update,option');
+Route::delete('/option/{option}', 'OptionController@destroy')->middleware('can:delete,option');
 
 //RENT ROUTES
 Route::get('/rents', 'RentController@index');
 Route::post('/rent', 'RentController@store');
 Route::get('/rent/{rent}', 'RentController@show');
-Route::post('/rent/{rent}', 'RentController@update');
-Route::delete('/rent/{rent}', 'RentController@destroy');
+Route::post('/rent/{rent}', 'RentController@update')->middleware('can:update,rent');
+Route::delete('/rent/{rent}', 'RentController@destroy')->middleware('can:delete,rent');
 
 //ROOM ROUTES
 Route::get('/rooms', 'RoomController@index');
 Route::post('/room', 'RoomController@store');
 Route::get('/room/{room}', 'RoomController@show');
-Route::post('/room/{room}', 'RoomController@update');
-Route::delete('/room/{room}', 'RoomController@destroy');
+Route::post('/room/{room}', 'RoomController@update')->middleware('can:update,room');
+Route::delete('/room/{room}', 'RoomController@destroy')->middleware('can:delete,room');

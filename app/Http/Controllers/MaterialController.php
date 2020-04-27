@@ -52,7 +52,6 @@ class MaterialController extends Controller
                 return response()->json(['created'=>true], 200);
             }
         }
-
         return response()->json(['error'=>'User is unauthorized'], 403);
     }
 

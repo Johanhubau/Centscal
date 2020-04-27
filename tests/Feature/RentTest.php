@@ -67,6 +67,20 @@ class RentTest extends TestCase
             ]);
     }
 
+    public function testUnauthorisedStore(){
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/rent', [
+            'material_id' => '1',
+            'event_id' => '1'
+        ]);
+
+        $response
+            ->assertStatus(403)
+            ->assertJson(['error'=>'User is unauthorized']);
+    }
+
     /**
      * Test show rent.
      *
@@ -108,6 +122,23 @@ class RentTest extends TestCase
 
     }
 
+    public function testUnauthorisedUpdate(){
+        $this->postJson('/api/rent', [
+            'material_id' => '1',
+            'event_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/rent/1', [
+            'approved' => true
+        ]);
+
+        $response
+            ->assertStatus(403);
+
+    }
+
     /**
      * Test the deletion of the rent.
      *
@@ -126,5 +157,19 @@ class RentTest extends TestCase
             ->assertJson([
                 'deleted' => true
             ]);
+    }
+
+    public function testUnauthorisedDelete(){
+        $this->postJson('/api/rent', [
+            'material_id' => '1',
+            'event_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->deleteJson('/api/rent/1');
+
+        $response
+            ->assertStatus(403);
     }
 }

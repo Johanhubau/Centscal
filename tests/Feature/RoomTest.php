@@ -54,6 +54,20 @@ class RoomTest extends TestCase
             ]);
     }
 
+    public function testUnauthorisedStore(){
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/room', [
+            'name' => 'B201',
+            'owner_id' => '1'
+        ]);
+
+        $response
+            ->assertStatus(403)
+            ->assertJson(['error'=>'User is unauthorized']);
+    }
+
     /**
      * Test show room.
      *
@@ -95,6 +109,23 @@ class RoomTest extends TestCase
 
     }
 
+    public function testUnauthorisedUpdate(){
+        $this->postJson('/api/room', [
+            'name' => 'B201',
+            'owner_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->postJson('/api/room/1', [
+            'name' => 'G07'
+        ]);
+
+        $response
+            ->assertStatus(403);
+
+    }
+
     /**
      * Test the deletion of the room.
      *
@@ -113,5 +144,19 @@ class RoomTest extends TestCase
             ->assertJson([
                 'deleted' => true
             ]);
+    }
+
+    public function testUnauthorisedDelete(){
+        $this->postJson('/api/room', [
+            'name' => 'B201',
+            'owner_id' => '1'
+        ]);
+
+        $this->postJson('logout');
+
+        $response = $this->deleteJson('/api/room/1');
+
+        $response
+            ->assertStatus(403);
     }
 }
