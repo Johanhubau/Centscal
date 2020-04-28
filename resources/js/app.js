@@ -37,6 +37,10 @@ Vue.component('home-calendar-component', require('./components/HomeCalendarCompo
 Vue.component('public-association-card', require('./components/associations/publicCardComponent.vue').default)
 Vue.component('private-association-card', require('./components/associations/privateCardComponent.vue').default)
 
+//USER COMPONENTS
+Vue.component('private-user-card', require('./components/users/privateCardComponent.vue').default)
+
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

@@ -58,7 +58,7 @@
                                     <a class="nav-link" href="{{ route('admin.associations') }}">{{ __('Associations') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('users') }}">{{ __('Users') }}</a>
+                                    <a class="nav-link" href="{{ route('admin.users') }}">{{ __('Users') }}</a>
                                 </li>
                             @else
                                 <li class="nav-item">

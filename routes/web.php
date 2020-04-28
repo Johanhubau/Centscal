@@ -21,16 +21,20 @@ Route::get('/admin/associations', function() {
    return view('admin/associations');
 })->name('admin.associations');
 Route::get('/admin/associations/create', function() {
-    return view('admin/create');
+    return view('admin/association/create');
 })->name('admin.associations.create');
 
 Route::get('/associations', function() {
     return view('associations');
 })->name('associations');
 
-Route::get('/users', function() {
-    return view('users');
-})->name('users');
+Route::get('/admin/users', function() {
+    return view('admin.users');
+})->name('admin.users');
+Route::get('/admin/users/create', function() {
+    return view('admin/user/create');
+})->name('admin.users.create');
+
 
 Auth::routes();
 
