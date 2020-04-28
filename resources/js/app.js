@@ -29,7 +29,12 @@ Vue.use(Vuetify);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
+//MAIN COMPONENTS
 Vue.component('home-calendar-component', require('./components/HomeCalendarComponent.vue').default);
+
+//ASSOCIATION COMPONENTS
+Vue.component('public-association-card', require('./components/associations/publicCardComponent.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -52,4 +52,11 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Member');
     }
+
+    /**
+     * Check whether the user is admin or not
+     */
+    public function isAdmin() {
+        return $this->role == 'ROLE_ADMIN';
+    }
 }

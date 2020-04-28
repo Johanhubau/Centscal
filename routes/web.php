@@ -17,6 +17,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/admin/associations', function() {
+   return view('admin/associations');
+})->name('admin.associations');
+
+Route::get('/associations', function() {
+    return view('associations');
+})->name('associations');
+
+Route::get('/users', function() {
+    return view('users');
+})->name('users');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
