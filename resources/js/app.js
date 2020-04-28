@@ -35,6 +35,7 @@ Vue.component('home-calendar-component', require('./components/HomeCalendarCompo
 
 //ASSOCIATION COMPONENTS
 Vue.component('public-association-card', require('./components/associations/publicCardComponent.vue').default)
+Vue.component('private-association-card', require('./components/associations/privateCardComponent.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

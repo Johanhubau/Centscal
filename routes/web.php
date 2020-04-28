@@ -20,6 +20,9 @@ Route::get('/', function () {
 Route::get('/admin/associations', function() {
    return view('admin/associations');
 })->name('admin.associations');
+Route::get('/admin/associations/create', function() {
+    return view('admin/create');
+})->name('admin.associations.create');
 
 Route::get('/associations', function() {
     return view('associations');
