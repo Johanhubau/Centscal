@@ -36,6 +36,7 @@ Vue.component('home-calendar-component', require('./components/HomeCalendarCompo
 //ASSOCIATION COMPONENTS
 Vue.component('public-association-card', require('./components/associations/publicCardComponent.vue').default)
 Vue.component('private-association-card', require('./components/associations/privateCardComponent.vue').default)
+Vue.component('create-association-card', require('./components/associations/createCardComponent.vue').default)
 
 //USER COMPONENTS
 Vue.component('private-user-card', require('./components/users/privateCardComponent.vue').default)

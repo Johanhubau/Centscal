@@ -2187,6 +2187,136 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/associations/createCardComponent.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/associations/createCardComponent.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['users'],
+  data: function data() {
+    return {
+      valid: true,
+      name: '',
+      nameRules: [function (v) {
+        return !!v || 'Name is required';
+      }, function (v) {
+        return v && v.length <= 255 && v.length >= 2 || 'Name must be between 2 and 255 characters';
+      }],
+      desc: '',
+      descRules: [function (v) {
+        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Desc must be between 2 and 255 characters';
+      }],
+      user: null,
+      checkbox: false,
+      lazy: false,
+      items: [],
+      userNames: {},
+      snackbar: false,
+      snackbarText: '',
+      color: "#FFFFFFFF"
+    };
+  },
+  mounted: function mounted() {
+    this.makeVars();
+  },
+  methods: {
+    validate: function validate() {
+      var _this = this;
+
+      this.$refs.form.validate();
+      var data = {
+        "name": this.name,
+        "desc": this.desc,
+        "president_id": this.userNames[this.user],
+        "color": this.color.substring(0, 7)
+      }; // console.log(data)
+
+      axios.post('/api/association', data).then(function (response) {
+        status = response.status;
+        _this.snackbarText = "Created " + _this.name;
+        _this.snackbar = true;
+      });
+    },
+    makeVars: function makeVars() {
+      var _this2 = this;
+
+      this.users.forEach(function (user) {
+        return _this2.items.push(user.first_name + " " + user.last_name);
+      });
+      this.users.forEach(function (user) {
+        return _this2.userNames[user.first_name + " " + user.last_name] = user.id;
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/associations/privateCardComponent.vue?vue&type=script&lang=js&":
 /*!********************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/associations/privateCardComponent.vue?vue&type=script&lang=js& ***!
@@ -38409,6 +38539,191 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/associations/createCardComponent.vue?vue&type=template&id=5e15acff&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/associations/createCardComponent.vue?vue&type=template&id=5e15acff&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "v-sheet",
+        { attrs: { elevation: "6" } },
+        [
+          _c(
+            "v-form",
+            {
+              ref: "form",
+              model: {
+                value: _vm.valid,
+                callback: function($$v) {
+                  _vm.valid = $$v
+                },
+                expression: "valid"
+              }
+            },
+            [
+              _c(
+                "v-row",
+                { staticClass: "p-5" },
+                [
+                  _c(
+                    "v-col",
+                    [
+                      _c("v-text-field", {
+                        attrs: {
+                          counter: 255,
+                          rules: _vm.nameRules,
+                          label: "Name",
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.name,
+                          callback: function($$v) {
+                            _vm.name = $$v
+                          },
+                          expression: "name"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          counter: 255,
+                          rules: _vm.descRules,
+                          label: "Desc",
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.desc,
+                          callback: function($$v) {
+                            _vm.desc = $$v
+                          },
+                          expression: "desc"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-select", {
+                        attrs: {
+                          items: _vm.items,
+                          rules: [
+                            function(v) {
+                              return !!v || "Item is required"
+                            }
+                          ],
+                          label: "President",
+                          required: ""
+                        },
+                        model: {
+                          value: _vm.user,
+                          callback: function($$v) {
+                            _vm.user = $$v
+                          },
+                          expression: "user"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          staticClass: "mr-4",
+                          attrs: { disabled: !_vm.valid, color: "success" },
+                          on: { click: _vm.validate }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        Validate\n                    "
+                          )
+                        ]
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-col",
+                    { attrs: { "align-self": "center" } },
+                    [
+                      _c(
+                        "v-row",
+                        { attrs: { justify: "center" } },
+                        [
+                          _c("v-color-picker", {
+                            attrs: { "hide-mode-switch": "", mode: "hexa" },
+                            model: {
+                              value: _vm.color,
+                              callback: function($$v) {
+                                _vm.color = $$v
+                              },
+                              expression: "color"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { timeout: 6000 },
+          model: {
+            value: _vm.snackbar,
+            callback: function($$v) {
+              _vm.snackbar = $$v
+            },
+            expression: "snackbar"
+          }
+        },
+        [
+          _vm._v("\n        " + _vm._s(_vm.snackbarText) + "\n        "),
+          _c(
+            "v-btn",
+            {
+              attrs: { dark: "", text: "" },
+              on: {
+                click: function($event) {
+                  _vm.snackbar = false
+                }
+              }
+            },
+            [_vm._v("\n            Close\n        ")]
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/associations/privateCardComponent.vue?vue&type=template&id=fa877ea8&scoped=true&":
 /*!************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/associations/privateCardComponent.vue?vue&type=template&id=fa877ea8&scoped=true& ***!
@@ -38440,6 +38755,7 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "div",
+                  { staticClass: "w-100" },
                   [
                     _c("v-card-title", {
                       staticClass: "headline",
@@ -38543,6 +38859,7 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
+          { staticClass: "w-100" },
           [
             _c("v-card-title", {
               staticClass: "headline",
@@ -92533,7 +92850,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('example-component', __webp
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('home-calendar-component', __webpack_require__(/*! ./components/HomeCalendarComponent.vue */ "./resources/js/components/HomeCalendarComponent.vue")["default"]); //ASSOCIATION COMPONENTS
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('public-association-card', __webpack_require__(/*! ./components/associations/publicCardComponent.vue */ "./resources/js/components/associations/publicCardComponent.vue")["default"]);
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('private-association-card', __webpack_require__(/*! ./components/associations/privateCardComponent.vue */ "./resources/js/components/associations/privateCardComponent.vue")["default"]); //USER COMPONENTS
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('private-association-card', __webpack_require__(/*! ./components/associations/privateCardComponent.vue */ "./resources/js/components/associations/privateCardComponent.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('create-association-card', __webpack_require__(/*! ./components/associations/createCardComponent.vue */ "./resources/js/components/associations/createCardComponent.vue")["default"]); //USER COMPONENTS
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('private-user-card', __webpack_require__(/*! ./components/users/privateCardComponent.vue */ "./resources/js/components/users/privateCardComponent.vue")["default"]);
 /**
@@ -92727,6 +93045,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HomeCalendarComponent_vue_vue_type_template_id_c2532a36_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HomeCalendarComponent_vue_vue_type_template_id_c2532a36_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/associations/createCardComponent.vue":
+/*!**********************************************************************!*\
+  !*** ./resources/js/components/associations/createCardComponent.vue ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _createCardComponent_vue_vue_type_template_id_5e15acff_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./createCardComponent.vue?vue&type=template&id=5e15acff&scoped=true& */ "./resources/js/components/associations/createCardComponent.vue?vue&type=template&id=5e15acff&scoped=true&");
+/* harmony import */ var _createCardComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./createCardComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/associations/createCardComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _createCardComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _createCardComponent_vue_vue_type_template_id_5e15acff_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _createCardComponent_vue_vue_type_template_id_5e15acff_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "5e15acff",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/associations/createCardComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/associations/createCardComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************!*\
+  !*** ./resources/js/components/associations/createCardComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_createCardComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./createCardComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/associations/createCardComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_createCardComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/associations/createCardComponent.vue?vue&type=template&id=5e15acff&scoped=true&":
+/*!*****************************************************************************************************************!*\
+  !*** ./resources/js/components/associations/createCardComponent.vue?vue&type=template&id=5e15acff&scoped=true& ***!
+  \*****************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_createCardComponent_vue_vue_type_template_id_5e15acff_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./createCardComponent.vue?vue&type=template&id=5e15acff&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/associations/createCardComponent.vue?vue&type=template&id=5e15acff&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_createCardComponent_vue_vue_type_template_id_5e15acff_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_createCardComponent_vue_vue_type_template_id_5e15acff_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

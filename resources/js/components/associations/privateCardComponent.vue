@@ -13,31 +13,31 @@
             class="mx-auto"
             v-if="show">
             <div class="d-flex flex-no-wrap justify-space-between">
-                <v-avatar
-                    class="ma-3"
-                    size="125"
-                    tile
-                    :color="color"
-                >
-                    <!--                <v-img :src="item.src"></v-img>-->
-                </v-avatar>
-                <div>
-                    <v-card-title
-                        class="headline"
-                        v-text="name"
-                    ></v-card-title>
+                    <v-avatar
+                        class="ma-3"
+                        size="125"
+                        tile
+                        :color="color"
+                    >
+                        <!--                <v-img :src="item.src"></v-img>-->
+                    </v-avatar>
+                    <div class="w-100">
+                        <v-card-title
+                            class="headline"
+                            v-text="name"
+                        ></v-card-title>
 
-                    <v-card-subtitle v-text="desc"></v-card-subtitle>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            icon
-                            @click="deleteItem">
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </v-card-actions>
+                        <v-card-subtitle v-text="desc"></v-card-subtitle>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                icon
+                                @click="deleteItem">
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                        </v-card-actions>
+                    </div>
                 </div>
-            </div>
         </v-card>
         <v-snackbar v-model="snackbar"
                     :timeout="6000">
