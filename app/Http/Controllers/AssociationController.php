@@ -42,7 +42,8 @@ class AssociationController extends Controller
         $validated = $request->validate([
             'name' => 'required|min:2|max:255',
             'color' => 'required|size:7|starts_with:#',
-            'president_id' => 'required|exists:users,id'
+            'president_id' => 'required|exists:users,id',
+            'desc' => 'min:2|max:255'
         ]);
 
         $user = Auth::user();
@@ -91,7 +92,8 @@ class AssociationController extends Controller
         $validated = $request->validate([
             'name' => 'min:2|max:255',
             'color' => 'size:7|starts_with:#',
-            'president_id' => 'exists:users,id'
+            'president_id' => 'exists:users,id',
+            'desc' => 'min:2|max:255'
         ]);
 
         $association->update($validated);

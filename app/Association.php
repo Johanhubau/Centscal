@@ -12,7 +12,7 @@ class Association extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'color', 'president_id',
+        'name', 'color', 'president_id', 'desc',
     ];
 
     /**
