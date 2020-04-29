@@ -37,6 +37,11 @@ Vue.component('home-calendar-component', require('./components/HomeCalendarCompo
 Vue.component('public-association-card', require('./components/associations/publicCardComponent.vue').default)
 Vue.component('private-association-card', require('./components/associations/privateCardComponent.vue').default)
 Vue.component('create-association-card', require('./components/associations/createCardComponent.vue').default)
+Vue.component('association-dashboard', require('./components/associations/dashboardComponent.vue').default)
+
+//EVENT COMPONENTS
+Vue.component('create-event-card', require('./components/events/createCardComponent.vue').default)
+
 
 //USER COMPONENTS
 Vue.component('private-user-card', require('./components/users/privateCardComponent.vue').default)

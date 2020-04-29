@@ -13,10 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//GENERAL ROUTES
 Route::get('/', function () {
     return view('welcome');
 });
+Auth::routes();
+Route::get('/home', 'HomeController@index')->name('home');
 
+//ADMIN ASSOCIATION ROUTES
 Route::get('/admin/associations', function() {
    return view('admin/associations');
 })->name('admin.associations');
@@ -24,10 +28,22 @@ Route::get('/admin/associations/create', function() {
     return view('admin/association/create');
 })->name('admin.associations.create');
 
+//ASSOCIATION ROUTES
 Route::get('/associations', function() {
     return view('associations');
 })->name('associations');
+Route::get('/association/{id}', function($id) {
+    $association = \App\Association::findOrFail($id);
+   return view('association/manage', ['association' => $association]);
+});
 
+//EVENT ROUTES
+Route::get('association/{id}/event/create', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('event/create', ['association' => $association]);
+});
+
+//ADMIN USER ROUTES
 Route::get('/admin/users', function() {
     return view('admin.users');
 })->name('admin.users');
@@ -35,11 +51,7 @@ Route::get('/admin/users/create', function() {
     return view('admin/user/create');
 })->name('admin.users.create');
 
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
+//API ROUTES
 Route::prefix('api')->group(function () {
 
 //USER ROUTES
