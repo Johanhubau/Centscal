@@ -46,14 +46,13 @@
                 ref="calendar"
                 v-model="focus"
                 color="primary"
-                :events="events"
+                :events="computed_events"
                 :event-color="getEventColor"
                 :now="today"
                 :type="type"
                 @click:event="showEvent"
                 @click:more="viewDay"
                 @click:date="viewDay"
-                @change="updateRange"
             ></v-calendar>
             <v-menu
                 v-model="selectedOpen"
@@ -70,27 +69,29 @@
                         :color="selectedEvent.color"
                         dark
                     >
-                        <v-btn icon>
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                        <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+                        <v-toolbar-title v-html="selectedEvent.association + ': ' + selectedEvent.name"></v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn icon>
-                            <v-icon>mdi-dots-vertical</v-icon>
-                        </v-btn>
+<!--                        <v-btn icon>-->
+<!--                            <v-icon>mdi-dots-vertical</v-icon>-->
+<!--                        </v-btn>-->
                     </v-toolbar>
                     <v-card-text>
                         <span v-html="selectedEvent.details"></span>
                     </v-card-text>
-                    <v-card-actions>
-                        <v-btn
-                            text
-                            color="secondary"
-                            @click="selectedOpen = false"
-                        >
-                            Cancel
-                        </v-btn>
-                    </v-card-actions>
+                    <v-card-subtitle>
+                        <span v-if="selectedEvent.location !== 'Location: null'" v-html="selectedEvent.location"></span>
+                        <v-spacer></v-spacer>
+                        <a :href="selectedEvent.link"><span v-if="selectedEvent.link !== 'null'" v-html="selectedEvent.link"></span></a>
+                    </v-card-subtitle>
+<!--                    <v-card-actions>-->
+<!--                        <v-btn-->
+<!--                            text-->
+<!--                            color="secondary"-->
+<!--                            @click="selectedOpen = false"-->
+<!--                        >-->
+<!--                            Cancel-->
+<!--                        </v-btn>-->
+<!--                    </v-card-actions>-->
                 </v-card>
             </v-menu>
         </v-sheet>
@@ -99,6 +100,7 @@
 
 <script>
     export default {
+        props: ['events', 'associations'],
         data: () => ({
             focus: '',
             type: 'month',
@@ -113,10 +115,10 @@
             selectedEvent: {},
             selectedElement: null,
             selectedOpen: false,
-            events: [],
-            colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-            names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
             calendarHeight: 600,
+            colors_by_id: {},
+            names_by_id: {},
+            computed_events: [],
         }),
         computed: {
             title() {
@@ -156,8 +158,29 @@
         mounted() {
             this.$refs.calendar.checkChange()
             this.calendarHeight = this.$refs.calendarDiv.clientHeight - 75
+            this.makeVars()
         },
         methods: {
+            makeVars() {
+                this.associations.forEach(association =>
+                    this.colors_by_id[association.id] = association.color
+                )
+                this.associations.forEach(association =>
+                    this.names_by_id[association.id] = association.name
+                )
+                this.events.forEach(event =>
+                    this.computed_events.push({
+                        name: event.title,
+                        start: this.formatDate(event.begin),
+                        end: this.formatDate(event.end),
+                        color: this.colors_by_id[event.association_id],
+                        details:  event.desc,
+                        association: this.names_by_id[event.association_id],
+                        location: 'Location: ' + event.location,
+                        link: event.link
+                    })
+                )
+            },
             viewDay({date}) {
                 this.focus = date
                 this.type = 'day'
@@ -190,33 +213,6 @@
 
                 nativeEvent.stopPropagation()
             },
-            updateRange({start, end}) {
-                const events = []
-
-                const min = new Date(`${start.date}T00:00:00`)
-                const max = new Date(`${end.date}T23:59:59`)
-                const days = (max.getTime() - min.getTime()) / 86400000
-                const eventCount = this.rnd(days, days + 20)
-
-                for (let i = 0; i < eventCount; i++) {
-                    const allDay = this.rnd(0, 3) === 0
-                    const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-                    const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-                    const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-                    const second = new Date(first.getTime() + secondTimestamp)
-
-                    events.push({
-                        name: this.names[this.rnd(0, this.names.length - 1)],
-                        start: this.formatDate(first, !allDay),
-                        end: this.formatDate(second, !allDay),
-                        color: this.colors[this.rnd(0, this.colors.length - 1)],
-                    })
-                }
-
-                this.start = start
-                this.end = end
-                this.events = events
-            },
             nth(d) {
                 return d > 3 && d < 21
                     ? 'th'
@@ -225,10 +221,8 @@
             rnd(a, b) {
                 return Math.floor((b - a + 1) * Math.random()) + a
             },
-            formatDate(a, withTime) {
-                return withTime
-                    ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
-                    : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
+            formatDate(a) {
+                return a.substring(0, 16)
             },
         },
     }

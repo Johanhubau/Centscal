@@ -2040,7 +2040,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['events', 'associations'],
   data: function data() {
     return {
       focus: '',
@@ -2056,10 +2058,10 @@ __webpack_require__.r(__webpack_exports__);
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
-      events: [],
-      colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-      calendarHeight: 600
+      calendarHeight: 600,
+      colors_by_id: {},
+      names_by_id: {},
+      computed_events: []
     };
   },
   computed: {
@@ -2104,8 +2106,31 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.$refs.calendar.checkChange();
     this.calendarHeight = this.$refs.calendarDiv.clientHeight - 75;
+    this.makeVars();
   },
   methods: {
+    makeVars: function makeVars() {
+      var _this = this;
+
+      this.associations.forEach(function (association) {
+        return _this.colors_by_id[association.id] = association.color;
+      });
+      this.associations.forEach(function (association) {
+        return _this.names_by_id[association.id] = association.name;
+      });
+      this.events.forEach(function (event) {
+        return _this.computed_events.push({
+          name: event.title,
+          start: _this.formatDate(event.begin),
+          end: _this.formatDate(event.end),
+          color: _this.colors_by_id[event.association_id],
+          details: event.desc,
+          association: _this.names_by_id[event.association_id],
+          location: 'Location: ' + event.location,
+          link: event.link
+        });
+      });
+    },
     viewDay: function viewDay(_ref) {
       var date = _ref.date;
       this.focus = date;
@@ -2124,16 +2149,16 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.calendar.next();
     },
     showEvent: function showEvent(_ref2) {
-      var _this = this;
+      var _this2 = this;
 
       var nativeEvent = _ref2.nativeEvent,
           event = _ref2.event;
 
       var open = function open() {
-        _this.selectedEvent = event;
-        _this.selectedElement = nativeEvent.target;
+        _this2.selectedEvent = event;
+        _this2.selectedElement = nativeEvent.target;
         setTimeout(function () {
-          return _this.selectedOpen = true;
+          return _this2.selectedOpen = true;
         }, 10);
       };
 
@@ -2146,41 +2171,14 @@ __webpack_require__.r(__webpack_exports__);
 
       nativeEvent.stopPropagation();
     },
-    updateRange: function updateRange(_ref3) {
-      var start = _ref3.start,
-          end = _ref3.end;
-      var events = [];
-      var min = new Date("".concat(start.date, "T00:00:00"));
-      var max = new Date("".concat(end.date, "T23:59:59"));
-      var days = (max.getTime() - min.getTime()) / 86400000;
-      var eventCount = this.rnd(days, days + 20);
-
-      for (var i = 0; i < eventCount; i++) {
-        var allDay = this.rnd(0, 3) === 0;
-        var firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        var first = new Date(firstTimestamp - firstTimestamp % 900000);
-        var secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-        var second = new Date(first.getTime() + secondTimestamp);
-        events.push({
-          name: this.names[this.rnd(0, this.names.length - 1)],
-          start: this.formatDate(first, !allDay),
-          end: this.formatDate(second, !allDay),
-          color: this.colors[this.rnd(0, this.colors.length - 1)]
-        });
-      }
-
-      this.start = start;
-      this.end = end;
-      this.events = events;
-    },
     nth: function nth(d) {
       return d > 3 && d < 21 ? 'th' : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10];
     },
     rnd: function rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
-    formatDate: function formatDate(a, withTime) {
-      return withTime ? "".concat(a.getFullYear(), "-").concat(a.getMonth() + 1, "-").concat(a.getDate(), " ").concat(a.getHours(), ":").concat(a.getMinutes()) : "".concat(a.getFullYear(), "-").concat(a.getMonth() + 1, "-").concat(a.getDate());
+    formatDate: function formatDate(a) {
+      return a.substring(0, 16);
     }
   }
 });
@@ -39120,7 +39118,7 @@ var render = function() {
                   attrs: { outlined: "", color: "grey darken-2" },
                   on: { click: _vm.setToday }
                 },
-                [_vm._v("\n                Today\n            ")]
+                [_vm._v("\n                    Today\n                ")]
               ),
               _vm._v(" "),
               _c(
@@ -39276,7 +39274,7 @@ var render = function() {
             ref: "calendar",
             attrs: {
               color: "primary",
-              events: _vm.events,
+              events: _vm.computed_events,
               "event-color": _vm.getEventColor,
               now: _vm.today,
               type: _vm.type
@@ -39284,8 +39282,7 @@ var render = function() {
             on: {
               "click:event": _vm.showEvent,
               "click:more": _vm.viewDay,
-              "click:date": _vm.viewDay,
-              change: _vm.updateRange
+              "click:date": _vm.viewDay
             },
             model: {
               value: _vm.focus,
@@ -39327,25 +39324,17 @@ var render = function() {
                     "v-toolbar",
                     { attrs: { color: _vm.selectedEvent.color, dark: "" } },
                     [
-                      _c(
-                        "v-btn",
-                        { attrs: { icon: "" } },
-                        [_c("v-icon", [_vm._v("mdi-pencil")])],
-                        1
-                      ),
-                      _vm._v(" "),
                       _c("v-toolbar-title", {
-                        domProps: { innerHTML: _vm._s(_vm.selectedEvent.name) }
+                        domProps: {
+                          innerHTML: _vm._s(
+                            _vm.selectedEvent.association +
+                              ": " +
+                              _vm.selectedEvent.name
+                          )
+                        }
                       }),
                       _vm._v(" "),
-                      _c("v-spacer"),
-                      _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        { attrs: { icon: "" } },
-                        [_c("v-icon", [_vm._v("mdi-dots-vertical")])],
-                        1
-                      )
+                      _c("v-spacer")
                     ],
                     1
                   ),
@@ -39357,24 +39346,27 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c(
-                    "v-card-actions",
+                    "v-card-subtitle",
                     [
-                      _c(
-                        "v-btn",
-                        {
-                          attrs: { text: "", color: "secondary" },
-                          on: {
-                            click: function($event) {
-                              _vm.selectedOpen = false
+                      _vm.selectedEvent.location !== "Location: null"
+                        ? _c("span", {
+                            domProps: {
+                              innerHTML: _vm._s(_vm.selectedEvent.location)
                             }
-                          }
-                        },
-                        [
-                          _vm._v(
-                            "\n                        Cancel\n                    "
-                          )
-                        ]
-                      )
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c("a", { attrs: { href: _vm.selectedEvent.link } }, [
+                        _vm.selectedEvent.link !== "null"
+                          ? _c("span", {
+                              domProps: {
+                                innerHTML: _vm._s(_vm.selectedEvent.link)
+                              }
+                            })
+                          : _vm._e()
+                      ])
                     ],
                     1
                   )
