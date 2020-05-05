@@ -92,7 +92,7 @@
 
 <script>
     export default {
-        props: ['association_id'],
+        props: ['event'],
         data: () => ({
             valid: true,
             title: '',
@@ -132,6 +132,7 @@
         },
 
         mounted() {
+            this.makeVars()
         },
 
         methods: {
@@ -142,27 +143,36 @@
                     this.snackbar = true;
                     this.current_step = 1;
                 } else {
-                    let data = {
-                        "title": this.title,
-                        "association_id": this.association_id,
-                        "begin": this.convertDateToUTC(this.begin),
-                        "end": this.convertDateToUTC(this.end),
+                    let data = {}
+                    if(this.title !== this.event.title){
+                        data["title"] = this.title
                     }
-                    if (this.desc !== '') {
+                    if (this.desc !== this.event.desc) {
                         data["desc"] = this.desc
                     }
-                    if (this.link !== '') {
+                    if (this.link !== this.event.link) {
                         data["link"] = this.link
                     }
-                    if (this.location !== '') {
+                    if (this.location !== this.event.location) {
                         data["location"] = this.location
                     }
-                    console.log(data)
-                    axios.post('/api/event', data).then((response) => {
-                        status = response.status;
-                        this.snackbarText = "Created " + this.title;
+                    if(this.date_begin !== this.getDate(this.event.begin) || this.time_begin !== this.getTime(this.event.begin)){
+                        data['begin'] = this.convertDateToUTC(this.begin)
+                    }
+                    if(this.date_end !== this.getDate(this.event.end) || this.time_end !== this.getTime(this.event.end)){
+                        data['end'] = this.convertDateToUTC(this.end)
+                    }
+                    if(Object.keys(data).length === 0){
+                        this.snackbarText = "Nothing to change";
                         this.snackbar = true;
-                    })
+                    }else{
+                        console.log(data)
+                        axios.post('/api/event/'+this.event.id, data).then((response) => {
+                            status = response.status;
+                            this.snackbarText = "Updated " + this.title;
+                            this.snackbar = true;
+                        })
+                    }
                 }
             },
             previous_step() {
@@ -170,6 +180,40 @@
             },
             next_step() {
                 this.current_step += 1
+            },
+            getDate(date){
+                let d = new Date(date)
+                let month = (d.getMonth()+1)
+                let day = d.getDate()
+                if(month < 10){
+                    month = "0" + (d.getMonth()+1)
+                }
+                if(day < 10){
+                    day = "0" + d.getDate()
+                }
+                return d.getFullYear() + '-' + month + "-" + day
+            },
+            getTime(date){
+                let d = new Date(date)
+                let hours = d.getHours()
+                let min = d.getMinutes()
+                if(hours < 10){
+                    hours = "0" + d.getHours()
+                }
+                if(min < 10){
+                    min = "0" + d.getMinutes()
+                }
+                return hours + ":" + min
+            },
+            makeVars() {
+                this.title = this.event.title
+                this.desc = this.event.desc
+                this.link = this.event.link
+                this.location = this.event.location
+                this.date_begin = this.getDate(this.event.begin)
+                this.time_begin = this.getTime(this.event.begin)
+                this.date_end = this.getDate(this.event.end)
+                this.time_end = this.getTime(this.event.end)
             },
             convertDateToUTC(d) {
                 d+=":00"

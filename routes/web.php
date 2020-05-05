@@ -42,6 +42,10 @@ Route::get('association/{id}/event/create', function($id) {
     $association = \App\Association::findOrFail($id);
     return view('event/create', ['association' => $association]);
 });
+Route::get('event/{id}', function($id) {
+   $event = \App\Event::findOrFail($id);
+   return view('event/update', ['event' => $event]);
+});
 
 //ADMIN USER ROUTES
 Route::get('/admin/users', function() {

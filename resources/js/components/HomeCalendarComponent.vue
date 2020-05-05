@@ -150,8 +150,7 @@
                 return ''
             },
             monthFormatter() {
-                return this.$refs.calendar.getFormatter({
-                    timeZone: 'UTC', month: 'long',
+                return this.$refs.calendar.getFormatter({month: 'long',
                 })
             },
         },
@@ -221,8 +220,17 @@
             rnd(a, b) {
                 return Math.floor((b - a + 1) * Math.random()) + a
             },
-            formatDate(a) {
-                return a.substring(0, 16)
+            formatDate(date) {
+                let d = new Date(date)
+                let hours = d.getHours()
+                let min = d.getMinutes()
+                if(hours < 10){
+                    hours = "0" + d.getHours()
+                }
+                if(min < 10){
+                    min = "0" + d.getMinutes()
+                }
+                return d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate() + "T" + hours + ":" + min
             },
         },
     }

@@ -5,9 +5,21 @@
         <v-row
             justify="center">
             <v-col>
-                <association-dashboard name="{{$association->name}}"></association-dashboard>
+                <association-dashboard
+                    v-bind:association="{{$association}}"
+                    v-bind:users="{{App\User::all('id', 'first_name', 'last_name')}}"
+                    first_name="{{Auth::user()->first_name}}"
+                    last_name="{{Auth::user()->last_name}}"
+                ></association-dashboard>
             </v-col>
         </v-row>
+        <V-row justify="center">
+            <v-col>
+                @foreach($association->events as $event)
+                    <private-event-card v-bind:event="{{$event}}"></private-event-card>
+                @endforeach
+            </v-col>
+        </V-row>
     </v-container>
     <div class="fab-container">
         <v-btn
