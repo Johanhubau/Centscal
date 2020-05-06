@@ -1,4 +1,5 @@
 <template>
+    <!--    TODO add lazy loading-->
     <div class="py-3">
         <v-card
             class="mx-auto"

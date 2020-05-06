@@ -2887,6 +2887,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "privateCardComponent",
   props: ['event'],
@@ -3231,6 +3232,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CardComponent",
   props: ['material'],
@@ -3531,6 +3533,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -41619,7 +41622,9 @@ var render = function() {
           }
         },
         [
-          _vm._v("\n        " + _vm._s(_vm.snackbarText) + "\n        "),
+          _vm._v(
+            "\n            " + _vm._s(_vm.snackbarText) + "\n            "
+          ),
           _c(
             "v-btn",
             {
@@ -41630,7 +41635,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [_vm._v("\n                Close\n            ")]
           )
         ],
         1
