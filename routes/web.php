@@ -47,6 +47,18 @@ Route::get('event/{id}', function($id) {
    return view('event/update', ['event' => $event]);
 });
 
+//MATERIAL ROUTES
+Route::get('association/{id}/material/create', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('material/create', ['association' => $association]);
+});
+
+//ROOM ROUTES
+Route::get('association/{id}/room/create', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('room/create', ['association' => $association]);
+});
+
 //ADMIN USER ROUTES
 Route::get('/admin/users', function() {
     return view('admin.users');
