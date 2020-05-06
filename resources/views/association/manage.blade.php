@@ -15,9 +15,30 @@
         </v-row>
         <V-row justify="center">
             <v-col>
-                @foreach($association->events as $event)
+                <v-card-title>Latest 3 events</v-card-title>
+                @foreach($association->events->reverse() as $event)
                     <private-event-card v-bind:event="{{$event}}"></private-event-card>
+                    @if ($loop->iteration == 3)
+                        @break
+                    @endif
                 @endforeach
+            </v-col>
+        </V-row>
+        <V-row justify="center">
+            <v-col>
+                <room-material-manager association_id="{{$association->id}}"></room-material-manager>
+                <v-row justify="center">
+                    <v-col>
+                        @foreach($association->materials as $material)
+                            <material-card v-bind:material="{{$material}}"></material-card>
+                        @endforeach
+                    </v-col>
+                    <v-col>
+                        @foreach($association->rooms as $room)
+                            <room-card v-bind:room="{{$room}}"></room-card>
+                        @endforeach
+                    </v-col>
+                </v-row>
             </v-col>
         </V-row>
     </v-container>
