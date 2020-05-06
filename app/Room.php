@@ -44,6 +44,6 @@ class Room extends Model
      */
     public function association()
     {
-        return $this->belongsTo('App\Association');
+        return $this->belongsTo('App\Association', 'owner_id', 'id');
     }
 }

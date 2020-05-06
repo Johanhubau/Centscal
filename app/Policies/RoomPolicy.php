@@ -55,7 +55,7 @@ class RoomPolicy
     public function update(User $user, Room $room)
     {
         if($user != null){
-            return ($user->role == 'ROLE_ADMIN' || $user->id == Association::find($room->association_id)->president_id);
+            return ($user->role == 'ROLE_ADMIN' || $user->id == $room->association->president_id);
         }
         return false;
     }
@@ -70,7 +70,7 @@ class RoomPolicy
     public function delete(User $user, Room $room)
     {
         if($user != null){
-            return ($user->role == 'ROLE_ADMIN' || $user->id == Association::find($room->association_id)->president_id);
+            return ($user->role == 'ROLE_ADMIN' || $user->id == $room->association->president_id);
         }
         return false;
     }
