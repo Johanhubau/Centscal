@@ -32,6 +32,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 //MAIN COMPONENTS
 Vue.component('home-calendar-component', require('./components/HomeCalendarComponent.vue').default);
+Vue.component('room-material-manager', require('./components/RoomMaterialManagerComponent.vue').default);
 
 //ASSOCIATION COMPONENTS
 Vue.component('public-association-card', require('./components/associations/publicCardComponent.vue').default);
@@ -44,6 +45,13 @@ Vue.component('create-event-card', require('./components/events/createCardCompon
 Vue.component('private-event-card', require('./components/events/privateCardComponent.vue').default);
 Vue.component('update-event-card', require('./components/events/updateCardComponent.vue').default);
 
+//MATERIAL COMPONENTS
+Vue.component('create-material-card', require('./components/materials/CreateCardComponent.vue').default);
+Vue.component('material-card', require('./components/materials/CardComponent.vue').default);
+
+//ROOM COMPONENTS
+Vue.component('create-room-card', require('./components/rooms/CreateCardComponent.vue').default);
+Vue.component('room-card', require('./components/rooms/CardComponent.vue').default);
 
 //USER COMPONENTS
 Vue.component('private-user-card', require('./components/users/privateCardComponent.vue').default);
