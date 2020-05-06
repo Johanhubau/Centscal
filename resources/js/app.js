@@ -48,10 +48,14 @@ Vue.component('update-event-card', require('./components/events/updateCardCompon
 //MATERIAL COMPONENTS
 Vue.component('create-material-card', require('./components/materials/CreateCardComponent.vue').default);
 Vue.component('material-card', require('./components/materials/CardComponent.vue').default);
+Vue.component('update-material-card', require('./components/materials/updateCardComponent.vue').default);
+
 
 //ROOM COMPONENTS
 Vue.component('create-room-card', require('./components/rooms/CreateCardComponent.vue').default);
 Vue.component('room-card', require('./components/rooms/CardComponent.vue').default);
+Vue.component('update-room-card', require('./components/rooms/updateCardComponent.vue').default);
+
 
 //USER COMPONENTS
 Vue.component('private-user-card', require('./components/users/privateCardComponent.vue').default);

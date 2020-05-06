@@ -52,11 +52,19 @@ Route::get('association/{id}/material/create', function($id) {
     $association = \App\Association::findOrFail($id);
     return view('material/create', ['association' => $association]);
 });
+Route::get('material/{id}', function($id) {
+    $material = \App\Material::findOrFail($id);
+    return view('material/update', ['material' => $material]);
+});
 
 //ROOM ROUTES
 Route::get('association/{id}/room/create', function($id) {
     $association = \App\Association::findOrFail($id);
     return view('room/create', ['association' => $association]);
+});
+Route::get('room/{id}', function($id) {
+    $room = \App\Room::findOrFail($id);
+    return view('room/update', ['room' => $room]);
 });
 
 //ADMIN USER ROUTES
