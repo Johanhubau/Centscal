@@ -65,19 +65,23 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('associations') }}">{{ __('Associations') }}</a>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        {{__('My associations')}}<span class="caret"></span>
-                                    </a>
+                                @if (count(Auth::user()->president_associations) != 0)
+                                    <li class="nav-item dropdown">
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                            {{__('My associations')}}<span class="caret"></span>
+                                        </a>
 
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                        @foreach(Auth::user()->president_associations as $association)
-                                            <a class="dropdown-item" href="{{ url('/association/'.$association->id) }}">
-                                                {{ $association->name }}
-                                            </a>
-                                        @endforeach
-                                    </div>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                            @foreach(Auth::user()->president_associations as $association)
+                                                <a class="dropdown-item"
+                                                   href="{{ url('/association/'.$association->id) }}">
+                                                    {{ $association->name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </li>
+                                @endif
                             @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
