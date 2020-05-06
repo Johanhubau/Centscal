@@ -157,7 +157,6 @@
                     if (this.location !== '') {
                         data["location"] = this.location
                     }
-                    console.log(data)
                     axios.post('/api/event', data).then((response) => {
                         status = response.status;
                         this.snackbarText = "Created " + this.title;
