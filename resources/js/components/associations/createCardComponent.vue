@@ -22,13 +22,13 @@
                             required
                         ></v-text-field>
 
-                        <v-select
+                        <v-autocomplete
                             v-model="user"
                             :items="items"
                             :rules="[v => !!v || 'Item is required']"
                             label="President"
                             required
-                        ></v-select>
+                        ></v-autocomplete>
                         <v-btn
                             :disabled="!valid"
                             color="success"

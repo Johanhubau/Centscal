@@ -40855,7 +40855,7 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _c("v-select", {
+                      _c("v-autocomplete", {
                         attrs: {
                           items: _vm.items,
                           rules: [
@@ -41054,7 +41054,7 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _c("v-select", {
+                      _c("v-autocomplete", {
                         attrs: {
                           items: _vm.items,
                           label: "President",
