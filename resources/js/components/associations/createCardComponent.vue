@@ -95,12 +95,12 @@
                     "president_id": this.userNames[this.user],
                     "color": this.color.substring(0, 7)
                 }
-                // console.log(data)
                 axios.post('/api/association', data).then((response) => {
                     status = response.status;
                     this.snackbarText = "Created " + this.name;
                     this.snackbar = true;
                 })
+                window.location.href = '/admin/associations'
             },
             makeVars() {
                 this.users.forEach(user =>

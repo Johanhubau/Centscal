@@ -2337,13 +2337,13 @@ __webpack_require__.r(__webpack_exports__);
         "desc": this.desc,
         "president_id": this.userNames[this.user],
         "color": this.color.substring(0, 7)
-      }; // console.log(data)
-
+      };
       axios.post('/api/association', data).then(function (response) {
         status = response.status;
         _this.snackbarText = "Created " + _this.name;
         _this.snackbar = true;
       });
+      window.location.href = '/admin/associations';
     },
     makeVars: function makeVars() {
       var _this2 = this;
@@ -2818,6 +2818,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.snackbarText = "Created " + _this.title;
           _this.snackbar = true;
         });
+        window.location.href = '/association/' + this.association_id;
       }
     },
     previous_step: function previous_step() {
@@ -3387,6 +3388,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.snackbarText = "Created " + _this.title;
         _this.snackbar = true;
       });
+      window.location.href = '/association/' + this.association_id;
     }
   }
 });
@@ -3512,6 +3514,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.snackbarText = "Updated " + _this.name;
           _this.snackbar = true;
         });
+        window.location.href = '/association/' + this.association_id;
       }
     },
     makeVars: function makeVars() {
@@ -3708,6 +3711,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.snackbarText = "Created " + _this.title;
         _this.snackbar = true;
       });
+      window.location.href = '/association/' + this.association_id;
     }
   }
 });
@@ -3818,6 +3822,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.snackbarText = "Updated " + _this.name;
           _this.snackbar = true;
         });
+        window.location.href = '/association/' + this.association_id;
       }
     },
     makeVars: function makeVars() {

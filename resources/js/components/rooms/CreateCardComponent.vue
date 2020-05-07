@@ -81,6 +81,7 @@
                     this.snackbarText = "Created " + this.title;
                     this.snackbar = true;
                 })
+                window.location.href = '/association/' + this.association_id
             },
         }
     }

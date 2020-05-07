@@ -87,6 +87,7 @@
                         this.snackbarText = "Updated " + this.name;
                         this.snackbar = true;
                     })
+                    window.location.href = '/association/' + this.association_id
                 }
             },
             makeVars() {

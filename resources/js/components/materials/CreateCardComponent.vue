@@ -80,21 +80,22 @@
         methods: {
             validate() {
                 this.$refs.form.validate()
-                    let data = {
-                        "name": this.name,
-                        "association_id": this.association_id,
-                    }
-                    if (this.desc !== '') {
-                        data["desc"] = this.desc
-                    }
-                    if (this.price !== '') {
-                        data["price"] = this.price
-                    }
-                    axios.post('/api/material', data).then((response) => {
-                        status = response.status;
-                        this.snackbarText = "Created " + this.title;
-                        this.snackbar = true;
-                    })
+                let data = {
+                    "name": this.name,
+                    "association_id": this.association_id,
+                }
+                if (this.desc !== '') {
+                    data["desc"] = this.desc
+                }
+                if (this.price !== '') {
+                    data["price"] = this.price
+                }
+                axios.post('/api/material', data).then((response) => {
+                    status = response.status;
+                    this.snackbarText = "Created " + this.title;
+                    this.snackbar = true;
+                })
+                window.location.href = '/association/' + this.association_id
             },
         }
     }
