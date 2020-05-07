@@ -92,7 +92,7 @@
                 }
                 axios.post('/api/material', data).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Created " + this.title;
+                    this.snackbarText = "Created " + this.name;
                     this.snackbar = true;
                 })
                 window.location.href = '/association/' + this.association_id

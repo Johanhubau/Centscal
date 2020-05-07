@@ -52,8 +52,8 @@ class EventController extends Controller
 
         if($user != null){
             if($user->id == $association->president_id || $association->members->contains($user->memberships) || $user->role=='ROLE_ADMIN'){
-                Event::create($validated);
-                return response()->json(['created'=>true], 200);
+                $event = Event::create($validated);
+                return response()->json(['created'=>true, 'id'=>$event->id], 200);
             }
         }
         return response()->json(['error'=>'User is unauthorized'], 403);

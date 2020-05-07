@@ -110,7 +110,7 @@ Route::prefix('api')->group(function () {
     Route::post('/material/{material}', 'MaterialController@update')->middleware('can:update,material');
     Route::delete('/material/{material}', 'MaterialController@destroy')->middleware('can:delete,material');
 
-//MATERIAL ROUTES
+//MEMBER ROUTES
     Route::get('/members', 'MemberController@index');
     Route::post('/member', 'MemberController@store');
     Route::get('/member/{member}', 'MemberController@show');

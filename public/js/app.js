@@ -2741,8 +2741,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['association_id'],
+  props: ['association_id', 'rooms', 'materials'],
   data: function data() {
     return {
       valid: true,
@@ -2771,7 +2790,13 @@ __webpack_require__.r(__webpack_exports__);
       time_end: '',
       lazy: false,
       snackbar: false,
-      snackbarText: ''
+      snackbarText: '',
+      computedRooms: [],
+      roomsToId: {},
+      room: '',
+      selectedMaterials: [],
+      computedMaterials: [],
+      materialToId: {}
     };
   },
   computed: {
@@ -2782,12 +2807,16 @@ __webpack_require__.r(__webpack_exports__);
       return this.date_end + "T" + this.time_end;
     }
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    this.makeVars();
+  },
   methods: {
     validate: function validate() {
       var _this = this;
 
       this.$refs.form.validate();
+      var reserveRoom = false;
+      var reserveMaterial = false;
 
       if (this.begin > this.end) {
         this.snackbarText = "Beginning date should be before end date!";
@@ -2809,12 +2838,42 @@ __webpack_require__.r(__webpack_exports__);
           data["link"] = this.link;
         }
 
-        if (this.location !== '') {
-          data["location"] = this.location;
+        if (this.roomsToId[this.location] !== null) {
+          reserveRoom = true;
+        } else if (this.location !== '') {
+          if (this.room === 'Other') {
+            data["location"] = this.location;
+          }
+        }
+
+        if (Object.keys(this.selectedMaterials).length !== 0) {
+          reserveMaterial = true;
         }
 
         axios.post('/api/event', data).then(function (response) {
           status = response.status;
+          var eventId = response.data.id;
+
+          if (reserveRoom) {
+            axios.post('/api/occupation', {
+              'event_id': eventId,
+              'room_id': _this.roomsToId[_this.room]
+            }).then(function (response) {
+              status = response.status;
+            });
+          }
+
+          if (reserveMaterial) {
+            _this.selectedMaterials.forEach(function (material) {
+              return axios.post('/api/rent', {
+                'event_id': eventId,
+                'material_id': _this.materialToId[material]
+              }).then(function (response) {
+                status = response.status;
+              });
+            });
+          }
+
           _this.snackbarText = "Created " + _this.title;
           _this.snackbar = true;
         });
@@ -2832,6 +2891,23 @@ __webpack_require__.r(__webpack_exports__);
       console.log(d);
       var date = new Date(d);
       return date.getUTCFullYear() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCDate() + "T" + date.getUTCHours() + ":" + date.getUTCMinutes();
+    },
+    makeVars: function makeVars() {
+      var _this2 = this;
+
+      this.rooms.forEach(function (room) {
+        return _this2.computedRooms.push(room.name);
+      });
+      this.computedRooms.push('Other');
+      this.rooms.forEach(function (room) {
+        return _this2.roomsToId[room.name] = room.id;
+      });
+      this.materials.forEach(function (material) {
+        return _this2.computedMaterials.push(material.name + ": " + material.price);
+      });
+      this.materials.forEach(function (material) {
+        return _this2.materialToId[material.name + ": " + material.price] = material.id;
+      });
     }
   }
 });
@@ -3385,7 +3461,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/api/material', data).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Created " + _this.title;
+        _this.snackbarText = "Created " + _this.name;
         _this.snackbar = true;
       });
       window.location.href = '/association/' + this.association_id;
@@ -41378,21 +41454,39 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _c("v-text-field", {
+                      _c("v-autocomplete", {
                         attrs: {
+                          items: _vm.computedRooms,
                           counter: 255,
-                          rules: _vm.locRules,
                           label: "Location",
                           required: ""
                         },
                         model: {
-                          value: _vm.location,
+                          value: _vm.room,
                           callback: function($$v) {
-                            _vm.location = $$v
+                            _vm.room = $$v
                           },
-                          expression: "location"
+                          expression: "room"
                         }
                       }),
+                      _vm._v(" "),
+                      this.room === "Other"
+                        ? _c("v-text-field", {
+                            attrs: {
+                              counter: 255,
+                              label: "Other",
+                              required: "",
+                              rules: _vm.locRules
+                            },
+                            model: {
+                              value: _vm.location,
+                              callback: function($$v) {
+                                _vm.location = $$v
+                              },
+                              expression: "location"
+                            }
+                          })
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("v-text-field", {
                         attrs: {
@@ -41409,6 +41503,23 @@ var render = function() {
                             _vm.link = $$v
                           },
                           expression: "link"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-autocomplete", {
+                        attrs: {
+                          items: _vm.computedMaterials,
+                          label: "Equipment necessary",
+                          chips: "",
+                          "small-chips": "",
+                          multiple: ""
+                        },
+                        model: {
+                          value: _vm.selectedMaterials,
+                          callback: function($$v) {
+                            _vm.selectedMaterials = $$v
+                          },
+                          expression: "selectedMaterials"
                         }
                       }),
                       _vm._v(" "),
