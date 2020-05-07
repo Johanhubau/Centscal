@@ -60,7 +60,7 @@
         }),
         computed: {
             userlink() {
-                return '/user/'+ this.id +'/edit'
+                return '/admin/user/'+ this.id +'/edit'
             }
         },
         methods: {

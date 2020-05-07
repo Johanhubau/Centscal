@@ -3829,6 +3829,98 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "UpdateAdminCardComponent",
+  props: ['user'],
+  data: function data() {
+    return {
+      role: '',
+      items: [],
+      itemToRole: {},
+      roleToItem: {},
+      valid: true,
+      snackbar: false,
+      snackbarText: ''
+    };
+  },
+  mounted: function mounted() {
+    this.makeVars();
+  },
+  methods: {
+    validate: function validate() {
+      var _this = this;
+
+      if (this.role === this.roleToItem[this.user.role]) {
+        this.snackbarText = "Nothing to change!";
+        this.snackbar = true;
+      } else {
+        axios.post('/api/user/' + this.user.id, {
+          'role': this.itemToRole[this.role]
+        }).then(function (response) {
+          status = response.status;
+          console.log(status);
+          _this.snackbarText = "Updated " + _this.user.first_name;
+          _this.snackbar = true;
+        });
+        window.location.href = "/admin/users";
+      }
+    },
+    makeVars: function makeVars() {
+      this.items = ['User', 'Admin'];
+      this.itemToRole = {
+        'User': 'ROLE_USER',
+        'Admin': 'ROLE_ADMIN'
+      };
+      this.roleToItem = {
+        'ROLE_USER': 'User',
+        'ROLE_ADMIN': 'Admin'
+      };
+      this.role = this.roleToItem[this.user.role];
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/users/privateCardComponent.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/users/privateCardComponent.vue?vue&type=script&lang=js& ***!
@@ -3901,7 +3993,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     userlink: function userlink() {
-      return '/user/' + this.id + '/edit';
+      return '/admin/user/' + this.id + '/edit';
     }
   },
   methods: {
@@ -42782,6 +42874,99 @@ var render = function() {
               }
             },
             [_vm._v("\n            Close\n        ")]
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=template&id=52fc21b9&scoped=true&":
+/*!*********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=template&id=52fc21b9&scoped=true& ***!
+  \*********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-card",
+    { staticClass: "mx-auto p-3" },
+    [
+      _c("v-card-title", [_vm._v("Update user role")]),
+      _vm._v(" "),
+      _c("v-select", {
+        attrs: {
+          items: _vm.items,
+          rules: [
+            function(v) {
+              return !!v || "Item is required"
+            }
+          ],
+          label: "Role",
+          required: ""
+        },
+        model: {
+          value: _vm.role,
+          callback: function($$v) {
+            _vm.role = $$v
+          },
+          expression: "role"
+        }
+      }),
+      _vm._v(" "),
+      _c(
+        "v-btn",
+        {
+          staticClass: "mr-4",
+          attrs: { disabled: !_vm.valid, color: "success" },
+          on: { click: _vm.validate }
+        },
+        [_vm._v("\n            Validate\n        ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { timeout: 6000 },
+          model: {
+            value: _vm.snackbar,
+            callback: function($$v) {
+              _vm.snackbar = $$v
+            },
+            expression: "snackbar"
+          }
+        },
+        [
+          _vm._v(
+            "\n            " + _vm._s(_vm.snackbarText) + "\n            "
+          ),
+          _c(
+            "v-btn",
+            {
+              attrs: { dark: "", text: "" },
+              on: {
+                click: function($event) {
+                  _vm.snackbar = false
+                }
+              }
+            },
+            [_vm._v("\n                Close\n            ")]
           )
         ],
         1
@@ -96781,6 +96966,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('room-card', __webpack_requ
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('update-room-card', __webpack_require__(/*! ./components/rooms/updateCardComponent.vue */ "./resources/js/components/rooms/updateCardComponent.vue")["default"]); //USER COMPONENTS
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('private-user-card', __webpack_require__(/*! ./components/users/privateCardComponent.vue */ "./resources/js/components/users/privateCardComponent.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('update-user-card', __webpack_require__(/*! ./components/users/UpdateAdminCardComponent.vue */ "./resources/js/components/users/UpdateAdminCardComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -97974,6 +98160,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_updateCardComponent_vue_vue_type_template_id_68c205b2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_updateCardComponent_vue_vue_type_template_id_68c205b2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/users/UpdateAdminCardComponent.vue":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/users/UpdateAdminCardComponent.vue ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UpdateAdminCardComponent_vue_vue_type_template_id_52fc21b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UpdateAdminCardComponent.vue?vue&type=template&id=52fc21b9&scoped=true& */ "./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=template&id=52fc21b9&scoped=true&");
+/* harmony import */ var _UpdateAdminCardComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UpdateAdminCardComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UpdateAdminCardComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UpdateAdminCardComponent_vue_vue_type_template_id_52fc21b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UpdateAdminCardComponent_vue_vue_type_template_id_52fc21b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "52fc21b9",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/users/UpdateAdminCardComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateAdminCardComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./UpdateAdminCardComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateAdminCardComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=template&id=52fc21b9&scoped=true&":
+/*!***************************************************************************************************************!*\
+  !*** ./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=template&id=52fc21b9&scoped=true& ***!
+  \***************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateAdminCardComponent_vue_vue_type_template_id_52fc21b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./UpdateAdminCardComponent.vue?vue&type=template&id=52fc21b9&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/users/UpdateAdminCardComponent.vue?vue&type=template&id=52fc21b9&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateAdminCardComponent_vue_vue_type_template_id_52fc21b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateAdminCardComponent_vue_vue_type_template_id_52fc21b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

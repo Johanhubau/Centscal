@@ -59,6 +59,7 @@ Vue.component('update-room-card', require('./components/rooms/updateCardComponen
 
 //USER COMPONENTS
 Vue.component('private-user-card', require('./components/users/privateCardComponent.vue').default);
+Vue.component('update-user-card', require('./components/users/UpdateAdminCardComponent.vue').default);
 
 
 /**

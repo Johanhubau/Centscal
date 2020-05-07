@@ -71,6 +71,10 @@ Route::get('room/{id}', function($id) {
 Route::get('/admin/users', function() {
     return view('admin.users');
 })->name('admin.users');
+Route::get('/admin/user/{id}/edit', function($id) {
+    $user = \App\User::findOrFail($id);
+    return view('admin.users.update', ['user' => $user]);
+})->name('admin.users.update');
 Route::get('/admin/users/create', function() {
     return view('admin/user/create');
 })->name('admin.users.create');
