@@ -50,11 +50,16 @@ Vue.component('create-material-card', require('./components/materials/CreateCard
 Vue.component('material-card', require('./components/materials/CardComponent.vue').default);
 Vue.component('update-material-card', require('./components/materials/updateCardComponent.vue').default);
 
+//RENT COMPONENTS
+Vue.component('update-rent-card', require('./components/rents/AdminUpdateComponent.vue').default);
 
 //ROOM COMPONENTS
 Vue.component('create-room-card', require('./components/rooms/CreateCardComponent.vue').default);
 Vue.component('room-card', require('./components/rooms/CardComponent.vue').default);
 Vue.component('update-room-card', require('./components/rooms/updateCardComponent.vue').default);
+
+//OCCUPATION COMPONENTS
+Vue.component('update-occupation-card', require('./components/occupations/AdminUpdateComponent.vue').default);
 
 
 //USER COMPONENTS

@@ -78,4 +78,14 @@ class Association extends Model
     {
         return $this->hasMany('App\Material');
     }
+
+    public function rents()
+    {
+        return $this->hasManyThrough('App\Rent', 'App\Material');
+    }
+
+    public function occupations()
+    {
+        return $this->hasManyThrough('App\Occupation', 'App\Room', 'owner_id', 'room_id', 'id', 'id');
+    }
 }

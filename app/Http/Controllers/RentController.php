@@ -41,7 +41,7 @@ class RentController extends Controller
         $validated = $request->validate([
            'event_id' => 'required|exists:events,id',
            'material_id' => 'required|exists:materials,id',
-            'approved' => 'boolean'
+            'approved' => 'min:0|max:2'
         ]);
 
         $user = Auth::user();
@@ -87,7 +87,7 @@ class RentController extends Controller
     public function update(Request $request, Rent $rent)
     {
         $validated = $request->validate([
-           'approved' => 'required|boolean'
+            'approved' => 'required|min:0|max:2'
         ]);
 
         $rent->update($validated);

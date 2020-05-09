@@ -57,7 +57,7 @@ class RentPolicy
     public function update(User $user, Rent $rent)
     {
         if($user != null){
-            return ($user->role == "ROLE_ADMIN" || $user->id == Association::find(Material::find($rent->material_id))->president_id);
+            return ($user->role == "ROLE_ADMIN" || $user->id == $rent->material->association->president_id);
         }
         return false;
     }
@@ -72,7 +72,7 @@ class RentPolicy
     public function delete(User $user, Rent $rent)
     {
         if($user != null){
-            return ($user->role == "ROLE_ADMIN" || $user->id == Association::find(Event::find($rent->event_id))->president_id);
+            return ($user->role == "ROLE_ADMIN" || $user->id == $rent->event->association->president_id);
         }
         return false;
     }

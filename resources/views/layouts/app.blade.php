@@ -81,6 +81,50 @@
                                             @endforeach
                                         </div>
                                     </li>
+                                    @foreach(Auth::user()->president_associations as $association)
+                                        @if (count($association->rents->where('approved', 0)) != 0)
+                                            <li class="nav-item dropdown">
+                                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                                    {{__('Pending Rents')}}<span class="caret"></span>
+                                                </a>
+
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                                    @foreach(Auth::user()->president_associations as $association)
+                                                        @if (count($association->rents->where('approved', 0)) != 0)
+                                                        <a class="dropdown-item"
+                                                           href="{{ url('/association/'.$association->id.'/rents') }}">
+                                                            {{ $association->name }}
+                                                        </a>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </li>
+                                            @break
+                                        @endif
+                                    @endforeach
+                                    @foreach(Auth::user()->president_associations as $association)
+                                        @if (count($association->occupations->where('approved', 0)) != 0)
+                                            <li class="nav-item dropdown">
+                                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                                    {{__('Pending Occupations')}}<span class="caret"></span>
+                                                </a>
+
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                                    @foreach(Auth::user()->president_associations as $association)
+                                                        @if (count($association->occupations->where('approved', 0)) != 0)
+                                                            <a class="dropdown-item"
+                                                               href="{{ url('/association/'.$association->id.'/occupations') }}">
+                                                                {{ $association->name }}
+                                                            </a>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </li>
+                                            @break
+                                        @endif
+                                    @endforeach
                                 @endif
                             @endif
                             <li class="nav-item dropdown">

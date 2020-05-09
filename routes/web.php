@@ -67,6 +67,18 @@ Route::get('room/{id}', function($id) {
     return view('room/update', ['room' => $room]);
 });
 
+//OCCUPATION ROUTES
+Route::get('association/{id}/occupations', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('occupation/dashboard', ['association' => $association]);
+});
+
+//RENT ROUTES
+Route::get('association/{id}/rents', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('rent/dashboard', ['association' => $association]);
+});
+
 //ADMIN USER ROUTES
 Route::get('/admin/users', function() {
     return view('admin.users');

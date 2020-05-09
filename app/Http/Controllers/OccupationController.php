@@ -38,7 +38,7 @@ class OccupationController extends Controller
         $validated = $request->validate([
            'room_id' => 'required|exists:rooms,id',
            'event_id' => 'required|exists:events,id',
-           'approved' => 'boolean'
+            'approved' => 'min:0|max:2'
         ]);
 
         Occupation::create($validated);
@@ -77,7 +77,7 @@ class OccupationController extends Controller
     public function update(Request $request, Occupation $occupation)
     {
         $validated = $request->validate([
-           'approved' => 'required|boolean'
+           'approved' => 'required|min:0|max:2'
         ]);
 
         $occupation->update($validated);

@@ -38,7 +38,7 @@ class Event extends Model
      */
     public function rents()
     {
-        return $this->belongsToMany('App\Rents');
+        return $this->hasMany('App\Rents');
     }
 
     /**
@@ -46,7 +46,7 @@ class Event extends Model
      */
     public function rooms()
     {
-        return $this->belongsToMany('App\Occupation');
+        return $this->hasMany('App\Occupation');
     }
 
     /**

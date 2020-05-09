@@ -36,7 +36,7 @@ class Room extends Model
      */
     public function occupations()
     {
-        return $this->belongsToMany('App\Occupation');
+        return $this->hasMany('App\Occupation');
     }
 
     /**
