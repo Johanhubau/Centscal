@@ -25,12 +25,6 @@ class EventController extends Controller
             return EventResource::collection(Event::all()
                 ->whereBetween('begin', [$begin, $end])
                 ->reject(function ($event) {
-                    $rents = $event->rents;
-                    foreach($rents as $rent){
-                        if($rent->approved != 1){
-                            return true;
-                        }
-                    }
                     $occupations = $event->occupations;
                     foreach($occupations as $occupation){
                         if($occupation->approved != 1){
@@ -44,12 +38,6 @@ class EventController extends Controller
 
         return EventResource::collection(Event::all()
             ->reject(function ($event) {
-                $rents = $event->rents;
-                foreach($rents as $rent){
-                    if($rent->approved != 1){
-                        return true;
-                    }
-                }
                 $occupations = $event->occupations;
                 foreach($occupations as $occupation){
                     if($occupation->approved != 1){

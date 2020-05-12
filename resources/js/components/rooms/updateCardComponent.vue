@@ -82,12 +82,13 @@
                     this.snackbarText = "Nothing to change!";
                     this.snackbar = true;
                 } else {
-                    axios.post('/api/room/'+this.room.id, data).then((response) => {
+                    axios.post('/api/room/' + this.room.id, data).then((response) => {
                         status = response.status;
                         this.snackbarText = "Updated " + this.name;
                         this.snackbar = true;
+                    }).finally(() => {
+                        window.location.href = '/association/' + this.association_id
                     })
-                    window.location.href = '/association/' + this.association_id
                 }
             },
             makeVars() {

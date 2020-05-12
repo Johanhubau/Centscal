@@ -80,8 +80,9 @@
                     status = response.status;
                     this.snackbarText = "Created " + this.title;
                     this.snackbar = true;
+                }).finally(()=> {
+                    window.location.href = '/association/' + this.association_id
                 })
-                window.location.href = '/association/' + this.association_id
             },
         }
     }

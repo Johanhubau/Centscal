@@ -99,8 +99,9 @@
                     status = response.status;
                     this.snackbarText = "Created " + this.name;
                     this.snackbar = true;
+                }).finally(()=>{
+                    window.location.href = '/admin/associations'
                 })
-                window.location.href = '/admin/associations'
             },
             makeVars() {
                 this.users.forEach(user =>

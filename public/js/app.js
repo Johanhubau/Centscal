@@ -2349,8 +2349,9 @@ __webpack_require__.r(__webpack_exports__);
         status = response.status;
         _this.snackbarText = "Created " + _this.name;
         _this.snackbar = true;
+      })["finally"](function () {
+        window.location.href = '/admin/associations';
       });
-      window.location.href = '/admin/associations';
     },
     makeVars: function makeVars() {
       var _this2 = this;
@@ -2883,8 +2884,9 @@ __webpack_require__.r(__webpack_exports__);
 
           _this.snackbarText = "Created " + _this.title;
           _this.snackbar = true;
+        })["finally"](function () {
+          window.location.href = '/association/' + _this.association_id;
         });
-        window.location.href = '/association/' + this.association_id;
       }
     },
     previous_step: function previous_step() {
@@ -3470,8 +3472,9 @@ __webpack_require__.r(__webpack_exports__);
         status = response.status;
         _this.snackbarText = "Created " + _this.name;
         _this.snackbar = true;
+      })["finally"](function () {
+        window.location.href = '/association/' + _this.association_id;
       });
-      window.location.href = '/association/' + this.association_id;
     }
   }
 });
@@ -3596,8 +3599,9 @@ __webpack_require__.r(__webpack_exports__);
           status = response.status;
           _this.snackbarText = "Updated " + _this.name;
           _this.snackbar = true;
+        })["finally"](function () {
+          window.location.href = '/association/' + _this.association_id;
         });
-        window.location.href = '/association/' + this.association_id;
       }
     },
     makeVars: function makeVars() {
@@ -4017,8 +4021,9 @@ __webpack_require__.r(__webpack_exports__);
         status = response.status;
         _this.snackbarText = "Created " + _this.title;
         _this.snackbar = true;
+      })["finally"](function () {
+        window.location.href = '/association/' + _this.association_id;
       });
-      window.location.href = '/association/' + this.association_id;
     }
   }
 });
@@ -4128,8 +4133,9 @@ __webpack_require__.r(__webpack_exports__);
           status = response.status;
           _this.snackbarText = "Updated " + _this.name;
           _this.snackbar = true;
+        })["finally"](function () {
+          window.location.href = '/association/' + _this.association_id;
         });
-        window.location.href = '/association/' + this.association_id;
       }
     },
     makeVars: function makeVars() {
