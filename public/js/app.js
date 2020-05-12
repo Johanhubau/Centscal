@@ -2041,8 +2041,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['events', 'associations'],
+  props: ['associations'],
   data: function data() {
     return {
       focus: '',
@@ -2059,8 +2060,6 @@ __webpack_require__.r(__webpack_exports__);
       selectedElement: null,
       selectedOpen: false,
       calendarHeight: 600,
-      colors_by_id: {},
-      names_by_id: {},
       computed_events: []
     };
   },
@@ -2105,33 +2104,41 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.$refs.calendar.checkChange();
     this.calendarHeight = this.$refs.calendarDiv.clientHeight - 75;
-    this.makeVars();
   },
   methods: {
-    makeVars: function makeVars() {
+    getEvents: function getEvents(_ref) {
       var _this = this;
 
-      this.associations.forEach(function (association) {
-        return _this.colors_by_id[association.id] = association.color;
-      });
-      this.associations.forEach(function (association) {
-        return _this.names_by_id[association.id] = association.name;
-      });
-      this.events.forEach(function (event) {
-        return _this.computed_events.push({
-          name: event.title,
-          start: _this.formatDate(event.begin),
-          end: _this.formatDate(event.end),
-          color: _this.colors_by_id[event.association_id],
-          details: event.desc,
-          association: _this.names_by_id[event.association_id],
-          location: 'Location: ' + event.location,
-          link: event.link
+      var start = _ref.start,
+          end = _ref.end;
+      this.computed_events = [];
+      var events = [];
+      var min = new Date("".concat(start.date, "T00:00:00"));
+      var max = new Date("".concat(end.date, "T23:59:59"));
+      console.log(min, max);
+      axios.get('/api/events', {
+        params: {
+          'begin': min,
+          'end': max
+        }
+      }).then(function (response) {
+        events = response.data.data;
+        events.forEach(function (event) {
+          return _this.computed_events.push({
+            name: event.title,
+            start: _this.formatDate(event.begin),
+            end: _this.formatDate(event.end),
+            color: event.color,
+            details: event.desc,
+            association: event.associationName,
+            location: 'Location: ' + event.location,
+            link: event.link
+          });
         });
       });
     },
-    viewDay: function viewDay(_ref) {
-      var date = _ref.date;
+    viewDay: function viewDay(_ref2) {
+      var date = _ref2.date;
       this.focus = date;
       this.type = 'day';
     },
@@ -2147,11 +2154,11 @@ __webpack_require__.r(__webpack_exports__);
     next: function next() {
       this.$refs.calendar.next();
     },
-    showEvent: function showEvent(_ref2) {
+    showEvent: function showEvent(_ref3) {
       var _this2 = this;
 
-      var nativeEvent = _ref2.nativeEvent,
-          event = _ref2.event;
+      var nativeEvent = _ref3.nativeEvent,
+          event = _ref3.event;
 
       var open = function open() {
         _this2.selectedEvent = event;
@@ -40885,7 +40892,8 @@ var render = function() {
             on: {
               "click:event": _vm.showEvent,
               "click:more": _vm.viewDay,
-              "click:date": _vm.viewDay
+              "click:date": _vm.viewDay,
+              change: _vm.getEvents
             },
             model: {
               value: _vm.focus,

@@ -53,6 +53,7 @@
                 @click:event="showEvent"
                 @click:more="viewDay"
                 @click:date="viewDay"
+                @change="getEvents"
             ></v-calendar>
             <v-menu
                 v-model="selectedOpen"
@@ -100,7 +101,7 @@
 
 <script>
     export default {
-        props: ['events', 'associations'],
+        props: ['associations'],
         data: () => ({
             focus: '',
             type: 'month',
@@ -116,8 +117,6 @@
             selectedElement: null,
             selectedOpen: false,
             calendarHeight: 600,
-            colors_by_id: {},
-            names_by_id: {},
             computed_events: [],
         }),
         computed: {
@@ -157,28 +156,30 @@
         mounted() {
             this.$refs.calendar.checkChange()
             this.calendarHeight = this.$refs.calendarDiv.clientHeight - 75
-            this.makeVars()
         },
         methods: {
-            makeVars() {
-                this.associations.forEach(association =>
-                    this.colors_by_id[association.id] = association.color
-                )
-                this.associations.forEach(association =>
-                    this.names_by_id[association.id] = association.name
-                )
-                this.events.forEach(event =>
-                    this.computed_events.push({
-                        name: event.title,
-                        start: this.formatDate(event.begin),
-                        end: this.formatDate(event.end),
-                        color: this.colors_by_id[event.association_id],
-                        details:  event.desc,
-                        association: this.names_by_id[event.association_id],
-                        location: 'Location: ' + event.location,
-                        link: event.link
-                    })
-                )
+            getEvents({start, end}) {
+                this.computed_events = []
+                let events = []
+
+                const min = new Date(`${start.date}T00:00:00`)
+                const max = new Date(`${end.date}T23:59:59`)
+
+                console.log(min, max)
+                axios.get('/api/events', {params: {'begin': min, 'end': max}}).then((response) => {
+                    events = response.data.data
+                    events.forEach(event =>
+                        this.computed_events.push({
+                            name: event.title,
+                            start: this.formatDate(event.begin),
+                            end: this.formatDate(event.end),
+                            color: event.color,
+                            details:  event.desc,
+                            association: event.associationName,
+                            location: 'Location: ' + event.location,
+                            link: event.link
+                        }))
+                })
             },
             viewDay({date}) {
                 this.focus = date

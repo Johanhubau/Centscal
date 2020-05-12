@@ -38,7 +38,15 @@ class Event extends Model
      */
     public function rents()
     {
-        return $this->hasMany('App\Rents');
+        return $this->hasMany('App\Rent');
+    }
+
+    /**
+     * The occupations that event requested.
+     */
+    public function occupations()
+    {
+        return $this->hasMany('App\Occupation');
     }
 
     /**

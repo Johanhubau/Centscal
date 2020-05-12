@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Association;
 use App\Event;
+use App\Http\Resources\EventResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,11 +13,52 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Event[]|\Illuminate\Database\Eloquent\Collection
+     * @param Request $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Event::all();
+        if ($request->has(['begin', 'end'])) {
+            $begin = $request->get("begin");
+            $end = $request->get("end");
+
+            return EventResource::collection(Event::all()
+                ->whereBetween('begin', [$begin, $end])
+                ->reject(function ($event) {
+                    $rents = $event->rents;
+                    foreach($rents as $rent){
+                        if($rent->approved != 1){
+                            return true;
+                        }
+                    }
+                    $occupations = $event->occupations;
+                    foreach($occupations as $occupation){
+                        if($occupation->approved != 1){
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                );
+        }
+
+        return EventResource::collection(Event::all()
+            ->reject(function ($event) {
+                $rents = $event->rents;
+                foreach($rents as $rent){
+                    if($rent->approved != 1){
+                        return true;
+                    }
+                }
+                $occupations = $event->occupations;
+                foreach($occupations as $occupation){
+                    if($occupation->approved != 1){
+                        return true;
+                    }
+                }
+                return false;
+            })
+            );
     }
 
     /**
