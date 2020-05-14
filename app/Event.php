@@ -44,9 +44,9 @@ class Event extends Model
     /**
      * The occupations that event requested.
      */
-    public function occupations()
+    public function occupation()
     {
-        return $this->hasMany('App\Occupation');
+        return $this->hasOne('App\Occupation');
     }
 
     /**

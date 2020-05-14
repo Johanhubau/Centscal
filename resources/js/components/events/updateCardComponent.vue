@@ -22,13 +22,22 @@
                             required
                         ></v-text-field>
 
-                        <v-text-field
-                            v-model="location"
+                        <v-autocomplete
+                            v-model="room"
+                            :items="computedRooms"
                             :counter="255"
-                            :rules="locRules"
                             label="Location"
                             required
-                        ></v-text-field>
+                        ></v-autocomplete>
+
+                        <v-text-field
+                            v-model="location"
+                            v-if="this.room === 'Other'"
+                            :counter="255"
+                            label="Other"
+                            required
+                            :rules="locRules">
+                        </v-text-field>
 
                         <v-text-field
                             v-model="link"
@@ -38,6 +47,16 @@
                             required
                             hint="Remember to add the http:// or https:// in front of the link"
                         ></v-text-field>
+
+                        <v-autocomplete
+                            v-model="selectedMaterials"
+                            :items="computedMaterials"
+                            label="Equipment necessary"
+                            chips
+                            small-chips
+                            multiple
+                        >
+                        </v-autocomplete>
 
                         <v-btn
                             :disabled="!valid"
@@ -92,7 +111,7 @@
 
 <script>
     export default {
-        props: ['event'],
+        props: ['event', 'rooms', 'materials', 'rents', 'occupation'],
         data: () => ({
             valid: true,
             title: '',
@@ -120,6 +139,16 @@
             lazy: false,
             snackbar: false,
             snackbarText: '',
+            computedRooms: [],
+            roomsToId: {},
+            room: '',
+            selectedMaterials: [],
+            computedMaterials: [],
+            materialToId: {},
+            idToMaterial: {},
+            idToRoom: {},
+            initialMaterials: [],
+            materialToRentId: {},
         }),
 
         computed: {
@@ -144,17 +173,32 @@
                     this.current_step = 1;
                 } else {
                     let data = {}
+                    let reserveRoom = false
+                    let reserveMaterial = false
+                    let deleteOccupation = false
                     if(this.title !== this.event.title){
                         data["title"] = this.title
                     }
-                    if (this.desc !== this.event.desc) {
+                    if (this.desc !== this.event.desc && this.event.desc != null) {
                         data["desc"] = this.desc
                     }
-                    if (this.link !== this.event.link) {
+                    if (this.link !== this.event.link && this.event.link != null) {
                         data["link"] = this.link
                     }
-                    if (this.location !== this.event.location) {
-                        data["location"] = this.location
+                    if (this.room !== this.roomsToId[this.occupation.room_id] || this.location !== this.event.location) {
+                        if(this.room !== 'Other' && this.room !== ''){
+                            reserveRoom = true;
+                        }else if(this.location !== ''){
+                            if(this.room === 'Other'){
+                                data["location"] = this.location
+                                if(this.occupation !== ''){
+                                    deleteOccupation = true
+                                }
+                            }
+                        }
+                    }
+                    if (this.initialMaterials !== this.selectedMaterials){
+                        reserveMaterial = true
                     }
                     if(this.date_begin !== this.getDate(this.event.begin) || this.time_begin !== this.getTime(this.event.begin)){
                         data['begin'] = this.convertDateToUTC(this.begin)
@@ -162,16 +206,52 @@
                     if(this.date_end !== this.getDate(this.event.end) || this.time_end !== this.getTime(this.event.end)){
                         data['end'] = this.convertDateToUTC(this.end)
                     }
-                    if(Object.keys(data).length === 0){
+                    if(Object.keys(data).length === 0 && !reserveRoom && !reserveMaterial){
                         this.snackbarText = "Nothing to change";
                         this.snackbar = true;
                     }else{
-                        console.log(data)
-                        axios.post('/api/event/'+this.event.id, data).then((response) => {
-                            status = response.status;
-                            this.snackbarText = "Updated " + this.title;
-                            this.snackbar = true;
-                        })
+                        if(reserveRoom) {
+                            if(this.occupation !== ''){
+                                axios.post('/api/occupation/' + this.occupation.id, {
+                                    'approved': 0,
+                                    'room_id': this.roomsToId[this.location]
+                                }).then((response) =>
+                                    status = response.status
+                                )
+                            }else{
+                                axios.post('/api/occupation', {'event_id': this.event.id, 'room_id': this.roomsToId[this.room]}).then((response) => {
+                                    status = response.status;
+                                })
+                            }
+                        }
+                        if(deleteOccupation){
+                            axios.delete('/api/occupation/' + this.occupation.id).then((response) =>
+                                status = response.status
+                            )
+                        }
+                        if(reserveMaterial){
+                            let creates = this.selectedMaterials.filter(x => !this.initialMaterials.includes(x));
+                            let deletes = this.initialMaterials.filter(x => !this.selectedMaterials.includes(x));
+                            creates.forEach(material =>
+                                axios.post('/api/rent', {'event_id': this.event.id, 'material_id': this.materialToId[material]}).then((response) => {
+                                    status = response.status;
+                                })
+                            )
+                            deletes.forEach(material =>
+                                axios.delete('/api/rent/'+this.materialToRentId[this.materialToId[material]]).then((response) => {
+                                    status = response.status;
+                                })
+                            )
+                        }
+                        if(Object.keys(data).length !== 0) {
+                            axios.post('/api/event/' + this.event.id, data).then((response) => {
+                                status = response.status;
+                                this.snackbarText = "Updated " + this.title;
+                                this.snackbar = true;
+                            })
+                        }
+                        this.snackbarText = "Updated " + this.title;
+                        this.snackbar = true;
                     }
                 }
             },
@@ -207,13 +287,50 @@
             },
             makeVars() {
                 this.title = this.event.title
-                this.desc = this.event.desc
-                this.link = this.event.link
-                this.location = this.event.location
+                if(this.event.desc !== null){
+                    this.desc = this.event.desc
+                }
+                if (this.event.link !== null){
+                    this.link = this.event.link
+                }
                 this.date_begin = this.getDate(this.event.begin)
                 this.time_begin = this.getTime(this.event.begin)
                 this.date_end = this.getDate(this.event.end)
                 this.time_end = this.getTime(this.event.end)
+                this.rooms.forEach(room =>
+                    this.computedRooms.push(room.name)
+                )
+                this.computedRooms.push('Other')
+                this.rooms.forEach(room =>
+                    this.roomsToId[room.name] = room.id
+                )
+                this.rooms.forEach(room =>
+                    this.idToRoom[room.id] = room.name
+                )
+                this.materials.forEach(material =>
+                    this.computedMaterials.push(material.name + ": " +material.price)
+                )
+                this.materials.forEach(material =>
+                    this.materialToId[material.name + ": " +material.price] = material.id
+                )
+                this.materials.forEach(material =>
+                    this.idToMaterial[material.id] = material.name + ": " +material.price
+                )
+                this.rents.forEach(rent =>
+                    this.selectedMaterials.push(this.idToMaterial[rent.material_id])
+                )
+                this.rents.forEach(rent =>
+                    this.materialToRentId[rent.material_id] = rent.id
+                )
+                this.initialMaterials = this.selectedMaterials
+                if(this.occupation === ""){
+                    this.location = this.event.location
+                    if(this.location !== null){
+                        this.room = 'Other'
+                    }
+                }else{
+                    this.room = this.idToRoom[this.occupation.room_id]
+                }
             },
             convertDateToUTC(d) {
                 d+=":00"

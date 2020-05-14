@@ -25,28 +25,26 @@ class EventController extends Controller
             return EventResource::collection(Event::all()
                 ->whereBetween('begin', [$begin, $end])
                 ->reject(function ($event) {
-                    $occupations = $event->occupations;
-                    foreach($occupations as $occupation){
-                        if($occupation->approved != 1){
+                    if ($event->occupation != null) {
+                        if ($event->occupation->approved != 1) {
                             return true;
                         }
                     }
                     return false;
                 })
-                );
+            );
         }
 
         return EventResource::collection(Event::all()
             ->reject(function ($event) {
-                $occupations = $event->occupations;
-                foreach($occupations as $occupation){
-                    if($occupation->approved != 1){
+                if ($event->occupation != null) {
+                    if ($event->occupation->approved != 1) {
                         return true;
                     }
                 }
                 return false;
             })
-            );
+        );
     }
 
     /**
@@ -62,14 +60,14 @@ class EventController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-           'title' => 'required|min:2|max:255',
-           'desc' => 'min:2|max:255',
+            'title' => 'required|min:2|max:255',
+            'desc' => 'min:2|max:255',
             'begin' => 'required|date',
             'end' => 'required|date',
             'link' => 'url',
@@ -80,13 +78,13 @@ class EventController extends Controller
         $user = Auth::user();
         $association = Association::findOrFail($validated['association_id']);
 
-        if($user != null){
-            if($user->id == $association->president_id || $association->members->contains($user->memberships) || $user->role=='ROLE_ADMIN'){
+        if ($user != null) {
+            if ($user->id == $association->president_id || $association->members->contains($user->memberships) || $user->role == 'ROLE_ADMIN') {
                 $event = Event::create($validated);
-                return response()->json(['created'=>true, 'id'=>$event->id], 200);
+                return response()->json(['created' => true, 'id' => $event->id], 200);
             }
         }
-        return response()->json(['error'=>'User is unauthorized'], 403);
+        return response()->json(['error' => 'User is unauthorized'], 403);
     }
 
     /**
@@ -103,7 +101,7 @@ class EventController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -131,7 +129,7 @@ class EventController extends Controller
         ]);
 
         $event->update($validated);
-        return response()->json(['updated'=>true], 200);
+        return response()->json(['updated' => true], 200);
     }
 
     /**
@@ -144,6 +142,6 @@ class EventController extends Controller
     public function destroy(Event $event)
     {
         $event->delete();
-        return response()->json(['deleted'=>true], 200);
+        return response()->json(['deleted' => true], 200);
     }
 }

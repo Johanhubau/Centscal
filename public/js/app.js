@@ -3117,8 +3117,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['event'],
+  props: ['event', 'rooms', 'materials', 'rents', 'occupation'],
   data: function data() {
     return {
       valid: true,
@@ -3147,7 +3166,17 @@ __webpack_require__.r(__webpack_exports__);
       time_end: '',
       lazy: false,
       snackbar: false,
-      snackbarText: ''
+      snackbarText: '',
+      computedRooms: [],
+      roomsToId: {},
+      room: '',
+      selectedMaterials: [],
+      computedMaterials: [],
+      materialToId: {},
+      idToMaterial: {},
+      idToRoom: {},
+      initialMaterials: [],
+      materialToRentId: {}
     };
   },
   computed: {
@@ -3173,21 +3202,38 @@ __webpack_require__.r(__webpack_exports__);
         this.current_step = 1;
       } else {
         var data = {};
+        var reserveRoom = false;
+        var reserveMaterial = false;
+        var deleteOccupation = false;
 
         if (this.title !== this.event.title) {
           data["title"] = this.title;
         }
 
-        if (this.desc !== this.event.desc) {
+        if (this.desc !== this.event.desc && this.event.desc != null) {
           data["desc"] = this.desc;
         }
 
-        if (this.link !== this.event.link) {
+        if (this.link !== this.event.link && this.event.link != null) {
           data["link"] = this.link;
         }
 
-        if (this.location !== this.event.location) {
-          data["location"] = this.location;
+        if (this.room !== this.roomsToId[this.occupation.room_id] || this.location !== this.event.location) {
+          if (this.room !== 'Other' && this.room !== '') {
+            reserveRoom = true;
+          } else if (this.location !== '') {
+            if (this.room === 'Other') {
+              data["location"] = this.location;
+
+              if (this.occupation !== '') {
+                deleteOccupation = true;
+              }
+            }
+          }
+        }
+
+        if (this.initialMaterials !== this.selectedMaterials) {
+          reserveMaterial = true;
         }
 
         if (this.date_begin !== this.getDate(this.event.begin) || this.time_begin !== this.getTime(this.event.begin)) {
@@ -3198,16 +3244,66 @@ __webpack_require__.r(__webpack_exports__);
           data['end'] = this.convertDateToUTC(this.end);
         }
 
-        if (Object.keys(data).length === 0) {
+        if (Object.keys(data).length === 0 && !reserveRoom && !reserveMaterial) {
           this.snackbarText = "Nothing to change";
           this.snackbar = true;
         } else {
-          console.log(data);
-          axios.post('/api/event/' + this.event.id, data).then(function (response) {
-            status = response.status;
-            _this.snackbarText = "Updated " + _this.title;
-            _this.snackbar = true;
-          });
+          if (reserveRoom) {
+            if (this.occupation !== '') {
+              axios.post('/api/occupation/' + this.occupation.id, {
+                'approved': 0,
+                'room_id': this.roomsToId[this.location]
+              }).then(function (response) {
+                return status = response.status;
+              });
+            } else {
+              axios.post('/api/occupation', {
+                'event_id': this.event.id,
+                'room_id': this.roomsToId[this.room]
+              }).then(function (response) {
+                status = response.status;
+              });
+            }
+          }
+
+          if (deleteOccupation) {
+            axios["delete"]('/api/occupation/' + this.occupation.id).then(function (response) {
+              return status = response.status;
+            });
+          }
+
+          if (reserveMaterial) {
+            var creates = this.selectedMaterials.filter(function (x) {
+              return !_this.initialMaterials.includes(x);
+            });
+            var deletes = this.initialMaterials.filter(function (x) {
+              return !_this.selectedMaterials.includes(x);
+            });
+            creates.forEach(function (material) {
+              return axios.post('/api/rent', {
+                'event_id': _this.event.id,
+                'material_id': _this.materialToId[material]
+              }).then(function (response) {
+                status = response.status;
+              });
+            });
+            deletes.forEach(function (material) {
+              return axios["delete"]('/api/rent/' + _this.materialToRentId[_this.materialToId[material]]).then(function (response) {
+                status = response.status;
+              });
+            });
+          }
+
+          if (Object.keys(data).length !== 0) {
+            axios.post('/api/event/' + this.event.id, data).then(function (response) {
+              status = response.status;
+              _this.snackbarText = "Updated " + _this.title;
+              _this.snackbar = true;
+            });
+          }
+
+          this.snackbarText = "Updated " + this.title;
+          this.snackbar = true;
         }
       }
     },
@@ -3248,14 +3344,58 @@ __webpack_require__.r(__webpack_exports__);
       return hours + ":" + min;
     },
     makeVars: function makeVars() {
+      var _this2 = this;
+
       this.title = this.event.title;
-      this.desc = this.event.desc;
-      this.link = this.event.link;
-      this.location = this.event.location;
+
+      if (this.event.desc !== null) {
+        this.desc = this.event.desc;
+      }
+
+      if (this.event.link !== null) {
+        this.link = this.event.link;
+      }
+
       this.date_begin = this.getDate(this.event.begin);
       this.time_begin = this.getTime(this.event.begin);
       this.date_end = this.getDate(this.event.end);
       this.time_end = this.getTime(this.event.end);
+      this.rooms.forEach(function (room) {
+        return _this2.computedRooms.push(room.name);
+      });
+      this.computedRooms.push('Other');
+      this.rooms.forEach(function (room) {
+        return _this2.roomsToId[room.name] = room.id;
+      });
+      this.rooms.forEach(function (room) {
+        return _this2.idToRoom[room.id] = room.name;
+      });
+      this.materials.forEach(function (material) {
+        return _this2.computedMaterials.push(material.name + ": " + material.price);
+      });
+      this.materials.forEach(function (material) {
+        return _this2.materialToId[material.name + ": " + material.price] = material.id;
+      });
+      this.materials.forEach(function (material) {
+        return _this2.idToMaterial[material.id] = material.name + ": " + material.price;
+      });
+      this.rents.forEach(function (rent) {
+        return _this2.selectedMaterials.push(_this2.idToMaterial[rent.material_id]);
+      });
+      this.rents.forEach(function (rent) {
+        return _this2.materialToRentId[rent.material_id] = rent.id;
+      });
+      this.initialMaterials = this.selectedMaterials;
+
+      if (this.occupation === "") {
+        this.location = this.event.location;
+
+        if (this.location !== null) {
+          this.room = 'Other';
+        }
+      } else {
+        this.room = this.idToRoom[this.occupation.room_id];
+      }
     },
     convertDateToUTC: function convertDateToUTC(d) {
       d += ":00";
@@ -42171,21 +42311,39 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _c("v-text-field", {
+                      _c("v-autocomplete", {
                         attrs: {
+                          items: _vm.computedRooms,
                           counter: 255,
-                          rules: _vm.locRules,
                           label: "Location",
                           required: ""
                         },
                         model: {
-                          value: _vm.location,
+                          value: _vm.room,
                           callback: function($$v) {
-                            _vm.location = $$v
+                            _vm.room = $$v
                           },
-                          expression: "location"
+                          expression: "room"
                         }
                       }),
+                      _vm._v(" "),
+                      this.room === "Other"
+                        ? _c("v-text-field", {
+                            attrs: {
+                              counter: 255,
+                              label: "Other",
+                              required: "",
+                              rules: _vm.locRules
+                            },
+                            model: {
+                              value: _vm.location,
+                              callback: function($$v) {
+                                _vm.location = $$v
+                              },
+                              expression: "location"
+                            }
+                          })
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("v-text-field", {
                         attrs: {
@@ -42202,6 +42360,23 @@ var render = function() {
                             _vm.link = $$v
                           },
                           expression: "link"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-autocomplete", {
+                        attrs: {
+                          items: _vm.computedMaterials,
+                          label: "Equipment necessary",
+                          chips: "",
+                          "small-chips": "",
+                          multiple: ""
+                        },
+                        model: {
+                          value: _vm.selectedMaterials,
+                          callback: function($$v) {
+                            _vm.selectedMaterials = $$v
+                          },
+                          expression: "selectedMaterials"
                         }
                       }),
                       _vm._v(" "),
