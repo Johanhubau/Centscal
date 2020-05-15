@@ -52,7 +52,7 @@ class Association extends Model
      */
     public function rooms()
     {
-        return $this->hasMany('App\Room');
+        return $this->hasMany('App\Room', 'owner_id', 'id');
     }
 
     /**
@@ -77,5 +77,15 @@ class Association extends Model
     public function materials()
     {
         return $this->hasMany('App\Material');
+    }
+
+    public function rents()
+    {
+        return $this->hasManyThrough('App\Rent', 'App\Material');
+    }
+
+    public function occupations()
+    {
+        return $this->hasManyThrough('App\Occupation', 'App\Room', 'owner_id', 'room_id', 'id', 'id');
     }
 }

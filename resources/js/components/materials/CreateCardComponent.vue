@@ -18,17 +18,18 @@
                             v-model="desc"
                             :counter="255"
                             :rules="descRules"
-                            label="Desc"
+                            label="Description"
                             required
                         ></v-text-field>
 
-                        <v-autocomplete
-                            v-model="user"
-                            :items="items"
-                            :rules="[v => !!v || 'Item is required']"
-                            label="President"
+                        <v-text-field
+                            v-model="price"
+                            :counter="255"
+                            :rules="priceRules"
+                            label="Price"
                             required
-                        ></v-autocomplete>
+                        ></v-text-field>
+
                         <v-btn
                             :disabled="!valid"
                             color="success"
@@ -37,11 +38,6 @@
                         >
                             Validate
                         </v-btn>
-                    </v-col>
-                    <v-col align-self="center">
-                        <v-row justify="center">
-                            <v-color-picker hide-mode-switch mode="hexa" v-model="color"></v-color-picker>
-                        </v-row>
                     </v-col>
                 </v-row>
             </v-form>
@@ -60,8 +56,12 @@
 
 <script>
     export default {
-        props: ['users'],
+        name: "CreateCardComponent",
+        props: ['association_id'],
         data: () => ({
+            lazy: false,
+            snackbar: false,
+            snackbarText: '',
             valid: true,
             name: '',
             nameRules: [
@@ -70,48 +70,35 @@
             ],
             desc: '',
             descRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Desc must be between 2 and 255 characters',
+                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Description must be between 2 and 255 characters',
             ],
-            user: null,
-            checkbox: false,
-            lazy: false,
-            items: [],
-            userNames: {},
-            snackbar: false,
-            snackbarText: '',
-            color: "#FFFFFFFF",
+            price: '',
+            priceRules: [
+                v => ((v.length <= 255 && v.length >= 1) || v.length === 0) || 'Price must be between 1 and 255 characters',
+            ],
         }),
-
-        mounted() {
-            this.makeVars()
-        },
-
         methods: {
             validate() {
                 this.$refs.form.validate()
                 let data = {
                     "name": this.name,
-                    "desc": this.desc,
-                    "president_id": this.userNames[this.user],
-                    "color": this.color.substring(0, 7)
+                    "association_id": this.association_id,
                 }
-                axios.post('/api/association', data).then((response) => {
+                if (this.desc !== '') {
+                    data["desc"] = this.desc
+                }
+                if (this.price !== '') {
+                    data["price"] = this.price
+                }
+                axios.post('/api/material', data).then((response) => {
                     status = response.status;
                     this.snackbarText = "Created " + this.name;
                     this.snackbar = true;
                 }).finally(()=>{
-                    window.location.href = '/admin/associations'
+                    window.location.href = '/association/' + this.association_id
                 })
             },
-            makeVars() {
-                this.users.forEach(user =>
-                    this.items.push(user.first_name + " " + user.last_name)
-                )
-                this.users.forEach(user =>
-                    this.userNames[user.first_name + " " + user.last_name] = user.id
-                )
-            }
-        },
+        }
     }
 </script>
 

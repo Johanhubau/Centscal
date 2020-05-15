@@ -15,20 +15,14 @@
                         ></v-text-field>
 
                         <v-text-field
-                            v-model="desc"
+                            v-model="location"
                             :counter="255"
-                            :rules="descRules"
-                            label="Desc"
+                            :rules="locationRules"
+                            label="Location"
+                            hint="Be specific, we want people to find it right?"
                             required
                         ></v-text-field>
 
-                        <v-autocomplete
-                            v-model="user"
-                            :items="items"
-                            :rules="[v => !!v || 'Item is required']"
-                            label="President"
-                            required
-                        ></v-autocomplete>
                         <v-btn
                             :disabled="!valid"
                             color="success"
@@ -37,11 +31,6 @@
                         >
                             Validate
                         </v-btn>
-                    </v-col>
-                    <v-col align-self="center">
-                        <v-row justify="center">
-                            <v-color-picker hide-mode-switch mode="hexa" v-model="color"></v-color-picker>
-                        </v-row>
                     </v-col>
                 </v-row>
             </v-form>
@@ -60,58 +49,42 @@
 
 <script>
     export default {
-        props: ['users'],
+        name: "CreateCardComponent",
+        props: ['association_id'],
         data: () => ({
+            lazy: false,
+            snackbar: false,
+            snackbarText: '',
             valid: true,
             name: '',
             nameRules: [
                 v => !!v || 'Name is required',
                 v => (v && v.length <= 255 && v.length >= 2) || 'Name must be between 2 and 255 characters',
             ],
-            desc: '',
-            descRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Desc must be between 2 and 255 characters',
+            location: '',
+            locationRules: [
+                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Location must be between 2 and 255 characters',
             ],
-            user: null,
-            checkbox: false,
-            lazy: false,
-            items: [],
-            userNames: {},
-            snackbar: false,
-            snackbarText: '',
-            color: "#FFFFFFFF",
         }),
-
-        mounted() {
-            this.makeVars()
-        },
-
         methods: {
             validate() {
                 this.$refs.form.validate()
                 let data = {
                     "name": this.name,
-                    "desc": this.desc,
-                    "president_id": this.userNames[this.user],
-                    "color": this.color.substring(0, 7)
+                    "owner_id": this.association_id,
                 }
-                axios.post('/api/association', data).then((response) => {
+                if (this.location !== '') {
+                    data["location"] = this.location
+                }
+                axios.post('/api/room', data).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Created " + this.name;
+                    this.snackbarText = "Created " + this.title;
                     this.snackbar = true;
-                }).finally(()=>{
-                    window.location.href = '/admin/associations'
+                }).finally(()=> {
+                    window.location.href = '/association/' + this.association_id
                 })
             },
-            makeVars() {
-                this.users.forEach(user =>
-                    this.items.push(user.first_name + " " + user.last_name)
-                )
-                this.users.forEach(user =>
-                    this.userNames[user.first_name + " " + user.last_name] = user.id
-                )
-            }
-        },
+        }
     }
 </script>
 

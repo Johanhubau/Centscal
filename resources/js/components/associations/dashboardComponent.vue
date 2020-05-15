@@ -26,12 +26,12 @@
                     <v-col>
                         <v-text-field v-model="name"></v-text-field>
                         <v-text-field v-model="desc"></v-text-field>
-                        <v-select
+                        <v-autocomplete
                             v-model="user"
                             :items="items"
                             label="President"
                             required
-                        ></v-select>
+                        ></v-autocomplete>
                         <v-btn @click="update">Update</v-btn>
                     </v-col>
                     <v-col>

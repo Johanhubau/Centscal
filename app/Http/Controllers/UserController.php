@@ -92,6 +92,7 @@ class UserController extends Controller
             'email' => 'email|unique:users',
             'password' => 'min:8',
             'c_password' => 'min:8|same:password',
+            'role' => 'starts_with:ROLE_|max:255'
         ]);
 
         $user->update($validated);

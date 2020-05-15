@@ -18,17 +18,18 @@
                             v-model="desc"
                             :counter="255"
                             :rules="descRules"
-                            label="Desc"
+                            label="Description"
                             required
                         ></v-text-field>
 
-                        <v-autocomplete
-                            v-model="user"
-                            :items="items"
-                            :rules="[v => !!v || 'Item is required']"
-                            label="President"
+                        <v-text-field
+                            v-model="price"
+                            :counter="255"
+                            :rules="priceRules"
+                            label="Price"
                             required
-                        ></v-autocomplete>
+                        ></v-text-field>
+
                         <v-btn
                             :disabled="!valid"
                             color="success"
@@ -37,11 +38,6 @@
                         >
                             Validate
                         </v-btn>
-                    </v-col>
-                    <v-col align-self="center">
-                        <v-row justify="center">
-                            <v-color-picker hide-mode-switch mode="hexa" v-model="color"></v-color-picker>
-                        </v-row>
                     </v-col>
                 </v-row>
             </v-form>
@@ -60,58 +56,61 @@
 
 <script>
     export default {
-        props: ['users'],
+        name: "updateCardComponent",
+        props: ['material'],
         data: () => ({
+            lazy: false,
+            snackbar: false,
+            snackbarText: '',
             valid: true,
             name: '',
             nameRules: [
-                v => !!v || 'Name is required',
                 v => (v && v.length <= 255 && v.length >= 2) || 'Name must be between 2 and 255 characters',
             ],
             desc: '',
             descRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Desc must be between 2 and 255 characters',
+                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Description must be between 2 and 255 characters',
             ],
-            user: null,
-            checkbox: false,
-            lazy: false,
-            items: [],
-            userNames: {},
-            snackbar: false,
-            snackbarText: '',
-            color: "#FFFFFFFF",
+            price: '',
+            priceRules: [
+                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Price must be between 2 and 255 characters',
+            ],
         }),
-
         mounted() {
             this.makeVars()
         },
-
         methods: {
             validate() {
                 this.$refs.form.validate()
-                let data = {
-                    "name": this.name,
-                    "desc": this.desc,
-                    "president_id": this.userNames[this.user],
-                    "color": this.color.substring(0, 7)
+                let data = {}
+                if (this.name !== this.material.name) {
+                    data["name"] = this.name
                 }
-                axios.post('/api/association', data).then((response) => {
-                    status = response.status;
-                    this.snackbarText = "Created " + this.name;
+                if (this.desc !== this.material.desc) {
+                    data["desc"] = this.desc
+                }
+                if (this.price !== this.material.price) {
+                    data["price"] = this.price
+                }
+                if (Object.keys(data).length === 0) {
+                    this.snackbarText = "Nothing to change!";
                     this.snackbar = true;
-                }).finally(()=>{
-                    window.location.href = '/admin/associations'
-                })
+                } else {
+                    axios.post('/api/material/'+this.material.id, data).then((response) => {
+                        status = response.status;
+                        this.snackbarText = "Updated " + this.name;
+                        this.snackbar = true;
+                    }).finally(()=>{
+                        window.location.href = '/association/' + this.association_id
+                    })
+                }
             },
             makeVars() {
-                this.users.forEach(user =>
-                    this.items.push(user.first_name + " " + user.last_name)
-                )
-                this.users.forEach(user =>
-                    this.userNames[user.first_name + " " + user.last_name] = user.id
-                )
+                this.name = this.material.name
+                this.desc = this.material.desc
+                this.price = this.material.price
             }
-        },
+        }
     }
 </script>
 

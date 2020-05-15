@@ -1,4 +1,5 @@
 <template>
+<!--    TODO add lazy loading-->
     <div class="py-3">
         <v-card
             class="mx-auto"
@@ -10,7 +11,9 @@
                         v-text="event.title"
                     ></v-card-title>
                     <v-card-subtitle v-text="formatDate(event.begin) + ' to ' + formatDate(event.end)"></v-card-subtitle>
-                    <v-card-subtitle v-text="event.desc"></v-card-subtitle>
+                    <v-card-text v-if="event.desc !== '' && event.desc !== null"  v-text="event.desc" class="py-0"></v-card-text>
+                    <v-card-text v-for="(rent, id) in computedRents" v-text="rent" v-bind:key="id" class="py-0"></v-card-text>
+                    <v-card-text v-if="occupation !== ''" v-text="room[0].name + ': ' + status[occupation.approved]" class="py-0"></v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
@@ -42,13 +45,19 @@
 <script>
     export default {
         name: "privateCardComponent",
-        props: ['event'],
+        props: ['event', 'materials', 'rents', 'room', 'occupation'],
         data: () => ({
             isActive: false,
             snackbar: false,
             snackbarText: '',
             show: true,
+            idToMaterial: {},
+            computedRents: [],
+            status: {0: 'Pending', 1: 'Approved', 2: 'Not approved'}
         }),
+        mounted() {
+            this.makeVars()
+        },
         methods: {
             deleteItem() {
                 axios.delete('/api/event/' + this.event.id, {}).then((response) => {
@@ -70,6 +79,15 @@
                 }
                 return d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " + hours + ":" + min
             },
+            makeVars(){
+                this.materials.forEach(material =>
+                    this.idToMaterial[material.id] = material.name
+                )
+                this.rents.forEach(rent =>
+                    this.computedRents.push(this.idToMaterial[rent.material_id] + ": " + this.status[rent.approved])
+                )
+
+            }
         }
     }
 </script>

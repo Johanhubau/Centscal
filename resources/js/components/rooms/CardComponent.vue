@@ -1,14 +1,6 @@
 <template>
-    <!--    TODO repair v-lazy-->
-    <!--    <v-lazy-->
-    <!--        v-model="isActive"-->
-    <!--        :options="{-->
-    <!--          threshold: .5-->
-    <!--        }"-->
-    <!--        min-height="200"-->
-    <!--        :key="id"-->
-    <!--    >-->
-    <div>
+    <!--    TODO add lazy loading-->
+    <div class="py-3">
         <v-card
             class="mx-auto"
             v-if="show">
@@ -16,15 +8,14 @@
                 <div class="w-100">
                     <v-card-title
                         class="headline"
-                        v-text="name"
+                        v-text="room.name"
                     ></v-card-title>
-
-                    <v-card-subtitle v-text="role"></v-card-subtitle>
+                    <v-card-subtitle v-text="this.location" class="py-0"></v-card-subtitle>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
                             icon
-                            :href=userlink>
+                            :href="'/room/'+room.id">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn
@@ -46,31 +37,35 @@
             </v-btn>
         </v-snackbar>
     </div>
-    <!--    </v-lazy>-->
 </template>
+
 <script>
     export default {
-        name: "privateCardComponent",
-        props: ['id', 'name', 'role'],
+        name: "CardComponent",
+        props: ['room'],
         data: () => ({
             isActive: false,
             snackbar: false,
             snackbarText: '',
             show: true,
+            location: '',
         }),
-        computed: {
-            userlink() {
-                return '/admin/user/'+ this.id +'/edit'
-            }
+        mounted() {
+            this.makeVars()
         },
         methods: {
             deleteItem() {
-                axios.delete('/api/user/' + this.id, {}).then((response) => {
+                axios.delete('/api/room/' + this.room.id, {}).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Deleted " + this.name;
+                    this.snackbarText = "Deleted " + this.room.name;
                     this.snackbar = true;
                     this.show = false;
                 })
+            },
+            makeVars() {
+                if(this.room.location !== 'null'){
+                    this.location = this.room.location
+                }
             }
         }
     }

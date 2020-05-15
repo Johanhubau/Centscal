@@ -36,7 +36,7 @@ class Rent extends Model
      */
     public function event()
     {
-        return $this->hasOne('App\Event');
+        return $this->belongsTo('App\Event');
     }
 
     /**
@@ -44,6 +44,6 @@ class Rent extends Model
      */
     public function material()
     {
-        return $this->hasOne('App\Material');
+        return $this->belongsTo('App\Material');
     }
 }

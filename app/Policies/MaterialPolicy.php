@@ -55,7 +55,7 @@ class MaterialPolicy
     public function update(User $user, Material $material)
     {
         if($user != null){
-            return ($user->role == 'ROLE_ADMIN' || $user->id == Association::find($material->association)->president_id);
+            return ($user->role == 'ROLE_ADMIN' || $user->id == $material->association->president_id);
         }
         return false;
     }
@@ -70,7 +70,7 @@ class MaterialPolicy
     public function delete(User $user, Material $material)
     {
         if($user != null){
-            return ($user->role == 'ROLE_ADMIN' || $user->id == Association::find($material->association)->president_id);
+            return ($user->role == 'ROLE_ADMIN' || $user->id == $material->association->president_id);
         }
         return false;
     }

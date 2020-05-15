@@ -22,13 +22,22 @@
                             required
                         ></v-text-field>
 
-                        <v-text-field
-                            v-model="location"
+                        <v-autocomplete
+                            v-model="room"
+                            :items="computedRooms"
                             :counter="255"
-                            :rules="locRules"
                             label="Location"
                             required
-                        ></v-text-field>
+                        ></v-autocomplete>
+
+                        <v-text-field
+                            v-model="location"
+                            v-if="this.room === 'Other'"
+                            :counter="255"
+                            label="Other"
+                            required
+                            :rules="locRules">
+                        </v-text-field>
 
                         <v-text-field
                             v-model="link"
@@ -38,6 +47,16 @@
                             required
                             hint="Remember to add the http:// or https:// in front of the link"
                         ></v-text-field>
+
+                        <v-autocomplete
+                            v-model="selectedMaterials"
+                            :items="computedMaterials"
+                            label="Equipment necessary"
+                            chips
+                            small-chips
+                            multiple
+                        >
+                        </v-autocomplete>
 
                         <v-btn
                             :disabled="!valid"
@@ -92,7 +111,7 @@
 
 <script>
     export default {
-        props: ['association_id'],
+        props: ['association_id', 'rooms', 'materials'],
         data: () => ({
             valid: true,
             title: '',
@@ -120,6 +139,12 @@
             lazy: false,
             snackbar: false,
             snackbarText: '',
+            computedRooms: [],
+            roomsToId: {},
+            room: '',
+            selectedMaterials: [],
+            computedMaterials: [],
+            materialToId: {},
         }),
 
         computed: {
@@ -132,11 +157,16 @@
         },
 
         mounted() {
+            this.makeVars()
         },
 
         methods: {
             validate() {
                 this.$refs.form.validate()
+
+                let reserveRoom = false;
+                let reserveMaterial = false;
+
                 if (this.begin > this.end) {
                     this.snackbarText = "Beginning date should be before end date!";
                     this.snackbar = true;
@@ -154,14 +184,35 @@
                     if (this.link !== '') {
                         data["link"] = this.link
                     }
-                    if (this.location !== '') {
-                        data["location"] = this.location
+                    if(this.roomsToId[this.location] !== null){
+                        reserveRoom = true;
+                    }else if(this.location !== ''){
+                        if(this.room === 'Other'){
+                            data["location"] = this.location
+                        }
                     }
-                    console.log(data)
+                    if(Object.keys(this.selectedMaterials).length !== 0){
+                        reserveMaterial = true
+                    }
                     axios.post('/api/event', data).then((response) => {
                         status = response.status;
+                        let eventId = response.data.id
+                        if(reserveRoom){
+                            axios.post('/api/occupation', {'event_id': eventId, 'room_id': this.roomsToId[this.room]}).then((response) => {
+                                status = response.status;
+                            })
+                        }
+                        if(reserveMaterial){
+                            this.selectedMaterials.forEach(material =>
+                                axios.post('/api/rent', {'event_id': eventId, 'material_id': this.materialToId[material]}).then((response) => {
+                                    status = response.status;
+                                })
+                            )
+                        }
                         this.snackbarText = "Created " + this.title;
                         this.snackbar = true;
+                    }).finally(()=>{
+                        window.location.href = '/association/'+this.association_id
                     })
                 }
             },
@@ -176,6 +227,21 @@
                 console.log(d)
                 let date = new Date(d)
                 return date.getUTCFullYear() + "-" + (date.getUTCMonth()+1) + "-" + date.getUTCDate() + "T" + date.getUTCHours() + ":" + date.getUTCMinutes()
+            },
+            makeVars() {
+                this.rooms.forEach(room =>
+                    this.computedRooms.push(room.name)
+                )
+                this.computedRooms.push('Other')
+                this.rooms.forEach(room =>
+                    this.roomsToId[room.name] = room.id
+                )
+                this.materials.forEach(material =>
+                    this.computedMaterials.push(material.name + ": " +material.price)
+                )
+                this.materials.forEach(material =>
+                    this.materialToId[material.name + ": " +material.price] = material.id
+                )
             }
         },
     }

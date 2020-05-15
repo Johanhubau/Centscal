@@ -5,7 +5,7 @@
         <v-row
             justify="center">
             <v-col>
-                <create-event-card association_id="{{$association->id}}" v-bind:rooms="{{\App\Room::all()}}" v-bind:materials="{{\App\Material::all()}}"></create-event-card>
+                <create-room-card association_id="{{$association->id}}"></create-room-card>
             </v-col>
         </v-row>
     </v-container>

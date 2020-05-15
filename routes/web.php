@@ -46,11 +46,51 @@ Route::get('event/{id}', function($id) {
    $event = \App\Event::findOrFail($id);
    return view('event/update', ['event' => $event]);
 });
+Route::get('association/{id}/events', function($id) {
+   $association = \App\Association::findOrFail($id);
+   return view('association/events', ['association' => $association]);
+});
+
+//MATERIAL ROUTES
+Route::get('association/{id}/material/create', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('material/create', ['association' => $association]);
+});
+Route::get('material/{id}', function($id) {
+    $material = \App\Material::findOrFail($id);
+    return view('material/update', ['material' => $material]);
+});
+
+//ROOM ROUTES
+Route::get('association/{id}/room/create', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('room/create', ['association' => $association]);
+});
+Route::get('room/{id}', function($id) {
+    $room = \App\Room::findOrFail($id);
+    return view('room/update', ['room' => $room]);
+});
+
+//OCCUPATION ROUTES
+Route::get('association/{id}/occupations', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('occupation/dashboard', ['association' => $association]);
+});
+
+//RENT ROUTES
+Route::get('association/{id}/rents', function($id) {
+    $association = \App\Association::findOrFail($id);
+    return view('rent/dashboard', ['association' => $association]);
+});
 
 //ADMIN USER ROUTES
 Route::get('/admin/users', function() {
     return view('admin.users');
 })->name('admin.users');
+Route::get('/admin/user/{id}/edit', function($id) {
+    $user = \App\User::findOrFail($id);
+    return view('admin.users.update', ['user' => $user]);
+})->name('admin.users.update');
 Route::get('/admin/users/create', function() {
     return view('admin/user/create');
 })->name('admin.users.create');
@@ -86,7 +126,7 @@ Route::prefix('api')->group(function () {
     Route::post('/material/{material}', 'MaterialController@update')->middleware('can:update,material');
     Route::delete('/material/{material}', 'MaterialController@destroy')->middleware('can:delete,material');
 
-//MATERIAL ROUTES
+//MEMBER ROUTES
     Route::get('/members', 'MemberController@index');
     Route::post('/member', 'MemberController@store');
     Route::get('/member/{member}', 'MemberController@show');

@@ -36,7 +36,7 @@ class Occupation extends Model
      */
     public function event()
     {
-        return $this->hasOne('App\Event');
+        return $this->belongsTo('App\Event');
     }
 
     /**
@@ -44,6 +44,6 @@ class Occupation extends Model
      */
     public function room()
     {
-        return $this->hasOne('App\Room');
+        return $this->belongsTo('App\Room');
     }
 }

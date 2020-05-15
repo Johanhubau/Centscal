@@ -38,7 +38,15 @@ class Event extends Model
      */
     public function rents()
     {
-        return $this->belongsToMany('App\Rents');
+        return $this->hasMany('App\Rent');
+    }
+
+    /**
+     * The occupations that event requested.
+     */
+    public function occupation()
+    {
+        return $this->hasOne('App\Occupation');
     }
 
     /**
@@ -46,7 +54,7 @@ class Event extends Model
      */
     public function rooms()
     {
-        return $this->belongsToMany('App\Occupation');
+        return $this->hasMany('App\Occupation');
     }
 
     /**
@@ -55,5 +63,21 @@ class Event extends Model
     public function association()
     {
         return $this->belongsTo('App\Association');
+    }
+
+    /**
+     * The materials requested by the event
+     */
+    public function materials()
+    {
+        return $this->belongsToMany('App\Material', 'rents', 'event_id', 'material_id');
+    }
+
+    /**
+     * The room requested by the event
+     */
+    public function room()
+    {
+        return $this->belongsToMany('App\Room', 'occupations', 'event_id', 'room_id');
     }
 }

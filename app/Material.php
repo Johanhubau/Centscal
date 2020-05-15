@@ -36,7 +36,7 @@ class Material extends Model
      */
     public function rents()
     {
-        return $this->belongsToMany('App\Rent');
+        return $this->hasMany('App\Rent');
     }
 
     /**
