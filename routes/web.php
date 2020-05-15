@@ -46,6 +46,10 @@ Route::get('event/{id}', function($id) {
    $event = \App\Event::findOrFail($id);
    return view('event/update', ['event' => $event]);
 });
+Route::get('association/{id}/events', function($id) {
+   $association = \App\Association::findOrFail($id);
+   return view('association/events', ['association' => $association]);
+});
 
 //MATERIAL ROUTES
 Route::get('association/{id}/material/create', function($id) {
