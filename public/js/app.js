@@ -2974,16 +2974,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "privateCardComponent",
-  props: ['event'],
+  props: ['event', 'materials', 'rents', 'room', 'occupation'],
   data: function data() {
     return {
       isActive: false,
       snackbar: false,
       snackbarText: '',
-      show: true
+      show: true,
+      idToMaterial: {},
+      computedRents: [],
+      status: {
+        0: 'Pending',
+        1: 'Approved',
+        2: 'Not approved'
+      }
     };
+  },
+  mounted: function mounted() {
+    this.makeVars();
   },
   methods: {
     deleteItem: function deleteItem() {
@@ -3010,6 +3022,16 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + hours + ":" + min;
+    },
+    makeVars: function makeVars() {
+      var _this2 = this;
+
+      this.materials.forEach(function (material) {
+        return _this2.idToMaterial[material.id] = material.name;
+      });
+      this.rents.forEach(function (rent) {
+        return _this2.computedRents.push(_this2.idToMaterial[rent.material_id] + ": " + _this2.status[rent.approved]);
+      });
     }
   }
 });
@@ -42157,9 +42179,33 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    _c("v-card-subtitle", {
-                      domProps: { textContent: _vm._s(_vm.event.desc) }
+                    _vm.event.desc !== "" && _vm.event.desc !== null
+                      ? _c("v-card-text", {
+                          staticClass: "py-0",
+                          domProps: { textContent: _vm._s(_vm.event.desc) }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm._l(_vm.computedRents, function(rent, id) {
+                      return _c("v-card-text", {
+                        key: id,
+                        staticClass: "py-0",
+                        domProps: { textContent: _vm._s(rent) }
+                      })
                     }),
+                    _vm._v(" "),
+                    _vm.occupation !== ""
+                      ? _c("v-card-text", {
+                          staticClass: "py-0",
+                          domProps: {
+                            textContent: _vm._s(
+                              _vm.room[0].name +
+                                ": " +
+                                _vm.status[_vm.occupation.approved]
+                            )
+                          }
+                        })
+                      : _vm._e(),
                     _vm._v(" "),
                     _c(
                       "v-card-actions",
@@ -42188,7 +42234,7 @@ var render = function() {
                       1
                     )
                   ],
-                  1
+                  2
                 )
               ]
             )

@@ -64,4 +64,20 @@ class Event extends Model
     {
         return $this->belongsTo('App\Association');
     }
+
+    /**
+     * The materials requested by the event
+     */
+    public function materials()
+    {
+        return $this->belongsToMany('App\Material', 'rents', 'event_id', 'material_id');
+    }
+
+    /**
+     * The room requested by the event
+     */
+    public function room()
+    {
+        return $this->belongsToMany('App\Room', 'occupations', 'event_id', 'room_id');
+    }
 }
