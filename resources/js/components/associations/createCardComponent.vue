@@ -95,6 +95,9 @@
                     "president_id": this.userNames[this.user],
                     "color": this.color.substring(0, 7)
                 }
+                if(this.desc !== ""){
+                    data["desc"] = this.desc
+                }
                 axios.post('/api/association', data).then((response) => {
                     status = response.status;
                     this.snackbarText = "Created " + this.name;
