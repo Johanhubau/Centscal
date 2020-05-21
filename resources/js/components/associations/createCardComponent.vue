@@ -9,24 +9,27 @@
                         <v-text-field
                             v-model="name"
                             :counter="255"
-                            :rules="nameRules"
-                            label="Name"
+                            :rules="[
+                v => !!v || $vuetify.lang.t('$vuetify.associations.create.nameRequired'),
+                v => (v && v.length <= 255 && v.length >= 2) || $vuetify.lang.t('$vuetify.associations.create.nameLength') ,
+            ]"
+                            :label="$vuetify.lang.t('$vuetify.associations.create.name')"
                             required
                         ></v-text-field>
 
                         <v-text-field
                             v-model="desc"
                             :counter="255"
-                            :rules="descRules"
-                            label="Desc"
+                            :rules="[v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || $vuetify.lang.t('$vuetify.associations.create.descLength'),]"
+                            :label="$vuetify.lang.t('$vuetify.associations.create.desc')"
                             required
                         ></v-text-field>
 
                         <v-autocomplete
                             v-model="user"
                             :items="items"
-                            :rules="[v => !!v || 'Item is required']"
-                            label="President"
+                            :rules="[v => !!v || $vuetify.lang.t('$vuetify.associations.create.presidentRequired')]"
+                            :label="$vuetify.lang.t('$vuetify.associations.create.president')"
                             required
                         ></v-autocomplete>
                         <v-btn
@@ -35,7 +38,7 @@
                             class="mr-4"
                             @click="validate"
                         >
-                            Validate
+                            {{$vuetify.lang.t('$vuetify.common.actions.validate')}}
                         </v-btn>
                     </v-col>
                     <v-col align-self="center">
@@ -48,11 +51,11 @@
         </v-sheet>
         <v-snackbar v-model="snackbar"
                     :timeout="6000">
-            {{ snackbarText }}
+            {{$vuetify.lang.t('$vuetify.common.snackbar.created', [this.name])}}
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{$vuetify.lang.t('$vuetify.common.actions.close')}}
             </v-btn>
         </v-snackbar>
     </div>
@@ -60,29 +63,22 @@
 
 <script>
     export default {
-        props: ['users'],
+        props: ['users', 'locale'],
         data: () => ({
             valid: true,
             name: '',
-            nameRules: [
-                v => !!v || 'Name is required',
-                v => (v && v.length <= 255 && v.length >= 2) || 'Name must be between 2 and 255 characters',
-            ],
             desc: '',
-            descRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Desc must be between 2 and 255 characters',
-            ],
             user: null,
             checkbox: false,
             lazy: false,
             items: [],
             userNames: {},
             snackbar: false,
-            snackbarText: '',
             color: "#FFFFFFFF",
         }),
 
         mounted() {
+            this.$vuetify.lang.current = this.locale
             this.makeVars()
         },
 
@@ -91,7 +87,6 @@
                 this.$refs.form.validate()
                 let data = {
                     "name": this.name,
-                    "desc": this.desc,
                     "president_id": this.userNames[this.user],
                     "color": this.color.substring(0, 7)
                 }
@@ -100,10 +95,9 @@
                 }
                 axios.post('/api/association', data).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Created " + this.name;
                     this.snackbar = true;
-                }).finally(()=>{
-                    window.location.href = '/admin/associations'
+                }).finally(() => {
+                    window.location.href = "/" + this.locale + '/admin/associations'
                 })
             },
             makeVars() {

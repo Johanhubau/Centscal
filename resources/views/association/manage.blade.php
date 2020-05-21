@@ -10,18 +10,19 @@
                     v-bind:users="{{App\User::all('id', 'first_name', 'last_name')}}"
                     first_name="{{Auth::user()->first_name}}"
                     last_name="{{Auth::user()->last_name}}"
+                    locale="{{App::getLocale()}}"
                 ></association-dashboard>
             </v-col>
         </v-row>
         <v-row justify="center">
             <v-col>
                 <v-row align="center" justify="space-between" class="px-5">
-                    <v-card-title>Latest 3 events</v-card-title>
+                    <v-card-title>@lang('app.latestEvents', ['amount' => '3'])</v-card-title>
                     <v-btn
                         class="mr-4"
                         href="/association/{{$association->id}}/events"
                     >
-                        See all Events
+                        @lang('app.seeAllEvents')
                     </v-btn>
                 </v-row>
                 @foreach($association->events->reverse() as $event)
@@ -29,6 +30,7 @@
                         v-bind:event="{{$event}}"
                         v-bind:materials="{{$event->materials}}"
                         v-bind:rents="{{$event->rents}}"
+                        locale="{{App::getLocale()}}"
                         @if($event->occupation != null)
                         v-bind:room="{{$event->room}}"
                         v-bind:occupation="{{$event->occupation}}"
@@ -45,16 +47,16 @@
         </v-row>
         <v-row justify="center">
             <v-col>
-                <room-material-manager association_id="{{$association->id}}"></room-material-manager>
+                <room-material-manager association_id="{{$association->id}}" locale="{{App::getLocale()}}"></room-material-manager>
                 <v-row justify="center">
                     <v-col>
                         @foreach($association->materials as $material)
-                            <material-card v-bind:material="{{$material}}"></material-card>
+                            <material-card v-bind:material="{{$material}}" locale="{{App::getLocale()}}"></material-card>
                         @endforeach
                     </v-col>
                     <v-col>
                         @foreach($association->rooms as $room)
-                            <room-card v-bind:room="{{$room}}"></room-card>
+                            <room-card v-bind:room="{{$room}}" locale="{{App::getLocale()}}"></room-card>
                         @endforeach
                     </v-col>
                 </v-row>
@@ -69,7 +71,7 @@
             bottom
             right
             class="v-btn--example"
-            href="{{url('/association/'.$association->id.'/event/create')}}"
+            href="{{url(App::getLocale().'/association/'.$association->id.'/event/create')}}"
         >
             <v-icon>mdi-plus</v-icon>
         </v-btn>

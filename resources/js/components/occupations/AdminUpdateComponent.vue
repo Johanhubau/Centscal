@@ -3,14 +3,14 @@
         <v-row class="p-3">
             <v-col>
                 <v-card-title>
-                    {{this.association.name + " requested " + this.room.name}}
+                    {{this.association.name + " " + $vuetify.lang.t('$vuetify.occupations.admin.requested') + " " + this.room.name}}
                 </v-card-title>
                 <v-card-text>
-                    {{this.begin + " to " + this.end}}
+                    {{this.begin + " " + $vuetify.lang.t('$vuetify.occupations.admin.to') + " " + this.end}}
                     <v-select
                         v-model="selected"
                         :items="items"
-                        label="Approve request?"
+                        :label="$vuetify.lang.t('$vuetify.occupations.admin.approveQ')"
                         required
                     >
                     </v-select>
@@ -20,7 +20,7 @@
                         class="mr-4"
                         @click="validate"
                     >
-                        Validate
+                        {{this.$vuetify.lang.t('$vuetify.common.actions.validate')}}
                     </v-btn>
                 </v-card-text>
                 <v-snackbar v-model="snackbar"
@@ -29,7 +29,7 @@
                     <v-btn dark
                            text
                            @click="snackbar = false">
-                        Close
+                        {{this.$vuetify.lang.t('$vuetify.common.actions.close')}}
                     </v-btn>
                 </v-snackbar>
             </v-col>
@@ -40,10 +40,10 @@
 <script>
     export default {
         name: "AdminUpdateComponent",
-        props: ['association', 'occupation', 'room', 'event'],
+        props: ['association', 'occupation', 'room', 'event', 'locale'],
         data: () => ({
-            items: ['Approve', 'Do not approve'],
-            itemsToId: {'Approve': 1, 'Do not approve': 2},
+            items: [],
+            itemsToId: {},
             begin: '',
             end: '',
             valid: true,
@@ -53,12 +53,17 @@
             show: true
         }),
         mounted() {
+            this.$vuetify.lang.current = this.locale
             this.makeVars()
         },
         methods: {
             makeVars() {
                 this.begin = this.formatDate(this.event.begin)
                 this.end = this.formatDate(this.event.end)
+                this.items.push($vuetify.lang.t('$vuetify.occupations.admin.approve'))
+                this.items.push($vuetify.lang.t('$vuetify.occupations.admin.notApprove'))
+                this.itemsToId[$vuetify.lang.t('$vuetify.occupations.admin.approve')] = 1
+                this.itemsToId[$vuetify.lang.t('$vuetify.occupations.admin.notApprove')] = 2
             },
             formatDate(date) {
                 let d = new Date(date)
@@ -74,12 +79,12 @@
             },
             validate() {
                 if (this.selected === '') {
-                    this.snackbarText = "Nothing to change!";
+                    this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing')
                     this.snackbar = true;
                 } else {
                     axios.post('/api/occupation/' + this.occupation.id, {'approved': this.itemsToId[this.selected]}).then((response) => {
                         status = response.status
-                        this.snackbarText = "Updated";
+                        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.updated', [""])
                         this.snackbar = true;
                         this.show = false
                     })

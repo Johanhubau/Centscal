@@ -17,6 +17,7 @@
                         room=""
                         occupation=""
                         @endif
+                        locale="{{App::getLocale()}}"
                     ></private-event-card>
                 @endforeach
             </v-col>
@@ -30,7 +31,7 @@
             bottom
             right
             class="v-btn--example"
-            href="{{url('/association/'.$association->id.'/event/create')}}"
+            href="{{'/'.url(App::getLocale().'/association/'.$association->id.'/event/create')}}"
         >
             <v-icon>mdi-plus</v-icon>
         </v-btn>

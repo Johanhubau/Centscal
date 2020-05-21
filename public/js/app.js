@@ -1899,39 +1899,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {
-    console.log('Component mounted.');
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/HomeCalendarComponent.vue?vue&type=script&lang=js&":
 /*!********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/HomeCalendarComponent.vue?vue&type=script&lang=js& ***!
@@ -2043,17 +2010,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['associations'],
+  props: ['associations', 'locale'],
   data: function data() {
     return {
       focus: '',
       type: 'month',
-      typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Day',
-        '4day': '4 Days'
-      },
+      typeToLabel: {},
       start: null,
       end: null,
       selectedEvent: {},
@@ -2102,6 +2064,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
+    this.makeVars();
     this.$refs.calendar.checkChange();
     this.calendarHeight = this.$refs.calendarDiv.clientHeight - 75;
   },
@@ -2197,6 +2161,12 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "T" + hours + ":" + min;
+    },
+    makeVars: function makeVars() {
+      this.typeToLabel['day'] = this.$vuetify.lang.t('$vuetify.general.home.day');
+      this.typeToLabel['week'] = this.$vuetify.lang.t('$vuetify.general.home.week');
+      this.typeToLabel['month'] = this.$vuetify.lang.t('$vuetify.general.home.month');
+      this.typeToLabel['4day'] = this.$vuetify.lang.t('$vuetify.general.home.fday');
     }
   }
 });
@@ -2232,7 +2202,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "RoomMaterialManagerComponent",
-  props: ['association_id']
+  props: ['association_id', 'locale'],
+  mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
+  }
 });
 
 /***/ }),
@@ -2306,32 +2279,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['users'],
+  props: ['users', 'locale'],
   data: function data() {
     return {
       valid: true,
       name: '',
-      nameRules: [function (v) {
-        return !!v || 'Name is required';
-      }, function (v) {
-        return v && v.length <= 255 && v.length >= 2 || 'Name must be between 2 and 255 characters';
-      }],
       desc: '',
-      descRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Desc must be between 2 and 255 characters';
-      }],
       user: null,
       checkbox: false,
       lazy: false,
       items: [],
       userNames: {},
       snackbar: false,
-      snackbarText: '',
       color: "#FFFFFFFF"
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -2341,16 +2309,19 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.form.validate();
       var data = {
         "name": this.name,
-        "desc": this.desc,
         "president_id": this.userNames[this.user],
         "color": this.color.substring(0, 7)
       };
+
+      if (this.desc !== "") {
+        data["desc"] = this.desc;
+      }
+
       axios.post('/api/association', data).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Created " + _this.name;
         _this.snackbar = true;
       })["finally"](function () {
-        window.location.href = '/admin/associations';
+        window.location.href = "/" + _this.locale + '/admin/associations';
       });
     },
     makeVars: function makeVars() {
@@ -2434,9 +2405,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "dashboardComponent",
-  props: ['association', 'users', 'first_name', 'last_name'],
+  props: ['association', 'users', 'first_name', 'last_name', 'locale'],
   data: function data() {
     return {
       name: '',
@@ -2451,6 +2424,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -2492,12 +2466,15 @@ __webpack_require__.r(__webpack_exports__);
       if (Object.keys(data).length !== 0) {
         axios.post('/api/association/' + this.association.id, data).then(function (response) {
           status = response.status;
-          _this2.snackbarText = "Updated " + _this2.name;
+          _this2.snackbarText = _this2.$vuetify.lang.t('$vuetify.common.snackbar.updated', [_this2.name]);
           _this2.snackbar = true;
           _this2.association.name = _this2.name;
           _this2.association.desc = _this2.desc;
           _this2.association.color = _this2.color;
         });
+      } else {
+        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing');
+        this.snackbar = true;
       }
     }
   }
@@ -2569,14 +2546,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "privateCardComponent",
-  props: ['id', 'name', 'desc', 'color'],
+  props: ['id', 'name', 'desc', 'color', 'locale'],
   data: function data() {
     return {
       isActive: false,
       snackbar: false,
-      snackbarText: '',
       show: true
     };
+  },
+  mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
   },
   methods: {
     deleteItem: function deleteItem() {
@@ -2584,7 +2563,6 @@ __webpack_require__.r(__webpack_exports__);
 
       axios["delete"]('/api/association/' + this.id, {}).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Deleted " + _this.name;
         _this.snackbar = true;
         _this.show = false;
       });
@@ -2638,11 +2616,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "publicCardComponent",
-  props: ['id', 'name', 'desc', 'color'],
+  props: ['id', 'name', 'desc', 'color', 'locale'],
   data: function data() {
     return {
       isActive: false
     };
+  },
+  mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
   }
 });
 
@@ -2768,29 +2749,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['association_id', 'rooms', 'materials'],
+  props: ['association_id', 'rooms', 'materials', 'locale'],
   data: function data() {
     return {
       valid: true,
       title: '',
-      titleRules: [function (v) {
-        return !!v || 'Title is required';
-      }, function (v) {
-        return v && v.length <= 255 && v.length >= 2 || 'Title must be between 2 and 255 characters';
-      }],
       desc: '',
-      descRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Description must be between 2 and 255 characters';
-      }],
       location: '',
-      locRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Location must be between 2 and 255 characters';
-      }],
       link: '',
-      linkRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Link must be between 2 and 255 characters';
-      }],
       current_step: 1,
       date_begin: '',
       time_begin: '',
@@ -2816,6 +2791,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -2827,7 +2803,7 @@ __webpack_require__.r(__webpack_exports__);
       var reserveMaterial = false;
 
       if (this.begin > this.end) {
-        this.snackbarText = "Beginning date should be before end date!";
+        this.snackbarText = this.$vuetify.lang.t('$vuetify.events.create.dateOrder');
         this.snackbar = true;
         this.current_step = 1;
       } else {
@@ -2882,10 +2858,10 @@ __webpack_require__.r(__webpack_exports__);
             });
           }
 
-          _this.snackbarText = "Created " + _this.title;
+          _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.created', [_this.title]);
           _this.snackbar = true;
         })["finally"](function () {
-          window.location.href = '/association/' + _this.association_id;
+          window.location.href = '/' + _this.locale + '/association/' + _this.association_id;
         });
       }
     },
@@ -2978,7 +2954,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "privateCardComponent",
-  props: ['event', 'materials', 'rents', 'room', 'occupation'],
+  props: ['event', 'materials', 'rents', 'room', 'occupation', 'locale'],
   data: function data() {
     return {
       isActive: false,
@@ -2987,14 +2963,12 @@ __webpack_require__.r(__webpack_exports__);
       show: true,
       idToMaterial: {},
       computedRents: [],
-      status: {
-        0: 'Pending',
-        1: 'Approved',
-        2: 'Not approved'
-      }
+      // status: {0: 'Pending', 1: 'Approved', 2: 'Not approved'},
+      status: {}
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -3003,7 +2977,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios["delete"]('/api/event/' + this.event.id, {}).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Deleted " + _this.event.title;
+        _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.deleted', [_this.event.title]);
         _this.snackbar = true;
         _this.show = false;
       });
@@ -3026,6 +3000,9 @@ __webpack_require__.r(__webpack_exports__);
     makeVars: function makeVars() {
       var _this2 = this;
 
+      this.status["0"] = this.$vuetify.lang.t('$vuetify.events.card.pending');
+      this.status["1"] = this.$vuetify.lang.t('$vuetify.events.card.approved');
+      this.status["2"] = this.$vuetify.lang.t('$vuetify.events.card.notApproved');
       this.materials.forEach(function (material) {
         return _this2.idToMaterial[material.id] = material.name;
       });
@@ -3158,29 +3135,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['event', 'rooms', 'materials', 'rents', 'occupation'],
+  props: ['event', 'rooms', 'materials', 'rents', 'occupation', 'locale'],
   data: function data() {
     return {
       valid: true,
       title: '',
-      titleRules: [function (v) {
-        return !!v || 'Title is required';
-      }, function (v) {
-        return v && v.length <= 255 && v.length >= 2 || 'Title must be between 2 and 255 characters';
-      }],
       desc: '',
-      descRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Description must be between 2 and 255 characters';
-      }],
       location: '',
-      locRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Location must be between 2 and 255 characters';
-      }],
       link: '',
-      linkRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Link must be between 2 and 255 characters';
-      }],
       current_step: 1,
       date_begin: '',
       time_begin: '',
@@ -3211,6 +3182,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.makeVars();
+    this.$vuetify.lang.current = this.locale;
   },
   methods: {
     validate: function validate() {
@@ -3219,7 +3191,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.form.validate();
 
       if (this.begin > this.end) {
-        this.snackbarText = "Beginning date should be before end date!";
+        this.snackbarText = this.$vuetify.lang.t('$vuetify.events.update.dateOrder');
         this.snackbar = true;
         this.current_step = 1;
       } else {
@@ -3267,7 +3239,7 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         if (Object.keys(data).length === 0 && !reserveRoom && !reserveMaterial) {
-          this.snackbarText = "Nothing to change";
+          this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing');
           this.snackbar = true;
         } else {
           if (reserveRoom) {
@@ -3319,12 +3291,12 @@ __webpack_require__.r(__webpack_exports__);
           if (Object.keys(data).length !== 0) {
             axios.post('/api/event/' + this.event.id, data).then(function (response) {
               status = response.status;
-              _this.snackbarText = "Updated " + _this.title;
+              _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.updated', [_this.title]);
               _this.snackbar = true;
             });
           }
 
-          this.snackbarText = "Updated " + this.title;
+          this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.updated', [this.title]);
           this.snackbar = true;
         }
       }
@@ -3483,7 +3455,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CardComponent",
-  props: ['material'],
+  props: ['material', 'locale'],
   data: function data() {
     return {
       isActive: false,
@@ -3495,6 +3467,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -3503,7 +3476,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios["delete"]('/api/material/' + this.material.id, {}).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Deleted " + _this.material.name;
+        _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.deleted', [_this.material.name]);
         _this.snackbar = true;
         _this.show = false;
       });
@@ -3587,9 +3560,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CreateCardComponent",
-  props: ['association_id'],
+  props: ['association_id', 'locale'],
   data: function data() {
     return {
       lazy: false,
@@ -3597,20 +3575,12 @@ __webpack_require__.r(__webpack_exports__);
       snackbarText: '',
       valid: true,
       name: '',
-      nameRules: [function (v) {
-        return !!v || 'Name is required';
-      }, function (v) {
-        return v && v.length <= 255 && v.length >= 2 || 'Name must be between 2 and 255 characters';
-      }],
       desc: '',
-      descRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Description must be between 2 and 255 characters';
-      }],
-      price: '',
-      priceRules: [function (v) {
-        return v.length <= 255 && v.length >= 1 || v.length === 0 || 'Price must be between 1 and 255 characters';
-      }]
+      price: ''
     };
+  },
+  mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
   },
   methods: {
     validate: function validate() {
@@ -3632,10 +3602,10 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/api/material', data).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Created " + _this.name;
+        _this.snackbarText = $vuetify.lang.t('$vuetify.common.snackbar.created', [_this.name]);
         _this.snackbar = true;
       })["finally"](function () {
-        window.location.href = '/association/' + _this.association_id;
+        window.location.href = '/' + _this.locale + '/association/' + _this.association_id;
       });
     }
   }
@@ -3708,9 +3678,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "updateCardComponent",
-  props: ['material'],
+  props: ['material', 'locale'],
   data: function data() {
     return {
       lazy: false,
@@ -3718,20 +3693,12 @@ __webpack_require__.r(__webpack_exports__);
       snackbarText: '',
       valid: true,
       name: '',
-      nameRules: [function (v) {
-        return v && v.length <= 255 && v.length >= 2 || 'Name must be between 2 and 255 characters';
-      }],
       desc: '',
-      descRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Description must be between 2 and 255 characters';
-      }],
-      price: '',
-      priceRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Price must be between 2 and 255 characters';
-      }]
+      price: ''
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -3754,15 +3721,15 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (Object.keys(data).length === 0) {
-        this.snackbarText = "Nothing to change!";
+        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing');
         this.snackbar = true;
       } else {
         axios.post('/api/material/' + this.material.id, data).then(function (response) {
           status = response.status;
-          _this.snackbarText = "Updated " + _this.name;
+          _this.snackbarText = $vuetify.lang.t('$vuetify.common.snackbar.updated', [_this.name]);
           _this.snackbar = true;
         })["finally"](function () {
-          window.location.href = '/association/' + _this.association_id;
+          window.location.href = '/' + _this.locale + '/association/' + _this.association_id;
         });
       }
     },
@@ -3826,14 +3793,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "AdminUpdateComponent",
-  props: ['association', 'occupation', 'room', 'event'],
+  props: ['association', 'occupation', 'room', 'event', 'locale'],
   data: function data() {
     return {
-      items: ['Approve', 'Do not approve'],
-      itemsToId: {
-        'Approve': 1,
-        'Do not approve': 2
-      },
+      items: [],
+      itemsToId: {},
       begin: '',
       end: '',
       valid: true,
@@ -3844,12 +3808,17 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
     makeVars: function makeVars() {
       this.begin = this.formatDate(this.event.begin);
       this.end = this.formatDate(this.event.end);
+      this.items.push($vuetify.lang.t('$vuetify.occupations.admin.approve'));
+      this.items.push($vuetify.lang.t('$vuetify.occupations.admin.notApprove'));
+      this.itemsToId[$vuetify.lang.t('$vuetify.occupations.admin.approve')] = 1;
+      this.itemsToId[$vuetify.lang.t('$vuetify.occupations.admin.notApprove')] = 2;
     },
     formatDate: function formatDate(date) {
       var d = new Date(date);
@@ -3870,14 +3839,14 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.selected === '') {
-        this.snackbarText = "Nothing to change!";
+        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing');
         this.snackbar = true;
       } else {
         axios.post('/api/occupation/' + this.occupation.id, {
           'approved': this.itemsToId[this.selected]
         }).then(function (response) {
           status = response.status;
-          _this.snackbarText = "Updated";
+          _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.updated', [""]);
           _this.snackbar = true;
           _this.show = false;
         });
@@ -3938,14 +3907,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "AdminUpdateComponent",
-  props: ['association', 'rent', 'material', 'event'],
+  props: ['association', 'rent', 'material', 'event', 'locale'],
   data: function data() {
     return {
-      items: ['Approve', 'Do not approve'],
-      itemsToId: {
-        'Approve': 1,
-        'Do not approve': 2
-      },
+      items: [],
+      itemsToId: {},
       begin: '',
       end: '',
       valid: true,
@@ -3956,12 +3922,17 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
     makeVars: function makeVars() {
       this.begin = this.formatDate(this.event.begin);
       this.end = this.formatDate(this.event.end);
+      this.items.push($vuetify.lang.t('$vuetify.rents.admin.approve'));
+      this.items.push($vuetify.lang.t('$vuetify.rents.admin.notApprove'));
+      this.itemsToId[$vuetify.lang.t('$vuetify.rents.admin.approve')] = 1;
+      this.itemsToId[$vuetify.lang.t('$vuetify.rents.admin.notApprove')] = 2;
     },
     formatDate: function formatDate(date) {
       var d = new Date(date);
@@ -3982,14 +3953,14 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.selected === '') {
-        this.snackbarText = "Nothing to change!";
+        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing');
         this.snackbar = true;
       } else {
         axios.post('/api/rent/' + this.rent.id, {
           'approved': this.itemsToId[this.selected]
         }).then(function (response) {
           status = response.status;
-          _this.snackbarText = "Updated";
+          _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.updated', [""]);
           _this.snackbar = true;
           _this.show = false;
         });
@@ -4052,7 +4023,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CardComponent",
-  props: ['room'],
+  props: ['room', 'locale'],
   data: function data() {
     return {
       isActive: false,
@@ -4063,6 +4034,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -4071,7 +4043,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios["delete"]('/api/room/' + this.room.id, {}).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Deleted " + _this.room.name;
+        _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.deleted', _this.room.name);
         _this.snackbar = true;
         _this.show = false;
       });
@@ -4144,9 +4116,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CreateCardComponent",
-  props: ['association_id'],
+  props: ['association_id', 'locale'],
   data: function data() {
     return {
       lazy: false,
@@ -4154,16 +4129,11 @@ __webpack_require__.r(__webpack_exports__);
       snackbarText: '',
       valid: true,
       name: '',
-      nameRules: [function (v) {
-        return !!v || 'Name is required';
-      }, function (v) {
-        return v && v.length <= 255 && v.length >= 2 || 'Name must be between 2 and 255 characters';
-      }],
-      location: '',
-      locationRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Location must be between 2 and 255 characters';
-      }]
+      location: ''
     };
+  },
+  mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
   },
   methods: {
     validate: function validate() {
@@ -4181,10 +4151,10 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/api/room', data).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Created " + _this.title;
+        _this.snackbarText = $vuetify.lang.t('$vuetify.common.snackbar.created', [_this.name]);
         _this.snackbar = true;
       })["finally"](function () {
-        window.location.href = '/association/' + _this.association_id;
+        window.location.href = "/" + _this.locale + '/association/' + _this.association_id;
       });
     }
   }
@@ -4250,9 +4220,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "updateCardComponent",
-  props: ['room'],
+  props: ['room', 'locale'],
   data: function data() {
     return {
       lazy: false,
@@ -4260,16 +4233,11 @@ __webpack_require__.r(__webpack_exports__);
       snackbarText: '',
       valid: true,
       name: '',
-      nameRules: [function (v) {
-        return v && v.length <= 255 && v.length >= 2 || 'Name must be between 2 and 255 characters';
-      }],
-      location: '',
-      locationRules: [function (v) {
-        return v.length <= 255 && v.length >= 2 || v.length === 0 || 'Location must be between 2 and 255 characters';
-      }]
+      location: ''
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -4288,15 +4256,15 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (Object.keys(data).length === 0) {
-        this.snackbarText = "Nothing to change!";
+        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing');
         this.snackbar = true;
       } else {
         axios.post('/api/room/' + this.room.id, data).then(function (response) {
           status = response.status;
-          _this.snackbarText = "Updated " + _this.name;
+          _this.snackbarText = $vuetify.lang.t('$vuetify.common.snackbar.updated', [_this.name]);
           _this.snackbar = true;
         })["finally"](function () {
-          window.location.href = '/association/' + _this.association_id;
+          window.location.href = '/' + _this.locale + '/association/' + _this.association_id;
         });
       }
     },
@@ -4350,7 +4318,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "UpdateAdminCardComponent",
-  props: ['user'],
+  props: ['user', 'locale'],
   data: function data() {
     return {
       role: '',
@@ -4363,6 +4331,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
     this.makeVars();
   },
   methods: {
@@ -4370,30 +4339,27 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.role === this.roleToItem[this.user.role]) {
-        this.snackbarText = "Nothing to change!";
+        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing');
         this.snackbar = true;
       } else {
         axios.post('/api/user/' + this.user.id, {
           'role': this.itemToRole[this.role]
         }).then(function (response) {
           status = response.status;
-          console.log(status);
-          _this.snackbarText = "Updated " + _this.user.first_name;
+          _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.updated', [_this.user.first_name]);
           _this.snackbar = true;
+        })["finally"](function () {
+          window.location.href = '/' + _this.locale + "/admin/users";
         });
-        window.location.href = "/admin/users";
       }
     },
     makeVars: function makeVars() {
-      this.items = ['User', 'Admin'];
-      this.itemToRole = {
-        'User': 'ROLE_USER',
-        'Admin': 'ROLE_ADMIN'
-      };
-      this.roleToItem = {
-        'ROLE_USER': 'User',
-        'ROLE_ADMIN': 'Admin'
-      };
+      this.items.push(this.$vuetify.lang.t('$vuetify.users.update.user'));
+      this.items.push(this.$vuetify.lang.t('$vuetify.users.update.admin'));
+      this.itemToRole[this.$vuetify.lang.t('$vuetify.users.update.user')] = "ROLE_USER";
+      this.itemToRole[this.$vuetify.lang.t('$vuetify.users.update.admin')] = "ROLE_ADMIN";
+      this.roleToItem['ROLE_USER'] = this.$vuetify.lang.t('$vuetify.users.update.user');
+      this.roleToItem['ROLE_ADMIN'] = this.$vuetify.lang.t('$vuetify.users.update.admin');
       this.role = this.roleToItem[this.user.role];
     }
   }
@@ -4462,7 +4428,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "privateCardComponent",
-  props: ['id', 'name', 'role'],
+  props: ['id', 'name', 'role', 'locale'],
   data: function data() {
     return {
       isActive: false,
@@ -4471,9 +4437,12 @@ __webpack_require__.r(__webpack_exports__);
       show: true
     };
   },
+  mounted: function mounted() {
+    this.$vuetify.lang.current = this.locale;
+  },
   computed: {
     userlink: function userlink() {
-      return '/admin/user/' + this.id + '/edit';
+      return '/' + this.locale + '/admin/user/' + this.id + '/edit';
     }
   },
   methods: {
@@ -4482,7 +4451,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios["delete"]('/api/user/' + this.id, {}).then(function (response) {
         status = response.status;
-        _this.snackbarText = "Deleted " + _this.name;
+        _this.snackbarText = _this.$vuetify.lang.t('$vuetify.common.snackbar.deleted', _this.name);
         _this.snackbar = true;
         _this.show = false;
       });
@@ -40815,53 +40784,6 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
-/*!*******************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
-  \*******************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
-            ])
-          ])
-        ])
-      ])
-    ])
-  }
-]
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/HomeCalendarComponent.vue?vue&type=template&id=c2532a36&scoped=true&":
 /*!************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/HomeCalendarComponent.vue?vue&type=template&id=c2532a36&scoped=true& ***!
@@ -40896,7 +40818,15 @@ var render = function() {
                   attrs: { outlined: "", color: "grey darken-2" },
                   on: { click: _vm.setToday }
                 },
-                [_vm._v("\n                    Today\n                ")]
+                [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(
+                        _vm.$vuetify.lang.t("$vuetify.general.home.today")
+                      ) +
+                      "\n                "
+                  )
+                ]
               ),
               _vm._v(" "),
               _c(
@@ -40989,7 +40919,15 @@ var render = function() {
                             }
                           }
                         },
-                        [_c("v-list-item-title", [_vm._v("Day")])],
+                        [
+                          _c("v-list-item-title", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.$vuetify.lang.t("$vuetify.general.home.day")
+                              )
+                            )
+                          ])
+                        ],
                         1
                       ),
                       _vm._v(" "),
@@ -41002,7 +40940,17 @@ var render = function() {
                             }
                           }
                         },
-                        [_c("v-list-item-title", [_vm._v("Week")])],
+                        [
+                          _c("v-list-item-title", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.general.home.week"
+                                )
+                              )
+                            )
+                          ])
+                        ],
                         1
                       ),
                       _vm._v(" "),
@@ -41015,7 +40963,17 @@ var render = function() {
                             }
                           }
                         },
-                        [_c("v-list-item-title", [_vm._v("Month")])],
+                        [
+                          _c("v-list-item-title", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.general.home.month"
+                                )
+                              )
+                            )
+                          ])
+                        ],
                         1
                       ),
                       _vm._v(" "),
@@ -41028,7 +40986,17 @@ var render = function() {
                             }
                           }
                         },
-                        [_c("v-list-item-title", [_vm._v("4 days")])],
+                        [
+                          _c("v-list-item-title", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.general.home.fday"
+                                )
+                              )
+                            )
+                          ])
+                        ],
                         1
                       )
                     ],
@@ -41188,7 +41156,11 @@ var render = function() {
     "v-sheet",
     { staticClass: "mx-auto" },
     [
-      _c("v-card-title", [_vm._v("Manage your equipments and rooms")]),
+      _c("v-card-title", [
+        _vm._v(
+          _vm._s(_vm.$vuetify.lang.t("$vuetify.general.roomMaterial.title"))
+        )
+      ]),
       _vm._v(" "),
       _c(
         "v-row",
@@ -41206,12 +41178,22 @@ var render = function() {
                     {
                       attrs: {
                         href:
+                          "/" +
+                          this.locale +
                           "/association/" +
                           _vm.association_id +
                           "/material/create"
                       }
                     },
-                    [_vm._v("New Equipment")]
+                    [
+                      _vm._v(
+                        _vm._s(
+                          _vm.$vuetify.lang.t(
+                            "$vuetify.general.roomMaterial.nMate"
+                          )
+                        )
+                      )
+                    ]
                   )
                 ],
                 1
@@ -41232,10 +41214,22 @@ var render = function() {
                     {
                       attrs: {
                         href:
-                          "/association/" + _vm.association_id + "/room/create"
+                          "/" +
+                          this.locale +
+                          "/association/" +
+                          _vm.association_id +
+                          "/room/create"
                       }
                     },
-                    [_vm._v("New Room")]
+                    [
+                      _vm._v(
+                        _vm._s(
+                          _vm.$vuetify.lang.t(
+                            "$vuetify.general.roomMaterial.nRoom"
+                          )
+                        )
+                      )
+                    ]
                   )
                 ],
                 1
@@ -41302,8 +41296,27 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.nameRules,
-                          label: "Name",
+                          rules: [
+                            function(v) {
+                              return (
+                                !!v ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.associations.create.nameRequired"
+                                )
+                              )
+                            },
+                            function(v) {
+                              return (
+                                (v && v.length <= 255 && v.length >= 2) ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.associations.create.nameLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.associations.create.name"
+                          ),
                           required: ""
                         },
                         model: {
@@ -41318,8 +41331,20 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.descRules,
-                          label: "Desc",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.associations.create.descLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.associations.create.desc"
+                          ),
                           required: ""
                         },
                         model: {
@@ -41336,10 +41361,17 @@ var render = function() {
                           items: _vm.items,
                           rules: [
                             function(v) {
-                              return !!v || "Item is required"
+                              return (
+                                !!v ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.associations.create.presidentRequired"
+                                )
+                              )
                             }
                           ],
-                          label: "President",
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.associations.create.president"
+                          ),
                           required: ""
                         },
                         model: {
@@ -41360,7 +41392,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                        Validate\n                    "
+                            "\n                        " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                    "
                           )
                         ]
                       )
@@ -41415,7 +41453,15 @@ var render = function() {
           }
         },
         [
-          _vm._v("\n        " + _vm._s(_vm.snackbarText) + "\n        "),
+          _vm._v(
+            "\n        " +
+              _vm._s(
+                _vm.$vuetify.lang.t("$vuetify.common.snackbar.created", [
+                  this.name
+                ])
+              ) +
+              "\n        "
+          ),
           _c(
             "v-btn",
             {
@@ -41426,7 +41472,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -41496,7 +41548,13 @@ var render = function() {
           _c(
             "v-col",
             { attrs: { cols: "2" } },
-            [_c("v-card-title", [_vm._v("Update")])],
+            [
+              _c("v-card-title", [
+                _vm._v(
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.update"))
+                )
+              ])
+            ],
             1
           ),
           _vm._v(" "),
@@ -41511,6 +41569,11 @@ var render = function() {
                     "v-col",
                     [
                       _c("v-text-field", {
+                        attrs: {
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.associations.dashboard.name"
+                          )
+                        },
                         model: {
                           value: _vm.name,
                           callback: function($$v) {
@@ -41521,6 +41584,11 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("v-text-field", {
+                        attrs: {
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.associations.dashboard.desc"
+                          )
+                        },
                         model: {
                           value: _vm.desc,
                           callback: function($$v) {
@@ -41533,7 +41601,9 @@ var render = function() {
                       _c("v-autocomplete", {
                         attrs: {
                           items: _vm.items,
-                          label: "President",
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.associations.dashboard.president"
+                          ),
                           required: ""
                         },
                         model: {
@@ -41546,7 +41616,13 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("v-btn", { on: { click: _vm.update } }, [
-                        _vm._v("Update")
+                        _vm._v(
+                          _vm._s(
+                            _vm.$vuetify.lang.t(
+                              "$vuetify.common.actions.update"
+                            )
+                          )
+                        )
                       ])
                     ],
                     1
@@ -41604,7 +41680,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -41701,7 +41783,15 @@ var render = function() {
           }
         },
         [
-          _vm._v("\n        " + _vm._s(_vm.snackbarText) + "\n        "),
+          _vm._v(
+            "\n        " +
+              _vm._s(
+                _vm.$vuetify.lang.t("$vuetify.common.snackbar.deleted", [
+                  this.name
+                ])
+              ) +
+              "\n        "
+          ),
           _c(
             "v-btn",
             {
@@ -41712,7 +41802,17 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(
+                    _vm.$vuetify.lang.t("$vuetify.common.actions.close", [
+                      this.name
+                    ])
+                  ) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -41792,6 +41892,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
 var render = function() {
+  var this$1 = this
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -41825,8 +41926,27 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.titleRules,
-                          label: "Title",
+                          rules: [
+                            function(v) {
+                              return (
+                                !!v ||
+                                this$1.$vuetify.lang.t(
+                                  "$vuetify.events.create.titleRequired"
+                                )
+                              )
+                            },
+                            function(v) {
+                              return (
+                                (v && v.length <= 255 && v.length >= 2) ||
+                                this$1.$vuetify.lang.t(
+                                  "$vuetify.events.create.titleLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.create.title"
+                          ),
                           required: ""
                         },
                         model: {
@@ -41841,8 +41961,20 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.descRules,
-                          label: "Description",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                this$1.$vuetify.lang.t(
+                                  "$vuetify.events.create.descLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.create.desc"
+                          ),
                           required: ""
                         },
                         model: {
@@ -41858,7 +41990,9 @@ var render = function() {
                         attrs: {
                           items: _vm.computedRooms,
                           counter: 255,
-                          label: "Location",
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.create.room"
+                          ),
                           required: ""
                         },
                         model: {
@@ -41874,9 +42008,21 @@ var render = function() {
                         ? _c("v-text-field", {
                             attrs: {
                               counter: 255,
-                              label: "Other",
+                              label: this.$vuetify.lang.t(
+                                "$vuetify.events.create.location"
+                              ),
                               required: "",
-                              rules: _vm.locRules
+                              rules: [
+                                function(v) {
+                                  return (
+                                    (v.length <= 255 && v.length >= 2) ||
+                                    v.length === 0 ||
+                                    this$1.$vuetify.lang.t(
+                                      "$vuetify.events.create.locationLength"
+                                    )
+                                  )
+                                }
+                              ]
                             },
                             model: {
                               value: _vm.location,
@@ -41891,11 +42037,24 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.linkRules,
-                          label: "Event link",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                this$1.$vuetify.lang.t(
+                                  "$vuetify.events.create.linkLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.create.link"
+                          ),
                           required: "",
-                          hint:
-                            "Remember to add the http:// or https:// in front of the link"
+                          hint: _vm.$vuetify.lang.t(
+                            "$vuetify.events.create.linkHint"
+                          )
                         },
                         model: {
                           value: _vm.link,
@@ -41909,7 +42068,9 @@ var render = function() {
                       _c("v-autocomplete", {
                         attrs: {
                           items: _vm.computedMaterials,
-                          label: "Equipment necessary",
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.create.materials"
+                          ),
                           chips: "",
                           "small-chips": "",
                           multiple: ""
@@ -41932,7 +42093,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                        Validate\n                    "
+                            "\n                        " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                    "
                           )
                         ]
                       )
@@ -41958,7 +42125,13 @@ var render = function() {
                                     { key: "1" },
                                     [
                                       _c("v-card-title", [
-                                        _vm._v("Select begin date")
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.$vuetify.lang.t(
+                                              "$vuetify.events.create.beginDate"
+                                            )
+                                          )
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c("v-date-picker", {
@@ -41981,7 +42154,13 @@ var render = function() {
                                     { key: "2" },
                                     [
                                       _c("v-card-title", [
-                                        _vm._v("Select begin time")
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.$vuetify.lang.t(
+                                              "$vuetify.events.create.beginTime"
+                                            )
+                                          )
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c("v-time-picker", {
@@ -42005,7 +42184,13 @@ var render = function() {
                                     { key: "3" },
                                     [
                                       _c("v-card-title", [
-                                        _vm._v("Select end date")
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.$vuetify.lang.t(
+                                              "$vuetify.events.create.endDate"
+                                            )
+                                          )
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c("v-date-picker", {
@@ -42028,7 +42213,13 @@ var render = function() {
                                     { key: "4" },
                                     [
                                       _c("v-card-title", [
-                                        _vm._v("Select end time")
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.$vuetify.lang.t(
+                                              "$vuetify.events.create.endTime"
+                                            )
+                                          )
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c("v-time-picker", {
@@ -42048,7 +42239,13 @@ var render = function() {
                               _vm._v(" "),
                               _vm.current_step === 5
                                 ? _c("v-card-title", { key: "5" }, [
-                                    _vm._v("Done!")
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.$vuetify.lang.t(
+                                          "$vuetify.events.create.done"
+                                        )
+                                      )
+                                    )
                                   ])
                                 : _vm._e()
                             ],
@@ -42068,7 +42265,15 @@ var render = function() {
                               attrs: { disabled: _vm.current_step === 1 },
                               on: { click: _vm.previous_step }
                             },
-                            [_vm._v("Back")]
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.$vuetify.lang.t(
+                                    "$vuetify.common.actions.previous"
+                                  )
+                                )
+                              )
+                            ]
                           ),
                           _vm._v(" "),
                           _c(
@@ -42077,7 +42282,15 @@ var render = function() {
                               attrs: { disabled: _vm.current_step === 5 },
                               on: { click: _vm.next_step }
                             },
-                            [_vm._v("Next")]
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.$vuetify.lang.t(
+                                    "$vuetify.common.actions.next"
+                                  )
+                                )
+                              )
+                            ]
                           )
                         ],
                         1
@@ -42119,7 +42332,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -42173,7 +42392,9 @@ var render = function() {
                       domProps: {
                         textContent: _vm._s(
                           _vm.formatDate(_vm.event.begin) +
-                            " to " +
+                            " " +
+                            _vm.$vuetify.lang.t("$vuetify.events.card.to") +
+                            " " +
                             _vm.formatDate(_vm.event.end)
                         )
                       }
@@ -42215,7 +42436,10 @@ var render = function() {
                         _c(
                           "v-btn",
                           {
-                            attrs: { icon: "", href: "/event/" + _vm.event.id }
+                            attrs: {
+                              icon: "",
+                              href: "/" + this.locale + "/event/" + _vm.event.id
+                            }
                           },
                           [_c("v-icon", [_vm._v("mdi-pencil")])],
                           1
@@ -42267,7 +42491,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n                Close\n            ")]
+            [
+              _vm._v(
+                "\n                " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n            "
+              )
+            ]
           )
         ],
         1
@@ -42295,6 +42525,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
 var render = function() {
+  var this$1 = this
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -42328,8 +42559,27 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.titleRules,
-                          label: "Title",
+                          rules: [
+                            function(v) {
+                              return (
+                                !!v ||
+                                this$1.$vuetify.lang.t(
+                                  "$vuetify.events.update.titleRequired"
+                                )
+                              )
+                            },
+                            function(v) {
+                              return (
+                                (v && v.length <= 255 && v.length >= 2) ||
+                                this$1.$vuetify.lang.t(
+                                  "$vuetify.events.update.titleLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.update.title"
+                          ),
                           required: ""
                         },
                         model: {
@@ -42344,8 +42594,20 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.descRules,
-                          label: "Description",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                this$1.$vuetify.lang.t(
+                                  "$vuetify.events.update.descLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.update.desc"
+                          ),
                           required: ""
                         },
                         model: {
@@ -42361,7 +42623,9 @@ var render = function() {
                         attrs: {
                           items: _vm.computedRooms,
                           counter: 255,
-                          label: "Location",
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.update.room"
+                          ),
                           required: ""
                         },
                         model: {
@@ -42377,9 +42641,21 @@ var render = function() {
                         ? _c("v-text-field", {
                             attrs: {
                               counter: 255,
-                              label: "Other",
+                              label: this.$vuetify.lang.t(
+                                "$vuetify.events.update.location"
+                              ),
                               required: "",
-                              rules: _vm.locRules
+                              rules: [
+                                function(v) {
+                                  return (
+                                    (v.length <= 255 && v.length >= 2) ||
+                                    v.length === 0 ||
+                                    this$1.$vuetify.lang.t(
+                                      "$vuetify.events.update.locationLength"
+                                    )
+                                  )
+                                }
+                              ]
                             },
                             model: {
                               value: _vm.location,
@@ -42394,11 +42670,24 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.linkRules,
-                          label: "Event link",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                this$1.$vuetify.lang.t(
+                                  "$vuetify.events.update.linkLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.update.link"
+                          ),
                           required: "",
-                          hint:
-                            "Remember to add the http:// or https:// in front of the link"
+                          hint: _vm.$vuetify.lang.t(
+                            "$vuetify.events.update.linkHint"
+                          )
                         },
                         model: {
                           value: _vm.link,
@@ -42412,7 +42701,9 @@ var render = function() {
                       _c("v-autocomplete", {
                         attrs: {
                           items: _vm.computedMaterials,
-                          label: "Equipment necessary",
+                          label: this.$vuetify.lang.t(
+                            "$vuetify.events.update.materials"
+                          ),
                           chips: "",
                           "small-chips": "",
                           multiple: ""
@@ -42435,7 +42726,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                        Validate\n                    "
+                            "\n                        " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                    "
                           )
                         ]
                       )
@@ -42461,7 +42758,13 @@ var render = function() {
                                     { key: "1" },
                                     [
                                       _c("v-card-title", [
-                                        _vm._v("Select begin date")
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.$vuetify.lang.t(
+                                              "$vuetify.events.update.beginDate"
+                                            )
+                                          )
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c("v-date-picker", {
@@ -42484,7 +42787,13 @@ var render = function() {
                                     { key: "2" },
                                     [
                                       _c("v-card-title", [
-                                        _vm._v("Select begin time")
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.$vuetify.lang.t(
+                                              "$vuetify.events.update.beginTime"
+                                            )
+                                          )
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c("v-time-picker", {
@@ -42508,7 +42817,13 @@ var render = function() {
                                     { key: "3" },
                                     [
                                       _c("v-card-title", [
-                                        _vm._v("Select end date")
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.$vuetify.lang.t(
+                                              "$vuetify.events.update.endDate"
+                                            )
+                                          )
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c("v-date-picker", {
@@ -42531,7 +42846,13 @@ var render = function() {
                                     { key: "4" },
                                     [
                                       _c("v-card-title", [
-                                        _vm._v("Select end time")
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.$vuetify.lang.t(
+                                              "$vuetify.events.update.endTime"
+                                            )
+                                          )
+                                        )
                                       ]),
                                       _vm._v(" "),
                                       _c("v-time-picker", {
@@ -42551,7 +42872,13 @@ var render = function() {
                               _vm._v(" "),
                               _vm.current_step === 5
                                 ? _c("v-card-title", { key: "5" }, [
-                                    _vm._v("Done!")
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.$vuetify.lang.t(
+                                          "$vuetify.events.update.done"
+                                        )
+                                      )
+                                    )
                                   ])
                                 : _vm._e()
                             ],
@@ -42571,7 +42898,15 @@ var render = function() {
                               attrs: { disabled: _vm.current_step === 1 },
                               on: { click: _vm.previous_step }
                             },
-                            [_vm._v("Back")]
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.$vuetify.lang.t(
+                                    "$vuetify.common.actions.previous"
+                                  )
+                                )
+                              )
+                            ]
                           ),
                           _vm._v(" "),
                           _c(
@@ -42580,7 +42915,15 @@ var render = function() {
                               attrs: { disabled: _vm.current_step === 5 },
                               on: { click: _vm.next_step }
                             },
-                            [_vm._v("Next")]
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.$vuetify.lang.t(
+                                    "$vuetify.common.actions.next"
+                                  )
+                                )
+                              )
+                            ]
                           )
                         ],
                         1
@@ -42622,7 +42965,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -42743,7 +43092,15 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(
+                    this.$vuetify.lang.t("$vuetify.common.actions.close")
+                  ) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -42804,8 +43161,27 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.nameRules,
-                          label: "Name",
+                          rules: [
+                            function(v) {
+                              return (
+                                !!v ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.materials.create.nameRequired"
+                                )
+                              )
+                            },
+                            function(v) {
+                              return (
+                                (v && v.length <= 255 && v.length >= 2) ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.materials.create.nameLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.materials.create.name"
+                          ),
                           required: ""
                         },
                         model: {
@@ -42820,8 +43196,20 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.descRules,
-                          label: "Description",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.materials.create.descLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.materials.create.desc"
+                          ),
                           required: ""
                         },
                         model: {
@@ -42836,8 +43224,20 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.priceRules,
-                          label: "Price",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 1) ||
+                                v.length === 0 ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.materials.create.priceLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.materials.create.price"
+                          ),
                           required: ""
                         },
                         model: {
@@ -42858,7 +43258,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                        Validate\n                    "
+                            "\n                        " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                    "
                           )
                         ]
                       )
@@ -42899,7 +43305,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -42960,8 +43372,27 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.nameRules,
-                          label: "Name",
+                          rules: [
+                            function(v) {
+                              return (
+                                !!v ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.materials.update.nameRequired"
+                                )
+                              )
+                            },
+                            function(v) {
+                              return (
+                                (v && v.length <= 255 && v.length >= 2) ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.materials.update.nameLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.materials.update.name"
+                          ),
                           required: ""
                         },
                         model: {
@@ -42976,8 +43407,20 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.descRules,
-                          label: "Description",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.materials.update.descLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.materials.update.desc"
+                          ),
                           required: ""
                         },
                         model: {
@@ -42992,8 +43435,20 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.priceRules,
-                          label: "Price",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 1) ||
+                                v.length === 0 ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.materials.update.priceLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.materials.update.price"
+                          ),
                           required: ""
                         },
                         model: {
@@ -43014,7 +43469,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                        Validate\n                    "
+                            "\n                        " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                    "
                           )
                         ]
                       )
@@ -43055,7 +43516,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -43102,7 +43569,13 @@ var render = function() {
                     _vm._v(
                       "\n                " +
                         _vm._s(
-                          this.association.name + " requested " + this.room.name
+                          this.association.name +
+                            " " +
+                            _vm.$vuetify.lang.t(
+                              "$vuetify.occupations.admin.requested"
+                            ) +
+                            " " +
+                            this.room.name
                         ) +
                         "\n            "
                     )
@@ -43113,13 +43586,23 @@ var render = function() {
                     [
                       _vm._v(
                         "\n                " +
-                          _vm._s(this.begin + " to " + this.end) +
+                          _vm._s(
+                            this.begin +
+                              " " +
+                              _vm.$vuetify.lang.t(
+                                "$vuetify.occupations.admin.to"
+                              ) +
+                              " " +
+                              this.end
+                          ) +
                           "\n                "
                       ),
                       _c("v-select", {
                         attrs: {
                           items: _vm.items,
-                          label: "Approve request?",
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.occupations.admin.approveQ"
+                          ),
                           required: ""
                         },
                         model: {
@@ -43140,7 +43623,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                    Validate\n                "
+                            "\n                    " +
+                              _vm._s(
+                                this.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                "
                           )
                         ]
                       )
@@ -43178,7 +43667,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                    Close\n                "
+                            "\n                    " +
+                              _vm._s(
+                                this.$vuetify.lang.t(
+                                  "$vuetify.common.actions.close"
+                                )
+                              ) +
+                              "\n                "
                           )
                         ]
                       )
@@ -43235,8 +43730,12 @@ var render = function() {
                       "\n                " +
                         _vm._s(
                           this.association.name +
-                            " requested " +
-                            this.material.name
+                            " " +
+                            _vm.$vuetify.lang.t(
+                              "$vuetify.rents.admin.requested"
+                            ) +
+                            " " +
+                            this.room.name
                         ) +
                         "\n            "
                     )
@@ -43247,13 +43746,21 @@ var render = function() {
                     [
                       _vm._v(
                         "\n                " +
-                          _vm._s(this.begin + " to " + this.end) +
+                          _vm._s(
+                            this.begin +
+                              " " +
+                              _vm.$vuetify.lang.t("$vuetify.rents.admin.to") +
+                              " " +
+                              this.end
+                          ) +
                           "\n                "
                       ),
                       _c("v-select", {
                         attrs: {
                           items: _vm.items,
-                          label: "Approve request?",
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.rents.admin.approveQ"
+                          ),
                           required: ""
                         },
                         model: {
@@ -43274,7 +43781,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                    Validate\n                "
+                            "\n                    " +
+                              _vm._s(
+                                this.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                "
                           )
                         ]
                       )
@@ -43312,7 +43825,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                    Close\n                "
+                            "\n                    " +
+                              _vm._s(
+                                this.$vuetify.lang.t(
+                                  "$vuetify.common.actions.close"
+                                )
+                              ) +
+                              "\n                "
                           )
                         ]
                       )
@@ -43383,7 +43902,12 @@ var render = function() {
                         _vm._v(" "),
                         _c(
                           "v-btn",
-                          { attrs: { icon: "", href: "/room/" + _vm.room.id } },
+                          {
+                            attrs: {
+                              icon: "",
+                              href: this.locale + "/room/" + _vm.room.id
+                            }
+                          },
                           [_c("v-icon", [_vm._v("mdi-pencil")])],
                           1
                         ),
@@ -43432,7 +43956,15 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(
+                    this.$vuetify.lang.t("$vuetify.common.actions.close")
+                  ) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -43493,8 +44025,27 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.nameRules,
-                          label: "Name",
+                          rules: [
+                            function(v) {
+                              return (
+                                !!v ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.rooms.create.nameRequired"
+                                )
+                              )
+                            },
+                            function(v) {
+                              return (
+                                (v && v.length <= 255 && v.length >= 2) ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.rooms.create.nameLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.rooms.create.name"
+                          ),
                           required: ""
                         },
                         model: {
@@ -43509,9 +44060,23 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.locationRules,
-                          label: "Location",
-                          hint: "Be specific, we want people to find it right?",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.rooms.create.locLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.rooms.create.location"
+                          ),
+                          hint: _vm.$vuetify.lang.t(
+                            "$vuetify.rooms.create.locHint"
+                          ),
                           required: ""
                         },
                         model: {
@@ -43532,7 +44097,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                        Validate\n                    "
+                            "\n                        " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                    "
                           )
                         ]
                       )
@@ -43573,7 +44144,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -43634,8 +44211,27 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.nameRules,
-                          label: "Name",
+                          rules: [
+                            function(v) {
+                              return (
+                                !!v ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.rooms.create.nameRequired"
+                                )
+                              )
+                            },
+                            function(v) {
+                              return (
+                                (v && v.length <= 255 && v.length >= 2) ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.rooms.create.nameLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.rooms.create.name"
+                          ),
                           required: ""
                         },
                         model: {
@@ -43650,9 +44246,23 @@ var render = function() {
                       _c("v-text-field", {
                         attrs: {
                           counter: 255,
-                          rules: _vm.locationRules,
-                          label: "Location",
-                          hint: "Be specific, we want people to find it right?",
+                          rules: [
+                            function(v) {
+                              return (
+                                (v.length <= 255 && v.length >= 2) ||
+                                v.length === 0 ||
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.rooms.create.locLength"
+                                )
+                              )
+                            }
+                          ],
+                          label: _vm.$vuetify.lang.t(
+                            "$vuetify.rooms.create.location"
+                          ),
+                          hint: _vm.$vuetify.lang.t(
+                            "$vuetify.rooms.create.locHint"
+                          ),
                           required: ""
                         },
                         model: {
@@ -43673,7 +44283,13 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                        Validate\n                    "
+                            "\n                        " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                    "
                           )
                         ]
                       )
@@ -43714,7 +44330,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -43742,6 +44364,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
 var render = function() {
+  var this$1 = this
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
@@ -43749,17 +44372,22 @@ var render = function() {
     "v-card",
     { staticClass: "mx-auto p-3" },
     [
-      _c("v-card-title", [_vm._v("Update user role")]),
+      _c("v-card-title", [
+        _vm._v(_vm._s(this.$vuetify.lang.t("$vuetify.users.update.title")))
+      ]),
       _vm._v(" "),
       _c("v-select", {
         attrs: {
           items: _vm.items,
           rules: [
             function(v) {
-              return !!v || "Item is required"
+              return (
+                !!v ||
+                this$1.$vuetify.lang.t("$vuetify.users.update.itemRequired")
+              )
             }
           ],
-          label: "Role",
+          label: this.$vuetify.lang.t("$vuetify.users.update.role"),
           required: ""
         },
         model: {
@@ -43778,7 +44406,13 @@ var render = function() {
           attrs: { disabled: !_vm.valid, color: "success" },
           on: { click: _vm.validate }
         },
-        [_vm._v("\n            Validate\n        ")]
+        [
+          _vm._v(
+            "\n        " +
+              _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.validate")) +
+              "\n    "
+          )
+        ]
       ),
       _vm._v(" "),
       _c(
@@ -43794,9 +44428,7 @@ var render = function() {
           }
         },
         [
-          _vm._v(
-            "\n            " + _vm._s(_vm.snackbarText) + "\n            "
-          ),
+          _vm._v("\n        " + _vm._s(_vm.snackbarText) + "\n        "),
           _c(
             "v-btn",
             {
@@ -43807,7 +44439,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n                Close\n            ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -43916,7 +44554,13 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n            Close\n        ")]
+            [
+              _vm._v(
+                "\n            " +
+                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.close")) +
+                  "\n        "
+              )
+            ]
           )
         ],
         1
@@ -97680,6 +98324,2331 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 
 /***/ }),
 
+/***/ "./node_modules/vuetify/lib/locale/af.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/af.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'badge',
+  close: 'Close',
+  dataIterator: {
+    noResultsText: 'Geen ooreenstemmende resultate is gevind nie',
+    loadingText: 'Loading item...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Rye per bladsy:',
+    ariaLabel: {
+      sortDescending: 'Sorted descending.',
+      sortAscending: 'Sorted ascending..',
+      sortNone: 'Not sorted.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Aantal per bladsy:',
+    itemsPerPageAll: 'Alles',
+    nextPage: 'Volgende bladsy',
+    prevPage: 'Vorige bladsy',
+    firstPage: 'Eerste bladsy',
+    lastPage: 'Laaste bladsy',
+    pageText: '{0}-{1} van {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} gekies'
+  },
+  noDataText: 'Geen data is beskikbaar nie',
+  carousel: {
+    prev: 'Vorige visuele',
+    next: 'Volgende visuele',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} meer'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=af.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/ar.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/ar.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'شارة',
+  close: 'إغلاق',
+  dataIterator: {
+    noResultsText: 'لا توجد سجلات مطابقة',
+    loadingText: 'تحميل العنصر...'
+  },
+  dataTable: {
+    itemsPerPageText: 'الصفوف لكل صفحة:',
+    ariaLabel: {
+      sortDescending: 'مفروز تنازلي. تنشيط لإزالة الفرز.',
+      sortAscending: 'مفروز تصاعدي. تنشيط للفرز التنازلي.',
+      sortNone: 'غير مفروزة. تفعيل لفرز تصاعدي.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'مفروزة حسب'
+  },
+  dataFooter: {
+    itemsPerPageText: 'العناصر لكل صفحة:',
+    itemsPerPageAll: 'الكل',
+    nextPage: 'الصفحة التالية',
+    prevPage: 'الصفحة السابقة',
+    firstPage: 'الصفحة الأولى',
+    lastPage: 'الصفحة الأخيرة',
+    pageText: '{0}-{1} من {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} مختارة'
+  },
+  noDataText: 'لا توجد بيانات متاحة',
+  carousel: {
+    prev: 'البصري السابق',
+    next: 'البصري التالي',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} أكثر'
+  },
+  fileInput: {
+    counter: '{0} ملفات',
+    counterSize: '{0} ملفات ({1} في المجموع)'
+  },
+  timePicker: {
+    am: 'صباحاً',
+    pm: 'مساءً'
+  }
+});
+//# sourceMappingURL=ar.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/ca.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/ca.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Insígnia',
+  close: 'Tancar',
+  dataIterator: {
+    noResultsText: 'Sense dades per mostrar',
+    loadingText: 'Carregant...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Files per pàgina:',
+    ariaLabel: {
+      sortDescending: 'Ordre descendent. Premi per treure la ordenació.',
+      sortAscending: 'Ordre ascendent. Premi per ordenar descendent.',
+      sortNone: 'Sense ordenar. Premi per ordenar ascendent.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'Ordenat per'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Elements per pàgina:',
+    itemsPerPageAll: 'Tot',
+    nextPage: 'Pàgina següent',
+    prevPage: 'Pàgina anterior',
+    firstPage: 'Primera pàgina',
+    lastPage: 'Última pàgina',
+    pageText: '{0}-{1} de {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} seleccionats'
+  },
+  noDataText: 'Sense dades',
+  carousel: {
+    prev: 'Visualització prèvia',
+    next: 'Visualització següent',
+    ariaLabel: {
+      delimiter: 'Diapositiva {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} més'
+  },
+  fileInput: {
+    counter: '{0} fitxers',
+    counterSize: '{0} fitxers ({1} en total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=ca.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/cs.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/cs.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Odznak',
+  close: 'Zavřít',
+  dataIterator: {
+    noResultsText: 'Nenalezeny žádné záznamy',
+    loadingText: 'Načítám položky...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Řádků na stránku:',
+    ariaLabel: {
+      sortDescending: 'Řazeno sestupně.',
+      sortAscending: 'Řazeno vzestupně.',
+      sortNone: 'Neseřazeno.',
+      activateNone: 'Aktivováním vypnete řazení.',
+      activateDescending: 'Aktivováním se bude řadit sestupně.',
+      activateAscending: 'Aktivováním se bude řadit vzestupně.'
+    },
+    sortBy: 'Řadit dle'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Položek na stránku:',
+    itemsPerPageAll: 'Vše',
+    nextPage: 'Další strana',
+    prevPage: 'Předchozí strana',
+    firstPage: 'První strana',
+    lastPage: 'Poslední strana',
+    pageText: '{0}-{1} z {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} vybráno'
+  },
+  noDataText: 'Nejsou dostupná žádná data',
+  carousel: {
+    prev: 'Předchozí obrázek',
+    next: 'Další obrázek',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} dalších'
+  },
+  fileInput: {
+    counter: '{0} souborů',
+    counterSize: '{0} souborů ({1} celkem)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=cs.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/de.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/de.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Abzeichen',
+  close: 'Schließen',
+  dataIterator: {
+    noResultsText: 'Keine Elemente gefunden',
+    loadingText: 'Lade Elemente...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Zeilen pro Seite:',
+    ariaLabel: {
+      sortDescending: 'Absteigend sortiert.',
+      sortAscending: 'Aufsteigend sortiert.',
+      sortNone: 'Nicht sortiert.',
+      activateNone: 'Aktivieren um Sortierung zu entfernen.',
+      activateDescending: 'Aktivieren um absteigend zu sortieren.',
+      activateAscending: 'Aktivieren um aufsteigend zu sortieren.'
+    },
+    sortBy: 'Sortiere nach'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Elemente pro Seite:',
+    itemsPerPageAll: 'Alle',
+    nextPage: 'Nächste Seite',
+    prevPage: 'Vorherige Seite',
+    firstPage: 'Erste Seite',
+    lastPage: 'Letzte Seite',
+    pageText: '{0}-{1} von {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} ausgewählt'
+  },
+  noDataText: 'Keine Daten vorhanden',
+  carousel: {
+    prev: 'Vorheriges Bild',
+    next: 'Nächstes Bild',
+    ariaLabel: {
+      delimiter: 'Element {0} von {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} mehr'
+  },
+  fileInput: {
+    counter: '{0} Dateien',
+    counterSize: '{0} Dateien ({1} gesamt)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=de.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/el.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/el.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Σήμα',
+  close: 'Close',
+  dataIterator: {
+    noResultsText: 'Δε βρέθηκαν αποτελέσματα',
+    loadingText: 'Loading item...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Γραμμές ανά σελίδα:',
+    ariaLabel: {
+      sortDescending: 'Sorted descending.',
+      sortAscending: 'Sorted ascending.',
+      sortNone: 'Not sorted.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Αντικείμενα ανά σελίδα:',
+    itemsPerPageAll: 'Όλα',
+    nextPage: 'Επόμενη σελίδα',
+    prevPage: 'Προηγούμενη σελίδα',
+    firstPage: 'Πρώτη σελίδα',
+    lastPage: 'Τελευταία σελίδα',
+    pageText: '{0}-{1} από {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} επιλεγμένα'
+  },
+  noDataText: 'Χωρίς δεδομένα',
+  carousel: {
+    prev: 'הקודם חזותי',
+    next: 'הבא חזותי',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} ακόμη'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=el.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/en.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/en.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Badge',
+  close: 'Close',
+  dataIterator: {
+    noResultsText: 'No matching records found',
+    loadingText: 'Loading items...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Rows per page:',
+    ariaLabel: {
+      sortDescending: 'Sorted descending.',
+      sortAscending: 'Sorted ascending.',
+      sortNone: 'Not sorted.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Items per page:',
+    itemsPerPageAll: 'All',
+    nextPage: 'Next page',
+    prevPage: 'Previous page',
+    firstPage: 'First page',
+    lastPage: 'Last page',
+    pageText: '{0}-{1} of {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} selected'
+  },
+  noDataText: 'No data available',
+  carousel: {
+    prev: 'Previous visual',
+    next: 'Next visual',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} more'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=en.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/es.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/es.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Placa',
+  close: 'Cerrar',
+  dataIterator: {
+    noResultsText: 'Ningún elemento coincide con la búsqueda',
+    loadingText: 'Cargando...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Filas por página:',
+    ariaLabel: {
+      sortDescending: 'Orden descendente.',
+      sortAscending: 'Orden ascendente.',
+      sortNone: 'Sin ordenar.',
+      activateNone: 'Pulse para quitar orden.',
+      activateDescending: 'Pulse para ordenar descendente.',
+      activateAscending: 'Pulse para ordenar ascendente.'
+    },
+    sortBy: 'Ordenado por'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Elementos por página:',
+    itemsPerPageAll: 'Todos',
+    nextPage: 'Página siguiente',
+    prevPage: 'Página anterior',
+    firstPage: 'Primer página',
+    lastPage: 'Última página',
+    pageText: '{0}-{1} de {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} seleccionados'
+  },
+  noDataText: 'No hay datos disponibles',
+  carousel: {
+    prev: 'Visual anterior',
+    next: 'Visual siguiente',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} más'
+  },
+  fileInput: {
+    counter: '{0} archivos',
+    counterSize: '{0} archivos ({1} en total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=es.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/et.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/et.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Märk',
+  close: 'Sulge',
+  dataIterator: {
+    noResultsText: 'Vastavaid kirjeid ei leitud',
+    loadingText: 'Andmeid laaditakse...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Ridu leheküljel:',
+    ariaLabel: {
+      sortDescending: 'Kahanevalt sorteeritud.',
+      sortAscending: 'Kasvavalt sorteeritud.',
+      sortNone: 'Ei ole sorteeritud.',
+      activateNone: 'Vajuta uuesti sorteerimise eemaldamiseks.',
+      activateDescending: 'Vajuta uuesti, et sorteerida kahanevalt.',
+      activateAscending: 'Vajuta kasvavalt sorteerimiseks.'
+    },
+    sortBy: 'Sorteerimise alus'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Kirjeid leheküljel:',
+    itemsPerPageAll: 'Kõik',
+    nextPage: 'Järgmine lehekülg',
+    prevPage: 'Eelmine lehekülg',
+    firstPage: 'Esimene lehekülg',
+    lastPage: 'Viimane lehekülg',
+    pageText: '{0}-{1} {2}st'
+  },
+  datePicker: {
+    itemsSelected: '{0} valitud'
+  },
+  noDataText: 'Andmed puuduvad',
+  carousel: {
+    prev: 'Eelmine visuaalne',
+    next: 'Järgmine visuaalne',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} veel'
+  },
+  fileInput: {
+    counter: '{0} faili',
+    counterSize: '{0} faili (kokku {1})'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=et.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/fa.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/fa.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'نشان',
+  close: 'بستن',
+  dataIterator: {
+    noResultsText: 'نتیجه‌ای یافت نشد',
+    loadingText: 'در حال بارگذاری...'
+  },
+  dataTable: {
+    itemsPerPageText: 'ردیف در صفحه:',
+    ariaLabel: {
+      sortDescending: 'نزولی مرتب شده است. فعال‌سازی برای حذف مرتب‌سازی.',
+      sortAscending: 'صعودی مرتب شده است. فعال‌سازی برای مرتب‌سازی نزولی.',
+      sortNone: 'مرتب نشده است. فعال‌سازی برای مرتب‌سازی صعودی.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'مرتب‌سازی براساس'
+  },
+  dataFooter: {
+    itemsPerPageText: 'ردیف در صفحه:',
+    itemsPerPageAll: 'همه',
+    nextPage: 'صفحه‌ی بعد',
+    prevPage: 'صفحه‌ی قبل',
+    firstPage: 'صفحه‌ی اول',
+    lastPage: 'صفحه‌ی آخر',
+    pageText: '{0} تا {1} از {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} انتخاب شده است'
+  },
+  noDataText: 'اطلاعاتی یافت نشد',
+  carousel: {
+    prev: 'اسلاید قبلی',
+    next: 'اسلاید بعدی',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{بیشتر {0'
+  },
+  fileInput: {
+    counter: '{0} پرونده',
+    counterSize: '{0} پرونده ({1} در کل)'
+  },
+  timePicker: {
+    am: 'قبل از ظهر',
+    pm: 'بعد از ظهر'
+  }
+});
+//# sourceMappingURL=fa.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/fr.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/fr.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Badge',
+  close: 'Fermer',
+  dataIterator: {
+    noResultsText: 'Aucun enregistrement correspondant trouvé',
+    loadingText: "Chargement de l'élément..."
+  },
+  dataTable: {
+    itemsPerPageText: 'Lignes par page:',
+    ariaLabel: {
+      sortDescending: 'Tri décroissant.',
+      sortAscending: 'Tri croissant.',
+      sortNone: 'Non trié.',
+      activateNone: 'Activer pour supprimer le tri.',
+      activateDescending: 'Activer pour trier par ordre décroissant.',
+      activateAscending: 'Activer pour trier par ordre croissant.'
+    },
+    sortBy: 'Trier par'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Élements par page:',
+    itemsPerPageAll: 'Tous',
+    nextPage: 'Page suivante',
+    prevPage: 'Page précédente',
+    firstPage: 'Première page',
+    lastPage: 'Dernière page',
+    pageText: '{0}-{1} de {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} sélectionnés'
+  },
+  noDataText: 'Aucune donnée disponible',
+  carousel: {
+    prev: 'Visuel précédent',
+    next: 'Visuel suivant',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} plus'
+  },
+  fileInput: {
+    counter: '{0} fichiers',
+    counterSize: '{0} fichiers ({1} au total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=fr.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/he.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/he.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'תג',
+  close: 'סגור',
+  dataIterator: {
+    noResultsText: 'לא נמצאו תוצאות מתאימות',
+    loadingText: 'טוען פריט...'
+  },
+  dataTable: {
+    itemsPerPageText: 'שורות לעמוד:',
+    ariaLabel: {
+      sortDescending: 'ממוין לפי סדר עולה. לחץ להספקת המיון.',
+      sortAscending: 'ממוין לפי סדר יורד. לחץ למיון לפי סדר עולה.',
+      sortNone: 'לא ממוין. לחץ למיון לפי סדר עולה.',
+      activateNone: 'הפעל להסרת המיון.',
+      activateDescending: 'הפעל למיון יורד.',
+      activateAscending: 'הפעל למיון עולה.'
+    },
+    sortBy: 'סדר לפי'
+  },
+  dataFooter: {
+    itemsPerPageText: 'פריטים לדף:',
+    itemsPerPageAll: 'הכל',
+    nextPage: 'עמוד הבא',
+    prevPage: 'עמוד הקודם',
+    firstPage: 'עמוד ראשון',
+    lastPage: 'עמוד אחרון',
+    pageText: '{0}-{1} מתוך {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} נבחרו'
+  },
+  noDataText: 'אין נתונים זמינים',
+  carousel: {
+    prev: 'מצג קודם',
+    next: 'מצג הבא',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} נוספים'
+  },
+  fileInput: {
+    counter: '{0} קבצים',
+    counterSize: '{0} קבצים ({1} בסך הכל)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=he.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/hr.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/hr.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Bedž',
+  close: 'Zatvori',
+  dataIterator: {
+    noResultsText: 'Nisu pronađene odgovarajuće stavke',
+    loadingText: 'Učitavanje...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Redaka po stranici:',
+    ariaLabel: {
+      sortDescending: 'Sortirano silazno.',
+      sortAscending: 'Sortirano uzlazno.',
+      sortNone: 'Nije sortirano.',
+      activateNone: 'Odaberite za uklanjanje sortiranja.',
+      activateDescending: 'Odaberite za silazno sortiranje.',
+      activateAscending: 'Odaberite za uzlazno sortiranje.'
+    },
+    sortBy: 'Sortirajte po'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Stavki po stranici:',
+    itemsPerPageAll: 'Sve',
+    nextPage: 'Sljedeća stranica',
+    prevPage: 'Prethodna stranica',
+    firstPage: 'Prva stranica',
+    lastPage: 'Posljednja stranica',
+    pageText: '{0}-{1} od {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} odabrano'
+  },
+  noDataText: 'Nema dostupnih podataka',
+  carousel: {
+    prev: 'Prethodno',
+    next: 'Sljedeće',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: 'Još {0}'
+  },
+  fileInput: {
+    counter: 'Odabranih datoteka: {0}',
+    counterSize: 'Odabranih datoteka: {0} ({1} ukupno)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=hr.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/hu.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/hu.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Jelvény',
+  close: 'Close',
+  dataIterator: {
+    noResultsText: 'Nincs egyező találat',
+    loadingText: 'Loading item...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Elem oldalanként:',
+    ariaLabel: {
+      sortDescending: 'Sorted descending. Activate to remove sorting.',
+      sortAscending: 'Sorted ascending. Activate to sort descending.',
+      sortNone: 'Not sorted. Activate to sort ascending.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Elem oldalanként:',
+    itemsPerPageAll: 'Mind',
+    nextPage: 'Következő oldal',
+    prevPage: 'Előző oldal',
+    firstPage: 'Első oldal',
+    lastPage: 'Utolsó oldal',
+    pageText: '{0}-{1} / {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} kiválaszta/-ott'
+  },
+  noDataText: 'Nincs elérhető adat',
+  carousel: {
+    prev: 'Korábbi vizuális',
+    next: 'Következő vizuális',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} további'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=hu.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/id.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/id.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Lencana',
+  close: 'Tutup',
+  dataIterator: {
+    noResultsText: 'Tidak ditemukan catatan yang cocok',
+    loadingText: 'Memuat data...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Baris per halaman:',
+    ariaLabel: {
+      sortDescending: 'Diurutkan kebawah.',
+      sortAscending: 'Diurutkan keatas.',
+      sortNone: 'Tidak diurutkan.',
+      activateNone: 'Aktifkan untuk menghapus penyortiran.',
+      activateDescending: 'Aktifkan untuk mengurutkan kebawah.',
+      activateAscending: 'Aktifkan untuk mengurutkan keatas.'
+    },
+    sortBy: 'Urutkan berdasar'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Item per halaman:',
+    itemsPerPageAll: 'Semua',
+    nextPage: 'Halaman selanjutnya',
+    prevPage: 'Halaman sebelumnya',
+    firstPage: 'Halaman pertama',
+    lastPage: 'Halaman terakhir',
+    pageText: '{0}-{1} dari {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} dipilih'
+  },
+  noDataText: 'Tidak ada data tersedia',
+  carousel: {
+    prev: 'Visual sebelumnya',
+    next: 'Visual selanjutnya',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} lagi'
+  },
+  fileInput: {
+    counter: '{0} berkas',
+    counterSize: '{0} berkas (dari total {1})'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=id.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/index.js ***!
+  \**************************************************/
+/*! exports provided: af, ar, ca, cs, de, el, en, es, et, fa, fr, hr, hu, he, id, it, ja, ko, lv, lt, nl, no, pl, pt, ro, ru, sl, srCyrl, sv, th, tr, uk, zhHans, zhHant */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _af__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./af */ "./node_modules/vuetify/lib/locale/af.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "af", function() { return _af__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+/* harmony import */ var _ar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ar */ "./node_modules/vuetify/lib/locale/ar.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ar", function() { return _ar__WEBPACK_IMPORTED_MODULE_1__["default"]; });
+
+/* harmony import */ var _ca__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ca */ "./node_modules/vuetify/lib/locale/ca.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ca", function() { return _ca__WEBPACK_IMPORTED_MODULE_2__["default"]; });
+
+/* harmony import */ var _cs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./cs */ "./node_modules/vuetify/lib/locale/cs.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "cs", function() { return _cs__WEBPACK_IMPORTED_MODULE_3__["default"]; });
+
+/* harmony import */ var _de__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./de */ "./node_modules/vuetify/lib/locale/de.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "de", function() { return _de__WEBPACK_IMPORTED_MODULE_4__["default"]; });
+
+/* harmony import */ var _el__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./el */ "./node_modules/vuetify/lib/locale/el.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "el", function() { return _el__WEBPACK_IMPORTED_MODULE_5__["default"]; });
+
+/* harmony import */ var _en__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./en */ "./node_modules/vuetify/lib/locale/en.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "en", function() { return _en__WEBPACK_IMPORTED_MODULE_6__["default"]; });
+
+/* harmony import */ var _es__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./es */ "./node_modules/vuetify/lib/locale/es.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "es", function() { return _es__WEBPACK_IMPORTED_MODULE_7__["default"]; });
+
+/* harmony import */ var _et__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./et */ "./node_modules/vuetify/lib/locale/et.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "et", function() { return _et__WEBPACK_IMPORTED_MODULE_8__["default"]; });
+
+/* harmony import */ var _fa__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./fa */ "./node_modules/vuetify/lib/locale/fa.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "fa", function() { return _fa__WEBPACK_IMPORTED_MODULE_9__["default"]; });
+
+/* harmony import */ var _fr__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./fr */ "./node_modules/vuetify/lib/locale/fr.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "fr", function() { return _fr__WEBPACK_IMPORTED_MODULE_10__["default"]; });
+
+/* harmony import */ var _hr__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./hr */ "./node_modules/vuetify/lib/locale/hr.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "hr", function() { return _hr__WEBPACK_IMPORTED_MODULE_11__["default"]; });
+
+/* harmony import */ var _hu__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./hu */ "./node_modules/vuetify/lib/locale/hu.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "hu", function() { return _hu__WEBPACK_IMPORTED_MODULE_12__["default"]; });
+
+/* harmony import */ var _he__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./he */ "./node_modules/vuetify/lib/locale/he.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "he", function() { return _he__WEBPACK_IMPORTED_MODULE_13__["default"]; });
+
+/* harmony import */ var _id__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./id */ "./node_modules/vuetify/lib/locale/id.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "id", function() { return _id__WEBPACK_IMPORTED_MODULE_14__["default"]; });
+
+/* harmony import */ var _it__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./it */ "./node_modules/vuetify/lib/locale/it.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "it", function() { return _it__WEBPACK_IMPORTED_MODULE_15__["default"]; });
+
+/* harmony import */ var _ja__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ja */ "./node_modules/vuetify/lib/locale/ja.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ja", function() { return _ja__WEBPACK_IMPORTED_MODULE_16__["default"]; });
+
+/* harmony import */ var _ko__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ko */ "./node_modules/vuetify/lib/locale/ko.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ko", function() { return _ko__WEBPACK_IMPORTED_MODULE_17__["default"]; });
+
+/* harmony import */ var _lv__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./lv */ "./node_modules/vuetify/lib/locale/lv.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "lv", function() { return _lv__WEBPACK_IMPORTED_MODULE_18__["default"]; });
+
+/* harmony import */ var _lt__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./lt */ "./node_modules/vuetify/lib/locale/lt.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "lt", function() { return _lt__WEBPACK_IMPORTED_MODULE_19__["default"]; });
+
+/* harmony import */ var _nl__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./nl */ "./node_modules/vuetify/lib/locale/nl.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "nl", function() { return _nl__WEBPACK_IMPORTED_MODULE_20__["default"]; });
+
+/* harmony import */ var _no__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./no */ "./node_modules/vuetify/lib/locale/no.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "no", function() { return _no__WEBPACK_IMPORTED_MODULE_21__["default"]; });
+
+/* harmony import */ var _pl__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./pl */ "./node_modules/vuetify/lib/locale/pl.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "pl", function() { return _pl__WEBPACK_IMPORTED_MODULE_22__["default"]; });
+
+/* harmony import */ var _pt__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./pt */ "./node_modules/vuetify/lib/locale/pt.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "pt", function() { return _pt__WEBPACK_IMPORTED_MODULE_23__["default"]; });
+
+/* harmony import */ var _ro__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./ro */ "./node_modules/vuetify/lib/locale/ro.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ro", function() { return _ro__WEBPACK_IMPORTED_MODULE_24__["default"]; });
+
+/* harmony import */ var _ru__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./ru */ "./node_modules/vuetify/lib/locale/ru.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ru", function() { return _ru__WEBPACK_IMPORTED_MODULE_25__["default"]; });
+
+/* harmony import */ var _sl__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./sl */ "./node_modules/vuetify/lib/locale/sl.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "sl", function() { return _sl__WEBPACK_IMPORTED_MODULE_26__["default"]; });
+
+/* harmony import */ var _sr_Cyrl__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./sr-Cyrl */ "./node_modules/vuetify/lib/locale/sr-Cyrl.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "srCyrl", function() { return _sr_Cyrl__WEBPACK_IMPORTED_MODULE_27__["default"]; });
+
+/* harmony import */ var _sv__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./sv */ "./node_modules/vuetify/lib/locale/sv.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "sv", function() { return _sv__WEBPACK_IMPORTED_MODULE_28__["default"]; });
+
+/* harmony import */ var _th__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./th */ "./node_modules/vuetify/lib/locale/th.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "th", function() { return _th__WEBPACK_IMPORTED_MODULE_29__["default"]; });
+
+/* harmony import */ var _tr__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./tr */ "./node_modules/vuetify/lib/locale/tr.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "tr", function() { return _tr__WEBPACK_IMPORTED_MODULE_30__["default"]; });
+
+/* harmony import */ var _uk__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./uk */ "./node_modules/vuetify/lib/locale/uk.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "uk", function() { return _uk__WEBPACK_IMPORTED_MODULE_31__["default"]; });
+
+/* harmony import */ var _zh_Hans__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./zh-Hans */ "./node_modules/vuetify/lib/locale/zh-Hans.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "zhHans", function() { return _zh_Hans__WEBPACK_IMPORTED_MODULE_32__["default"]; });
+
+/* harmony import */ var _zh_Hant__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./zh-Hant */ "./node_modules/vuetify/lib/locale/zh-Hant.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "zhHant", function() { return _zh_Hant__WEBPACK_IMPORTED_MODULE_33__["default"]; });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/it.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/it.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Distintivo',
+  close: 'Chiudi',
+  dataIterator: {
+    noResultsText: 'Nessun risultato trovato',
+    loadingText: 'Caricamento in corso...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Righe per pagina:',
+    ariaLabel: {
+      sortDescending: 'Ordinati in ordine decrescente.',
+      sortAscending: 'Ordinati in ordine crescente.',
+      sortNone: 'Non ordinato.',
+      activateNone: 'Attiva per rimuovere l\'ordinamento.',
+      activateDescending: 'Attiva per ordinare in ordine decrescente.',
+      activateAscending: 'Attiva per ordinare in ordine crescente.'
+    },
+    sortBy: 'Ordina per'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Elementi per pagina:',
+    itemsPerPageAll: 'Tutti',
+    nextPage: 'Pagina seguente',
+    prevPage: 'Pagina precedente',
+    firstPage: 'Pagina prima',
+    lastPage: 'Pagina ultima',
+    pageText: '{0}-{1} di {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} selezionati'
+  },
+  noDataText: 'Nessun elemento disponibile',
+  carousel: {
+    prev: 'Vista precedente',
+    next: 'Prossima vista',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} di più'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in totale)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=it.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/ja.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/ja.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'バッジ',
+  close: '閉じる',
+  dataIterator: {
+    noResultsText: '検索結果が見つかりません。',
+    loadingText: '項目をロード中です...'
+  },
+  dataTable: {
+    itemsPerPageText: '1ページあたりの行数：',
+    ariaLabel: {
+      sortDescending: '降順の並び替え。',
+      sortAscending: '昇順の並び替え。',
+      sortNone: 'ソートされていません。',
+      activateNone: 'ソートを削除するには有効にしてください。',
+      activateDescending: '降順の並び替えのためには有効にしてください。',
+      activateAscending: '昇順のソートのためには有効にしてください。'
+    },
+    sortBy: 'ソート方式'
+  },
+  dataFooter: {
+    itemsPerPageText: '1ページあたりの件数：',
+    itemsPerPageAll: 'すべて',
+    nextPage: '次のページ',
+    prevPage: '前のページ',
+    firstPage: '一ページ目',
+    lastPage: '最後のページ',
+    pageText: '{0}-{1} 件目 / {2}件'
+  },
+  datePicker: {
+    itemsSelected: '{0}日付選択'
+  },
+  noDataText: 'データはありません。',
+  carousel: {
+    prev: '前のビジュアル',
+    next: '次のビジュアル',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: 'さらに{0}'
+  },
+  fileInput: {
+    counter: '{0} ファイル',
+    counterSize: '{0} ファイル (合計 {1})'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=ja.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/ko.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/ko.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: '배지',
+  close: '닫기',
+  dataIterator: {
+    noResultsText: '일치하는 항목이 없습니다.',
+    loadingText: '불러오는 중...'
+  },
+  dataTable: {
+    itemsPerPageText: '페이지 당 행 수:',
+    ariaLabel: {
+      sortDescending: '내림차순 정렬.',
+      sortAscending: '오름차순 정렬.',
+      sortNone: '정렬하지 않음.',
+      activateNone: '정렬을 취소하려면 활성화하세요.',
+      activateDescending: '내림차순 정렬을 위해 활성화하세요.',
+      activateAscending: '오름차순 정렬을 위해 활성화하세요.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: '페이지 당 항목 수:',
+    itemsPerPageAll: '전체',
+    nextPage: '다음 페이지',
+    prevPage: '이전 페이지',
+    firstPage: '첫 페이지',
+    lastPage: '마지막 페이지',
+    pageText: '{2} 중 {0}-{1}'
+  },
+  datePicker: {
+    itemsSelected: '{0} 선택됨'
+  },
+  noDataText: '데이터가 없습니다.',
+  carousel: {
+    prev: '이전 화면',
+    next: '다음 화면',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} 더보기'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in total)'
+  },
+  timePicker: {
+    am: '오전',
+    pm: '오후'
+  }
+});
+//# sourceMappingURL=ko.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/lt.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/lt.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Ženklelis',
+  close: 'Uždaryti',
+  dataIterator: {
+    noResultsText: 'Nerasta atitinkančių įrašų',
+    loadingText: 'Kraunama...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Eilutės per puslapį:',
+    ariaLabel: {
+      sortDescending: 'Išrikiuota mažėjimo tvarka.',
+      sortAscending: 'Išrikiuota didėjimo tvarka.',
+      sortNone: 'Nerikiuota.',
+      activateNone: 'Suaktyvinkite, jei norite rikiavimą pašalinti.',
+      activateDescending: 'Suaktyvinkite, jei norite rikiuoti mažėjimo tvarka.',
+      activateAscending: 'Suaktyvinkite, jei norite rikiuoti didėjimo tvarka.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Įrašai per puslapį:',
+    itemsPerPageAll: 'Visi',
+    nextPage: 'Kitas puslapis',
+    prevPage: 'Ankstesnis puslapis',
+    firstPage: 'Pirmas puslapis',
+    lastPage: 'Paskutinis puslapis',
+    pageText: '{0}-{1} iš {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} pasirinkta'
+  },
+  noDataText: 'Nėra duomenų',
+  carousel: {
+    prev: 'Ankstesnioji skaidrė',
+    next: 'Kita skaidrė',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: 'Daugiau {0}'
+  },
+  fileInput: {
+    counter: '{0} failų',
+    counterSize: '{0} failų ({1} iš viso)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=lt.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/lv.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/lv.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Žetons',
+  close: 'Aizvērt',
+  dataIterator: {
+    noResultsText: 'Nekas netika atrasts',
+    loadingText: 'Ielādē...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Rādīt lapā:',
+    ariaLabel: {
+      sortDescending: 'Sakārtots dilstošā secībā.',
+      sortAscending: 'Sakārtots augošā secībā.',
+      sortNone: 'Nav sakārtots.',
+      activateNone: 'Aktivizēt, lai noņemtu kārtošanu.',
+      activateDescending: 'Aktivizēt, lai sakārtotu dilstošā secībā.',
+      activateAscending: 'Aktivizēt, lai sakārtotu augošā secībā.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Rādīt lapā:',
+    itemsPerPageAll: 'Visu',
+    nextPage: 'Nākamā lapa',
+    prevPage: 'Iepriekšējā lapa',
+    firstPage: 'Pirmā lapa',
+    lastPage: 'Pēdējā lapa',
+    pageText: '{0}-{1} no {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} izvēlēts'
+  },
+  noDataText: 'Nav pieejamu datu',
+  carousel: {
+    prev: 'Iepriekšējais slaids',
+    next: 'Nākamais slaids',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: 'Vēl {0}'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=lv.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/nl.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/nl.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'insigne',
+  close: 'Sluiten',
+  dataIterator: {
+    noResultsText: 'Geen overeenkomende resultaten gevonden',
+    loadingText: 'Items aan het laden...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Rijen per pagina:',
+    ariaLabel: {
+      sortDescending: 'Aflopend gesorteerd.',
+      sortAscending: 'Oplopend gesorteerd.',
+      sortNone: 'Niet gesorterrd.',
+      activateNone: 'Activeer om de sortering te verwijderen.',
+      activateDescending: 'Activeer om aflopend te sorteren.',
+      activateAscending: 'Activeer om oplopend te sorteren.'
+    },
+    sortBy: 'Sorteer volgens'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Aantal per pagina:',
+    itemsPerPageAll: 'Alles',
+    nextPage: 'Volgende pagina',
+    prevPage: 'Vorige pagina',
+    firstPage: 'Eerste pagina',
+    lastPage: 'Laatste pagina',
+    pageText: '{0}-{1} van {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} geselecteerd'
+  },
+  noDataText: 'Geen gegevens beschikbaar',
+  carousel: {
+    prev: 'Vorig beeld',
+    next: 'Volgend beeld',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} meer'
+  },
+  fileInput: {
+    counter: '{0} bestanden',
+    counterSize: '{0} bestanden ({1} in totaal)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=nl.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/no.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/no.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Skilt',
+  close: 'Lukk',
+  dataIterator: {
+    noResultsText: 'Fant ingen matchende elementer.',
+    loadingText: 'Laster elementer...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Rader per side:',
+    ariaLabel: {
+      sortDescending: 'Sortert synkende.',
+      sortAscending: 'Sortert stigende.',
+      sortNone: 'Ikke sortert.',
+      activateNone: 'Aktiver for å fjerne sortering.',
+      activateDescending: 'Aktiver for å sortere synkende.',
+      activateAscending: 'Aktiver for å sortere stigende.'
+    },
+    sortBy: 'Sorter etter'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Elementer per side:',
+    itemsPerPageAll: 'Alle',
+    nextPage: 'Neste side',
+    prevPage: 'Forrige side',
+    firstPage: 'Første side',
+    lastPage: 'Siste side',
+    pageText: '{0}-{1} av {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} valgt'
+  },
+  noDataText: 'Ingen data er tilgjengelig',
+  carousel: {
+    prev: 'Forrige bilde',
+    next: 'Neste bilde',
+    ariaLabel: {
+      delimiter: 'Karusellbilde {0} av {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} flere'
+  },
+  fileInput: {
+    counter: '{0} filer',
+    counterSize: '{0} filer ({1} totalt)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=no.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/pl.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/pl.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Odznaka',
+  close: 'Zamknij',
+  dataIterator: {
+    noResultsText: 'Nie znaleziono danych odpowiadających wyszukiwaniu',
+    loadingText: 'Wczytywanie danych...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Wierszy na stronie:',
+    ariaLabel: {
+      sortDescending: 'Sortowanie malejąco. Kliknij aby zmienić.',
+      sortAscending: 'Sortowanie rosnąco. Kliknij aby zmienić.',
+      sortNone: 'Bez sortowania. Kliknij aby posortować rosnąco.',
+      activateNone: 'Kliknij aby usunąć sortowanie.',
+      activateDescending: 'Kliknij aby posortować malejąco.',
+      activateAscending: 'Kliknij aby posortować rosnąco.'
+    },
+    sortBy: 'Sortuj według'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Pozycji na stronie:',
+    itemsPerPageAll: 'Wszystkie',
+    nextPage: 'Nastęna strona',
+    prevPage: 'Poprzednia strona',
+    firstPage: 'Pierwsza strona',
+    lastPage: 'Ostatnia strona',
+    pageText: '{0}-{1} z {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} dat(y)'
+  },
+  noDataText: 'Brak danych',
+  carousel: {
+    prev: 'Poprzedni obraz',
+    next: 'Następny obraz',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} więcej'
+  },
+  fileInput: {
+    counter: 'Liczba plików: {0}',
+    counterSize: 'Liczba plików: {0} (łącznie {1})'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=pl.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/pt.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/pt.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Distintivo',
+  close: 'Fechar',
+  dataIterator: {
+    noResultsText: 'Nenhum dado encontrado',
+    loadingText: 'Carregando itens...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Linhas por página:',
+    ariaLabel: {
+      sortDescending: 'Ordenado decrescente.',
+      sortAscending: 'Ordenado crescente.',
+      sortNone: 'Não ordenado.',
+      activateNone: 'Ative para remover a ordenação.',
+      activateDescending: 'Ative para ordenar decrescente.',
+      activateAscending: 'Ative para ordenar crescente.'
+    },
+    sortBy: 'Ordenar por'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Itens por página:',
+    itemsPerPageAll: 'Todos',
+    nextPage: 'Próxima página',
+    prevPage: 'Página anterior',
+    firstPage: 'Primeira página',
+    lastPage: 'Última página',
+    pageText: '{0}-{1} de {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} selecionado(s)'
+  },
+  noDataText: 'Não há dados disponíveis',
+  carousel: {
+    prev: 'Visão anterior',
+    next: 'Próxima visão',
+    ariaLabel: {
+      delimiter: 'Slide {0} de {1} do carrossel'
+    }
+  },
+  calendar: {
+    moreEvents: 'Mais {0}'
+  },
+  fileInput: {
+    counter: '{0} arquivo(s)',
+    counterSize: '{0} arquivo(s) ({1} no total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=pt.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/ro.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/ro.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Insignă',
+  close: 'Close',
+  dataIterator: {
+    noResultsText: 'Nu au fost găsite înregistrări care să se potrivească',
+    loadingText: 'Loading item...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Rânduri pe pagină:',
+    ariaLabel: {
+      sortDescending: 'Sorted descending.',
+      sortAscending: 'Sorted ascending.',
+      sortNone: 'Not sorted.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Articole pe pagină:',
+    itemsPerPageAll: 'Toate',
+    nextPage: 'Pagina următoare',
+    prevPage: 'Pagina anterioară',
+    firstPage: 'Pagina prima',
+    lastPage: 'Pagina ultima',
+    pageText: '{0}-{1} din {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} selectate'
+  },
+  noDataText: 'Nu există date disponibile',
+  carousel: {
+    prev: 'Anterior vizual',
+    next: 'Următorul vizual',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} mai mult'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=ro.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/ru.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/ru.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'знак',
+  close: 'Закрыть',
+  dataIterator: {
+    noResultsText: 'Не найдено подходящих записей',
+    loadingText: 'Запись загружается...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Строк на странице:',
+    ariaLabel: {
+      sortDescending: 'Упорядочено по убыванию.',
+      sortAscending: 'Упорядочено по возрастанию.',
+      sortNone: 'Не упорядочено.',
+      activateNone: 'Активируйте, чтобы убрать сортировку.',
+      activateDescending: 'Активируйте для упорядочивания убыванию.',
+      activateAscending: 'Активируйте для упорядочивания по возрастанию.'
+    },
+    sortBy: 'Сортировать по'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Записей на странице:',
+    itemsPerPageAll: 'Все',
+    nextPage: 'Следующая страница',
+    prevPage: 'Предыдущая страница',
+    firstPage: 'Первая страница',
+    lastPage: 'Последняя страница',
+    pageText: '{0}-{1} из {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} выбран'
+  },
+  noDataText: 'Отсутствуют данные',
+  carousel: {
+    prev: 'Предыдущий слайд',
+    next: 'Следующий слайд',
+    ariaLabel: {
+      delimiter: 'Слайд {0} из {1}'
+    }
+  },
+  calendar: {
+    moreEvents: 'Еще {0}'
+  },
+  fileInput: {
+    counter: 'Файлов: {0}',
+    counterSize: 'Файлов: {0} (всего {1})'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=ru.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/sl.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/sl.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Značka',
+  close: 'Zapri',
+  dataIterator: {
+    noResultsText: 'Ni iskanega zapisa',
+    loadingText: 'Nalaganje...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Vrstic na stran:',
+    ariaLabel: {
+      sortDescending: 'Razvrščeno padajoče.',
+      sortAscending: 'Razvrščeno naraščajoče.',
+      sortNone: 'Ni razvrščeno.',
+      activateNone: 'Aktivirajte za odstranitev razvrščanja.',
+      activateDescending: 'Aktivirajte za padajoče razvrščanje.',
+      activateAscending: 'Aktivirajte za naraščajoče razvrščanje.'
+    },
+    sortBy: 'Razvrsti po'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Predmetov na stran:',
+    itemsPerPageAll: 'Vse',
+    nextPage: 'Naslednja stran',
+    prevPage: 'Prejšnja stran',
+    firstPage: 'Prva stran',
+    lastPage: 'Zadnja stran',
+    pageText: '{0}-{1} od {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} izbrano/-ih'
+  },
+  noDataText: 'Ni podatkov',
+  carousel: {
+    prev: 'Prejšnji prikaz',
+    next: 'Naslednji prikaz',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: 'Še {0}'
+  },
+  fileInput: {
+    counter: '{0} datotek',
+    counterSize: '{0} datotek ({1} skupno)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=sl.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/sr-Cyrl.js":
+/*!****************************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/sr-Cyrl.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Значка',
+  close: 'Close',
+  dataIterator: {
+    noResultsText: 'Ни један запис није пронађен',
+    loadingText: 'Loading item...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Редова по страници:',
+    ariaLabel: {
+      sortDescending: 'Sorted descending.',
+      sortAscending: 'Sorted ascending.',
+      sortNone: 'Not sorted.',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'Sort by'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Ставки по страници:',
+    itemsPerPageAll: 'Све',
+    nextPage: 'Следећа страница',
+    prevPage: 'Претходна страница',
+    firstPage: 'Прва страница',
+    lastPage: 'Последња страница',
+    pageText: '{0}-{1} од {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} одабрано'
+  },
+  noDataText: 'Нема доступних података',
+  carousel: {
+    prev: 'Превиоус висуал',
+    next: 'Нект висуал',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} море'
+  },
+  fileInput: {
+    counter: '{0} files',
+    counterSize: '{0} files ({1} in total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=sr-Cyrl.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/sv.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/sv.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Bricka',
+  close: 'Stäng',
+  dataIterator: {
+    noResultsText: 'Inga poster funna',
+    loadingText: 'Laddar data...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Rader per sida:',
+    ariaLabel: {
+      sortDescending: 'Sorterat fallande.',
+      sortAscending: 'Sorterat stigande.',
+      sortNone: 'Osorterat.',
+      activateNone: 'Aktivera för att ta bort sortering.',
+      activateDescending: 'Aktivera för sortering fallande.',
+      activateAscending: 'Aktivera för sortering stigande.'
+    },
+    sortBy: 'Sortera efter'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Objekt per sida:',
+    itemsPerPageAll: 'Alla',
+    nextPage: 'Nästa sida',
+    prevPage: 'Föregående sida',
+    firstPage: 'Första sidan',
+    lastPage: 'Sista sidan',
+    pageText: '{0}-{1} av {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} markerade'
+  },
+  noDataText: 'Ingen data tillgänglig',
+  carousel: {
+    prev: 'Föregående vy',
+    next: 'Nästa vy',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} fler'
+  },
+  fileInput: {
+    counter: '{0} filer',
+    counterSize: '{0} filer (av {1} totalt)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=sv.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/th.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/th.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'สัญลักษณ์',
+  close: 'ปิด',
+  dataIterator: {
+    noResultsText: 'ไม่พบข้อมูลที่ค้นหา',
+    loadingText: 'กำลังโหลดข้อมูล... กรุณารอสักครู่'
+  },
+  dataTable: {
+    itemsPerPageText: 'แถวต่อหน้า:',
+    ariaLabel: {
+      sortDescending: 'เรียงลำดับจากมากไปน้อย กดเพื่อปิดการเรียงลำดับ',
+      sortAscending: 'เรียงจากน้อยไปมาก กดเพื่อเรียงลำดับจากมากไปน้อย',
+      sortNone: 'ไม่ได้จัดเรียง กดเพื่อเรียงลำดับจากน้อยไปมาก',
+      activateNone: 'Activate to remove sorting.',
+      activateDescending: 'Activate to sort descending.',
+      activateAscending: 'Activate to sort ascending.'
+    },
+    sortBy: 'จัดเรียงตาม'
+  },
+  dataFooter: {
+    itemsPerPageText: 'รายการต่อหน้า:',
+    itemsPerPageAll: 'ทั้งหมด',
+    nextPage: 'หน้าต่อไป',
+    prevPage: 'หน้าที่แล้ว',
+    firstPage: 'หน้าแรก',
+    lastPage: 'หน้าสุดท้าย',
+    pageText: '{0}-{1} จาก {2}'
+  },
+  datePicker: {
+    itemsSelected: 'เลือก {0} วัน'
+  },
+  noDataText: 'ไม่มีข้อมูล',
+  carousel: {
+    prev: 'ภาพก่อนหน้า',
+    next: 'ภาพต่อไป',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: 'อีก {0}'
+  },
+  fileInput: {
+    counter: '{0} ไฟล์',
+    counterSize: '{0} ไฟล์ (รวม {1})'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=th.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/tr.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/tr.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'rozet',
+  close: 'Kapat',
+  dataIterator: {
+    noResultsText: 'Eşleşen veri bulunamadı',
+    loadingText: 'Yükleniyor... Lütfen bekleyin.'
+  },
+  dataTable: {
+    itemsPerPageText: 'Sayfa başına satır:',
+    ariaLabel: {
+      sortDescending: 'Z den A ya sıralı.',
+      sortAscending: 'A dan Z ye sıralı.',
+      sortNone: 'Sıralı değil. ',
+      activateNone: 'Sıralamayı kaldırmak için etkinleştir.',
+      activateDescending: 'Z den A ya sıralamak için etkinleştir.',
+      activateAscending: 'A dan Z ye sıralamak için etkinleştir.'
+    },
+    sortBy: 'Sırala'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Sayfa başına satır:',
+    itemsPerPageAll: 'Hepsi',
+    nextPage: 'Sonraki sayfa',
+    prevPage: 'Önceki sayfa',
+    firstPage: 'İlk sayfa',
+    lastPage: 'Son sayfa',
+    pageText: '{0} - {1} arası, Toplam: {2} kayıt'
+  },
+  datePicker: {
+    itemsSelected: '{0} öge seçildi'
+  },
+  noDataText: 'Bu görünümde veri yok.',
+  carousel: {
+    prev: 'Önceki görsel',
+    next: 'Sonraki görsel',
+    ariaLabel: {
+      delimiter: 'Galeri sayfa {0} / {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '{0} tane daha'
+  },
+  fileInput: {
+    counter: '{0} dosya',
+    counterSize: '{0} dosya (toplamda {1})'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=tr.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/uk.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/uk.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: 'Знак',
+  close: 'Закрити',
+  dataIterator: {
+    noResultsText: 'В результаті пошуку нічого не знайдено',
+    loadingText: 'Завантаження...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Рядків на сторінці:',
+    ariaLabel: {
+      sortDescending: 'Відсортовано за спаданням.',
+      sortAscending: 'Відсортовано за зростанням.',
+      sortNone: 'Не відсортовано.',
+      activateNone: 'Активувати, щоб видалити сортування.',
+      activateDescending: 'Активувати, щоб відсортувати за спаданням.',
+      activateAscending: 'Активувати, щоб відсортувати за зростанням.'
+    },
+    sortBy: 'Відсортувати за'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Елементів на сторінці:',
+    itemsPerPageAll: 'Всі',
+    nextPage: 'Наступна сторінка',
+    prevPage: 'Попередня сторінка',
+    firstPage: 'Перша сторінка',
+    lastPage: 'Остання сторінка',
+    pageText: '{0}-{1} з {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} вибрано'
+  },
+  noDataText: 'Немає даних для відображення',
+  carousel: {
+    prev: 'Попередній слайд',
+    next: 'Наступий слайд',
+    ariaLabel: {
+      delimiter: 'Слайд {0} з {1}'
+    }
+  },
+  calendar: {
+    moreEvents: 'Ще {0}'
+  },
+  fileInput: {
+    counter: '{0} файлів',
+    counterSize: '{0} файлів ({1} загалом)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=uk.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/zh-Hans.js":
+/*!****************************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/zh-Hans.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: '徽章',
+  close: '关闭',
+  dataIterator: {
+    noResultsText: '没有符合条件的结果',
+    loadingText: '加载中……'
+  },
+  dataTable: {
+    itemsPerPageText: '每页数目：',
+    ariaLabel: {
+      sortDescending: '：降序排列。',
+      sortAscending: '：升序排列。',
+      sortNone: '：未排序。',
+      activateNone: '点击以移除排序。',
+      activateDescending: '点击以降序排列。',
+      activateAscending: '点击以升序排列。'
+    },
+    sortBy: '排序方式'
+  },
+  dataFooter: {
+    itemsPerPageText: '每页数目：',
+    itemsPerPageAll: '全部',
+    nextPage: '下一页',
+    prevPage: '上一页',
+    firstPage: '首页',
+    lastPage: '尾页',
+    pageText: '{0}-{1} 共 {2}'
+  },
+  datePicker: {
+    itemsSelected: '已选择 {0}'
+  },
+  noDataText: '没有数据',
+  carousel: {
+    prev: '上一张',
+    next: '下一张',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '还有 {0} 项'
+  },
+  fileInput: {
+    counter: '{0} 个文件',
+    counterSize: '{0} 个文件（共 {1}）'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=zh-Hans.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/zh-Hant.js":
+/*!****************************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/zh-Hant.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  badge: '徽章',
+  close: '關閉',
+  dataIterator: {
+    noResultsText: '沒有符合條件的結果',
+    loadingText: '讀取中...'
+  },
+  dataTable: {
+    itemsPerPageText: '每頁列數：',
+    ariaLabel: {
+      sortDescending: '：降序排列。',
+      sortAscending: '：升序排列。',
+      sortNone: '無排序方式。點擊以升序排列。',
+      activateNone: '點擊以移除排序方式。',
+      activateDescending: '點擊以降序排列。',
+      activateAscending: '點擊以移除排序方式。'
+    },
+    sortBy: '排序方式'
+  },
+  dataFooter: {
+    itemsPerPageText: '每頁項目：',
+    itemsPerPageAll: '全部',
+    nextPage: '下一頁',
+    prevPage: '上一頁',
+    firstPage: '第一頁',
+    lastPage: '最後頁',
+    pageText: '{2} 條中的 {0}~{1} 條'
+  },
+  datePicker: {
+    itemsSelected: '已選擇 {0}'
+  },
+  noDataText: '沒有資料',
+  carousel: {
+    prev: '上一張',
+    next: '下一張',
+    ariaLabel: {
+      delimiter: 'Carousel slide {0} of {1}'
+    }
+  },
+  calendar: {
+    moreEvents: '還有其他 {0} 項'
+  },
+  fileInput: {
+    counter: '{0} 個檔案',
+    counterSize: '{0} 個檔案（共 {1}）'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  }
+});
+//# sourceMappingURL=zh-Hant.js.map
+
+/***/ }),
+
 /***/ "./node_modules/webpack/buildin/global.js":
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
@@ -97757,11 +100726,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _locale_en__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./locale/en */ "./resources/js/locale/en.js");
+/* harmony import */ var _locale_fr__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./locale/fr */ "./resources/js/locale/fr.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+
+
 
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
@@ -97771,6 +100744,14 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 var vuetifyOptions = {
   icons: {
     iconfont: 'mdi'
+  },
+  lang: {
+    locales: {
+      fr: _locale_fr__WEBPACK_IMPORTED_MODULE_3__["default"],
+      en: _locale_en__WEBPACK_IMPORTED_MODULE_2__["default"]
+    },
+    fallbackLocale: 'en' // current: 'fr',
+
   }
 };
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_1___default.a);
@@ -97783,8 +100764,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_
  */
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]); //MAIN COMPONENTS
+//MAIN COMPONENTS
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('home-calendar-component', __webpack_require__(/*! ./components/HomeCalendarComponent.vue */ "./resources/js/components/HomeCalendarComponent.vue")["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('room-material-manager', __webpack_require__(/*! ./components/RoomMaterialManagerComponent.vue */ "./resources/js/components/RoomMaterialManagerComponent.vue")["default"]); //ASSOCIATION COMPONENTS
@@ -97867,75 +100847,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
-
-/***/ }),
-
-/***/ "./resources/js/components/ExampleComponent.vue":
-/*!******************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
-/* harmony import */ var _ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ExampleComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/ExampleComponent.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ExampleComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
-/*!*************************************************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
-  \*************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
 
 /***/ }),
 
@@ -99283,6 +102194,356 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_privateCardComponent_vue_vue_type_template_id_e3cf0288_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/locale/en.js":
+/*!***********************************!*\
+  !*** ./resources/js/locale/en.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuetify_lib_locale__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuetify/lib/locale */ "./node_modules/vuetify/lib/locale/index.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+/* harmony default export */ __webpack_exports__["default"] = (_objectSpread({}, vuetify_lib_locale__WEBPACK_IMPORTED_MODULE_0__["en"], {
+  //GENERAL LINES
+  common: {
+    actions: {
+      close: "Close",
+      validate: "Validate",
+      update: "Update",
+      next: "Next",
+      back: "Back",
+      previous: "Previous"
+    },
+    snackbar: {
+      created: "Created {0}",
+      updated: "Updated {0}",
+      deleted: "Deleted {0}",
+      nothing: "Nothing to change"
+    }
+  },
+  //COMPONENTS
+  associations: {
+    create: {
+      nameRequired: 'Name is required',
+      nameLength: 'Name must be between 2 and 255 characters',
+      name: "Association's name",
+      descLength: "Description must be between 2 and 255 characters",
+      desc: "Description",
+      president: "President",
+      presidentRequired: "You must choose a president"
+    },
+    dashboard: {
+      name: "Association's name",
+      desc: "Description",
+      president: "President"
+    }
+  },
+  events: {
+    create: {
+      title: "Title",
+      desc: "Description",
+      room: "Location",
+      link: "Event link",
+      materials: "Equipment necessary",
+      location: 'Other',
+      linkHint: "Remember to add the http:// or https:// in front of the link",
+      titleRequired: "Title is required",
+      titleLength: "Title must be between 2 and 255 characters",
+      descLength: "Description must be between 2 and 255 characters",
+      linkLength: "Link must be between 2 and 255 characters",
+      locationLength: 'Location must be between 2 and 255 characters',
+      beginDate: "Select begin date",
+      beginTime: "Select begin time",
+      endDate: "Select end date",
+      endTime: "Select end time",
+      done: "Done!",
+      dateOrder: "Beginning date should be before end date!"
+    },
+    card: {
+      pending: "Pending",
+      approved: "Approved",
+      notApproved: "Not approved",
+      to: "to"
+    },
+    update: {
+      title: "Title",
+      desc: "Description",
+      room: "Location",
+      link: "Event link",
+      materials: "Equipment necessary",
+      location: 'Other',
+      linkHint: "Remember to add the http:// or https:// in front of the link",
+      titleRequired: "Title is required",
+      titleLength: "Title must be between 2 and 255 characters",
+      descLength: "Description must be between 2 and 255 characters",
+      linkLength: "Link must be between 2 and 255 characters",
+      locationLength: 'Location must be between 2 and 255 characters',
+      beginDate: "Select begin date",
+      beginTime: "Select begin time",
+      endDate: "Select end date",
+      endTime: "Select end time",
+      done: "Done!",
+      dateOrder: "Beginning date should be before end date!"
+    }
+  },
+  materials: {
+    create: {
+      nameRequired: 'Name is required',
+      nameLength: 'Name must be between 2 and 255 characters',
+      name: "Equipment's name",
+      descLength: "Description must be between 2 and 255 characters",
+      desc: "Description",
+      price: "Price",
+      priceLength: "Price must be between 2 and 255 characters"
+    },
+    update: {
+      nameRequired: 'Name is required',
+      nameLength: 'Name must be between 2 and 255 characters',
+      name: "Equipment's name",
+      descLength: "Description must be between 2 and 255 characters",
+      desc: "Description",
+      price: "Price",
+      priceLength: "Price must be between 2 and 255 characters"
+    }
+  },
+  occupations: {
+    admin: {
+      requested: "requested",
+      approveQ: "Approve request?",
+      to: "to",
+      approve: "Approve",
+      notApprove: "Do not approve"
+    }
+  },
+  rents: {
+    admin: {
+      requested: "requested",
+      approveQ: "Approve request?",
+      to: "to",
+      approve: "Approve",
+      notApprove: "Do not approve"
+    }
+  },
+  rooms: {
+    create: {
+      nameRequired: 'Name is required',
+      nameLength: 'Name must be between 2 and 255 characters',
+      name: "Room name",
+      locLength: "Location must be between 2 and 255 characters",
+      location: "Description",
+      locHint: "Be specific we want people to find it right?"
+    }
+  },
+  users: {
+    update: {
+      title: "Update user role",
+      itemRequired: "Item is required",
+      role: "Role",
+      user: "User",
+      admin: "Admin"
+    }
+  },
+  general: {
+    home: {
+      today: "Today",
+      day: "Day",
+      week: "Week",
+      month: "Month",
+      fday: "4 Days"
+    },
+    roomMaterial: {
+      title: "Manage your equipments and rooms",
+      nMate: "New Equipment",
+      nRoom: "New Room"
+    }
+  }
+}));
+
+/***/ }),
+
+/***/ "./resources/js/locale/fr.js":
+/*!***********************************!*\
+  !*** ./resources/js/locale/fr.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuetify_lib_locale__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuetify/lib/locale */ "./node_modules/vuetify/lib/locale/index.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+/* harmony default export */ __webpack_exports__["default"] = (_objectSpread({}, vuetify_lib_locale__WEBPACK_IMPORTED_MODULE_0__["fr"], {
+  //GENERAL LINES
+  common: {
+    actions: {
+      close: "Fermer",
+      validate: "Valider",
+      update: "Mettre à jour",
+      next: "Suivant",
+      back: "Retour",
+      previous: "Précédent"
+    },
+    snackbar: {
+      created: "{0} créé",
+      updated: "{0} mis à jour",
+      deleted: "{0} supprimé",
+      nothing: "Rien à changer"
+    }
+  },
+  //COMPONENTS
+  associations: {
+    create: {
+      nameRequired: 'Le nom est nécéssaire',
+      nameLength: "Le nom doit être entre 2 et 255 caractères",
+      name: "Nom de l'association",
+      desc: "Description",
+      descLength: "La description doit être entre 2 et 255 caractères",
+      president: "Président.e",
+      presidentRequired: "Ce champs est requis"
+    },
+    dashboard: {
+      name: "Nom de l'association",
+      desc: "Description",
+      president: "Président.e"
+    }
+  },
+  events: {
+    create: {
+      title: "Titre",
+      desc: "Description",
+      room: "Localisation",
+      link: "Lien de l'évènement",
+      materials: "Equipement nécessaire",
+      location: 'Autre',
+      linkHint: "Rappelez-vous de ajouter le http:// ou https:// au début du lien",
+      titleRequired: "Le titre est nécéssaire",
+      titleLength: "Le titre doit être entre 2 et 255 caractères",
+      descLength: "La description doit être entre 2 et 255 caractères",
+      linkLength: "Le lien doit être entre 2 et 255 caractères",
+      locationLength: 'La localisation doit être entre 2 et 255 caractères',
+      beginDate: "Sélectionner la date de début",
+      beginTime: "Sélectionner la date de fin",
+      endDate: "Sélectionner l'heure de début",
+      endTime: "Sélectionner l'heure de fin",
+      done: "C'est bon!",
+      dateOrder: "Le début de l'évènement doit être après la fin!"
+    },
+    card: {
+      pending: "En attente",
+      approved: "Approuvé",
+      notApproved: "Non approuvé",
+      to: "à"
+    },
+    update: {
+      title: "Titre",
+      desc: "Description",
+      room: "Localisation",
+      link: "Lien de l'évènement",
+      materials: "Equipement nécessaire",
+      location: 'Autre',
+      linkHint: "Rappelez-vous de ajouter le http:// ou https:// au début du lien",
+      titleRequired: "Le titre est nécéssaire",
+      titleLength: "Le titre doit être entre 2 et 255 caractères",
+      descLength: "La description doit être entre 2 et 255 caractères",
+      linkLength: "Le lien doit être entre 2 et 255 caractères",
+      locationLength: 'La localisation doit être entre 2 et 255 caractères',
+      beginDate: "Sélectionner la date de début",
+      beginTime: "Sélectionner la date de fin",
+      endDate: "Sélectionner l'heure de début",
+      endTime: "Sélectionner l'heure de fin",
+      done: "C'est bon!",
+      dateOrder: "Le début de l'évènement doit être après la fin!"
+    }
+  },
+  materials: {
+    create: {
+      nameRequired: 'Le nom est nécéssaire',
+      nameLength: "Le nom doit être entre 2 et 255 caractères",
+      name: "Nom de l'équipement",
+      desc: "Description",
+      descLength: "La description doit être entre 2 et 255 caractères",
+      price: "Prix",
+      priceLength: "Le prix doit être entre 2 et 255 caractères"
+    },
+    update: {
+      nameRequired: 'Le nom est nécéssaire',
+      nameLength: "Le nom doit être entre 2 et 255 caractères",
+      name: "NNom de l'équipement",
+      desc: "Description",
+      descLength: "La description doit être entre 2 et 255 caractères",
+      price: "Prix",
+      priceLength: "Le prix doit être entre 2 et 255 caractères"
+    }
+  },
+  occupations: {
+    admin: {
+      requested: "Demandé",
+      approveQ: "Approuver la demande?",
+      to: "à",
+      approve: "Approuver",
+      notApprove: "Ne pas approuver"
+    }
+  },
+  rents: {
+    admin: {
+      requested: "Demandé",
+      approveQ: "Approuver la demande?",
+      to: "à",
+      approve: "Approuver",
+      notApprove: "Ne pas approuver"
+    }
+  },
+  rooms: {
+    create: {
+      nameRequired: 'Le nom est nécéssaire',
+      nameLength: "Le nom doit être entre 2 et 255 caractères",
+      name: "Nom de la salle",
+      locLength: "La localisation doit être entre 2 et 255 caractères",
+      location: "Description",
+      locHint: "Soyez spécifique"
+    }
+  },
+  users: {
+    update: {
+      title: "Mettre à jour le rôle de l'utilisateur",
+      itemRequired: "Ce champs est nécéssaire",
+      role: "Rôle",
+      user: "Utilisateur",
+      admin: "Administrateur"
+    }
+  },
+  general: {
+    home: {
+      today: "Aujourd'hui",
+      day: "Jour",
+      week: "Semaine",
+      month: "Mois",
+      fday: "4 Jours"
+    },
+    roomMaterial: {
+      title: "Managez vos équipements et salles",
+      nMate: "Nouvel équipement",
+      nRoom: "Nouvelle salle"
+    }
+  }
+}));
 
 /***/ }),
 

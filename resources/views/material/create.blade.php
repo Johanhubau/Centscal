@@ -5,7 +5,7 @@
         <v-row
             justify="center">
             <v-col>
-                <create-material-card association_id="{{$association->id}}"></create-material-card>
+                <create-material-card association_id="{{$association->id}}" locale="{{App::getLocale()}}"></create-material-card>
             </v-col>
         </v-row>
     </v-container>

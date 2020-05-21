@@ -42,7 +42,7 @@
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{$vuetify.lang.t('$vuetify.common.actions.close')}}
             </v-btn>
         </v-snackbar>
     </div>
@@ -51,23 +51,26 @@
 <script>
     export default {
         name: "privateCardComponent",
-        props: ['id', 'name', 'role'],
+        props: ['id', 'name', 'role', 'locale'],
         data: () => ({
             isActive: false,
             snackbar: false,
             snackbarText: '',
             show: true,
         }),
+        mounted() {
+            this.$vuetify.lang.current = this.locale
+        },
         computed: {
             userlink() {
-                return '/admin/user/'+ this.id +'/edit'
+                return '/' + this.locale + '/admin/user/'+ this.id +'/edit'
             }
         },
         methods: {
             deleteItem() {
                 axios.delete('/api/user/' + this.id, {}).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Deleted " + this.name;
+                    this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.deleted', this.name)
                     this.snackbar = true;
                     this.show = false;
                 })

@@ -13,6 +13,7 @@
                     v-bind:rent="{{$rent}}"
                     v-bind:material="{{$rent->material}}"
                     class="my-3"
+                    locale="{{App::getLocale()}}"
                 >
                 </update-rent-card>
                     @endforeach

@@ -9,6 +9,7 @@
                                    v-bind:rooms="{{\App\Room::all()}}"
                                    v-bind:materials="{{\App\Material::all()}}"
                                    v-bind:rents="{{$event->rents}}"
+                                   locale="{{App::getLocale()}}"
                                    @if($event->occupation != null)
                                    v-bind:occupation="{{$event->occupation}}"
                                    @else

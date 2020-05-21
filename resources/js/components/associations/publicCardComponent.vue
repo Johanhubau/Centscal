@@ -34,10 +34,13 @@
 <script>
     export default {
         name: "publicCardComponent",
-        props: ['id', 'name', 'desc', 'color'],
+        props: ['id', 'name', 'desc', 'color', 'locale'],
         data: () => ({
             isActive: false,
         }),
+        mounted() {
+            this.$vuetify.lang.current = this.locale
+        },
     }
 </script>
 

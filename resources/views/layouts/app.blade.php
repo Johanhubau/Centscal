@@ -45,37 +45,37 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login', App::getLocale()) }}">{{ __('Login') }}</a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('register', App::getLocale()) }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else
                             @if (Auth::user()->isAdmin())
                                 <li class="nav-item">
                                     <a class="nav-link"
-                                       href="{{ route('admin.associations') }}">{{ __('Associations') }}</a>
+                                       href="{{ route('admin.associations', App::getLocale()) }}">@lang('app.associations')</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.users') }}">{{ __('Users') }}</a>
+                                    <a class="nav-link" href="{{ route('admin.users', App::getLocale()) }}">@lang('app.users')</a>
                                 </li>
                             @else
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('associations') }}">{{ __('Associations') }}</a>
+                                    <a class="nav-link" href="{{ route('associations', App::getLocale()) }}">@lang('app.associations')</a>
                                 </li>
                                 @if (count(Auth::user()->president_associations) != 0)
                                     <li class="nav-item dropdown">
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                            {{__('My associations')}}<span class="caret"></span>
+                                            @lang('app.myAssociations')<span class="caret"></span>
                                         </a>
 
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                             @foreach(Auth::user()->president_associations as $association)
                                                 <a class="dropdown-item"
-                                                   href="{{ url('/association/'.$association->id) }}">
+                                                   href="{{ url(App::getLocale().'/association/'.$association->id) }}">
                                                     {{ $association->name }}
                                                 </a>
                                             @endforeach
@@ -93,7 +93,7 @@
                                                     @foreach(Auth::user()->president_associations as $association)
                                                         @if (count($association->rents->where('approved', 0)) != 0)
                                                         <a class="dropdown-item"
-                                                           href="{{ url('/association/'.$association->id.'/rents') }}">
+                                                           href="{{ url(App::getLocale().'/association/'.$association->id.'/rents') }}">
                                                             {{ $association->name }}
                                                         </a>
                                                         @endif
@@ -115,7 +115,7 @@
                                                     @foreach(Auth::user()->president_associations as $association)
                                                         @if (count($association->occupations->where('approved', 0)) != 0)
                                                             <a class="dropdown-item"
-                                                               href="{{ url('/association/'.$association->id.'/occupations') }}">
+                                                               href="{{ url(App::getLocale().'/association/'.$association->id.'/occupations') }}">
                                                                 {{ $association->name }}
                                                             </a>
                                                         @endif
@@ -134,19 +134,36 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <a class="dropdown-item" href="{{ route('logout', App::getLocale()) }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    <form id="logout-form" action="{{ route('logout', App::getLocale()) }}" method="POST"
                                           style="display: none;">
                                         @csrf
                                     </form>
                                 </div>
                             </li>
                         @endguest
+                        <li class="nav-item dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{ strtoupper(App::getLocale()) }} <span class="caret"></span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                @foreach(config('app.locales') as $locale)
+                                    @if($locale != App::getLocale())
+                                        <a class="dropdown-item"
+                                           href="{{route(Route::currentRouteName(), [$locale, Route::current()->id])}}">
+                                            {{ strtoupper($locale) }}
+                                        </a>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>

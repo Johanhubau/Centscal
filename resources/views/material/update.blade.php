@@ -5,7 +5,7 @@
         <v-row
             justify="center">
             <v-col>
-                <update-material-card v-bind:material="{{$material}}"></update-material-card>
+                <update-material-card v-bind:material="{{$material}}" locale="{{App::getLocale()}}"></update-material-card>
             </v-col>
         </v-row>
     </v-container>

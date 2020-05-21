@@ -15,7 +15,7 @@
                         <v-spacer></v-spacer>
                         <v-btn
                             icon
-                            :href="'/room/'+room.id">
+                            :href="this.locale+'/room/'+room.id">
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn
@@ -33,7 +33,7 @@
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{this.$vuetify.lang.t('$vuetify.common.actions.close')}}
             </v-btn>
         </v-snackbar>
     </div>
@@ -42,7 +42,7 @@
 <script>
     export default {
         name: "CardComponent",
-        props: ['room'],
+        props: ['room', 'locale'],
         data: () => ({
             isActive: false,
             snackbar: false,
@@ -51,13 +51,14 @@
             location: '',
         }),
         mounted() {
+            this.$vuetify.lang.current = this.locale
             this.makeVars()
         },
         methods: {
             deleteItem() {
                 axios.delete('/api/room/' + this.room.id, {}).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Deleted " + this.room.name;
+                    this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.deleted', this.room.name)
                     this.snackbar = true;
                     this.show = false;
                 })

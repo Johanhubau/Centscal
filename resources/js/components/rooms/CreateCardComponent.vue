@@ -9,17 +9,20 @@
                         <v-text-field
                             v-model="name"
                             :counter="255"
-                            :rules="nameRules"
-                            label="Name"
+                            :rules="[
+                v => !!v || $vuetify.lang.t('$vuetify.rooms.create.nameRequired'),
+                v => (v && v.length <= 255 && v.length >= 2) || $vuetify.lang.t('$vuetify.rooms.create.nameLength') ,
+            ]"
+                            :label="$vuetify.lang.t('$vuetify.rooms.create.name')"
                             required
                         ></v-text-field>
 
                         <v-text-field
                             v-model="location"
                             :counter="255"
-                            :rules="locationRules"
-                            label="Location"
-                            hint="Be specific, we want people to find it right?"
+                            :rules="[v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || $vuetify.lang.t('$vuetify.rooms.create.locLength'),]"
+                            :label="$vuetify.lang.t('$vuetify.rooms.create.location')"
+                            :hint="$vuetify.lang.t('$vuetify.rooms.create.locHint')"
                             required
                         ></v-text-field>
 
@@ -29,7 +32,7 @@
                             class="mr-4"
                             @click="validate"
                         >
-                            Validate
+                            {{$vuetify.lang.t('$vuetify.common.actions.validate')}}
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -41,7 +44,7 @@
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{$vuetify.lang.t('$vuetify.common.actions.close')}}
             </v-btn>
         </v-snackbar>
     </div>
@@ -50,22 +53,18 @@
 <script>
     export default {
         name: "CreateCardComponent",
-        props: ['association_id'],
+        props: ['association_id', 'locale'],
         data: () => ({
             lazy: false,
             snackbar: false,
             snackbarText: '',
             valid: true,
             name: '',
-            nameRules: [
-                v => !!v || 'Name is required',
-                v => (v && v.length <= 255 && v.length >= 2) || 'Name must be between 2 and 255 characters',
-            ],
             location: '',
-            locationRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Location must be between 2 and 255 characters',
-            ],
         }),
+        mounted() {
+            this.$vuetify.lang.current = this.locale
+        },
         methods: {
             validate() {
                 this.$refs.form.validate()
@@ -78,10 +77,10 @@
                 }
                 axios.post('/api/room', data).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Created " + this.title;
+                    this.snackbarText = $vuetify.lang.t('$vuetify.common.snackbar.created', [this.name]);
                     this.snackbar = true;
                 }).finally(()=> {
-                    window.location.href = '/association/' + this.association_id
+                    window.location.href = "/" + this.locale + '/association/' + this.association_id
                 })
             },
         }

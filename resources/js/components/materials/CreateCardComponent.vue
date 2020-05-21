@@ -9,24 +9,29 @@
                         <v-text-field
                             v-model="name"
                             :counter="255"
-                            :rules="nameRules"
-                            label="Name"
+                            :rules="[
+                v => !!v || $vuetify.lang.t('$vuetify.materials.create.nameRequired'),
+                v => (v && v.length <= 255 && v.length >= 2) || $vuetify.lang.t('$vuetify.materials.create.nameLength') ,
+            ]"
+                            :label="$vuetify.lang.t('$vuetify.materials.create.name')"
                             required
                         ></v-text-field>
 
                         <v-text-field
                             v-model="desc"
                             :counter="255"
-                            :rules="descRules"
-                            label="Description"
+                            :rules="[v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || $vuetify.lang.t('$vuetify.materials.create.descLength'),]"
+                            :label="$vuetify.lang.t('$vuetify.materials.create.desc')"
                             required
                         ></v-text-field>
 
                         <v-text-field
                             v-model="price"
                             :counter="255"
-                            :rules="priceRules"
-                            label="Price"
+                            :rules="[
+                v => ((v.length <= 255 && v.length >= 1) || v.length === 0) || $vuetify.lang.t('$vuetify.materials.create.priceLength'),
+            ]"
+                            :label="$vuetify.lang.t('$vuetify.materials.create.price')"
                             required
                         ></v-text-field>
 
@@ -36,7 +41,7 @@
                             class="mr-4"
                             @click="validate"
                         >
-                            Validate
+                            {{$vuetify.lang.t('$vuetify.common.actions.validate')}}
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -48,7 +53,7 @@
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{$vuetify.lang.t('$vuetify.common.actions.close')}}
             </v-btn>
         </v-snackbar>
     </div>
@@ -57,26 +62,19 @@
 <script>
     export default {
         name: "CreateCardComponent",
-        props: ['association_id'],
+        props: ['association_id', 'locale'],
         data: () => ({
             lazy: false,
             snackbar: false,
             snackbarText: '',
             valid: true,
             name: '',
-            nameRules: [
-                v => !!v || 'Name is required',
-                v => (v && v.length <= 255 && v.length >= 2) || 'Name must be between 2 and 255 characters',
-            ],
             desc: '',
-            descRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Description must be between 2 and 255 characters',
-            ],
             price: '',
-            priceRules: [
-                v => ((v.length <= 255 && v.length >= 1) || v.length === 0) || 'Price must be between 1 and 255 characters',
-            ],
         }),
+        mounted() {
+            this.$vuetify.lang.current = this.locale
+        },
         methods: {
             validate() {
                 this.$refs.form.validate()
@@ -92,10 +90,10 @@
                 }
                 axios.post('/api/material', data).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Created " + this.name;
+                    this.snackbarText = $vuetify.lang.t('$vuetify.common.snackbar.created', [this.name]);
                     this.snackbar = true;
                 }).finally(()=>{
-                    window.location.href = '/association/' + this.association_id
+                    window.location.href = '/' + this.locale + '/association/' + this.association_id
                 })
             },
         }
