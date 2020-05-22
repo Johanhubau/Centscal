@@ -18,12 +18,12 @@
             </div>
         </div>
         <v-row class="mx-auto" justify="center">
-            <v-col cols="2">
+            <div class="col-sm-2">
                 <v-card-title>{{$vuetify.lang.t('$vuetify.common.actions.update')}}</v-card-title>
-            </v-col>
-            <v-col cols="10">
-                <v-row>
-                    <v-col>
+            </div>
+            <div class="col-sm-10">
+                <v-row justify="center">
+                    <div class="col-sm">
                         <v-text-field v-model="name"
                                       :label="$vuetify.lang.t('$vuetify.associations.dashboard.name')"></v-text-field>
                         <v-text-field v-model="desc"
@@ -34,13 +34,14 @@
                             :label="$vuetify.lang.t('$vuetify.associations.dashboard.president')"
                             required
                         ></v-autocomplete>
-                        <v-btn @click="update">{{$vuetify.lang.t('$vuetify.common.actions.update')}}</v-btn>
-                    </v-col>
-                    <v-col>
-                        <v-color-picker hide-mode-switch mode="hexa" v-model="color"></v-color-picker>
-                    </v-col>
+                        <v-btn v-if="$vuetify.breakpoint.smAndUp" @click="update">{{$vuetify.lang.t('$vuetify.common.actions.update')}}</v-btn>
+                    </div>
+                    <div class="col-sm">
+                        <v-color-picker class="mb-7" hide-mode-switch mode="hexa" v-model="color"></v-color-picker>
+                        <v-btn v-if="$vuetify.breakpoint.xsOnly" :block="$vuetify.breakpoint.xsOnly" @click="update">{{$vuetify.lang.t('$vuetify.common.actions.update')}}</v-btn>
+                    </div>
                 </v-row>
-            </v-col>
+            </div>
         </v-row>
         <v-row class="mx-auto">
 

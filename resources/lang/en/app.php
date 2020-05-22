@@ -6,6 +6,8 @@ return [
     'users' => 'Users',
     'myAssociations' => 'My associations',
     'latestEvents' => 'Latest :amount events',
-    'seeAllEvents' => 'See all events'
+    'seeAllEvents' => 'See all events',
+    'rooms' => 'Rooms',
+    'materials' => 'Equipment'
 
 ];

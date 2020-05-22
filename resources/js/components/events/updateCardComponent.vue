@@ -5,7 +5,7 @@
                 ref="form"
                 v-model="valid">
                 <v-row class="p-5">
-                    <v-col>
+                    <div class="col-sm">
                         <v-text-field
                             v-model="title"
                             :counter="255"
@@ -67,6 +67,7 @@
                         </v-autocomplete>
 
                         <v-btn
+                            v-if="$vuetify.breakpoint.smAndUp"
                             :disabled="!valid"
                             color="success"
                             class="mr-4"
@@ -74,8 +75,8 @@
                         >
                             {{$vuetify.lang.t('$vuetify.common.actions.validate')}}
                         </v-btn>
-                    </v-col>
-                    <v-col align-self="center">
+                    </div>
+                    <div class="col-sm align-content-center">
                         <v-row justify="center">
                             <transition name="fade" mode="out-in">
                                 <div v-if="current_step === 1" key="1">
@@ -101,7 +102,17 @@
                             <v-btn @click="previous_step" :disabled="current_step === 1">{{$vuetify.lang.t('$vuetify.common.actions.previous')}}</v-btn>
                             <v-btn @click="next_step" :disabled="current_step === 5">{{$vuetify.lang.t('$vuetify.common.actions.next')}}</v-btn>
                         </v-row>
-                    </v-col>
+                    </div>
+                    <v-btn
+                        v-if="$vuetify.breakpoint.xsOnly"
+                        :block="$vuetify.breakpoint.xsOnly"
+                        :disabled="!valid"
+                        color="success"
+                        class="mr-4"
+                        @click="validate"
+                    >
+                        {{$vuetify.lang.t('$vuetify.common.actions.validate')}}
+                    </v-btn>
                 </v-row>
             </v-form>
         </v-sheet>

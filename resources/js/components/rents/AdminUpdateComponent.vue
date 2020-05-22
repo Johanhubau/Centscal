@@ -3,7 +3,7 @@
         <v-row class="p-3">
             <v-col>
                 <v-card-title>
-                    {{this.association.name + " " + $vuetify.lang.t('$vuetify.rents.admin.requested') + " " + this.room.name}}
+                    {{this.association.name + " " + $vuetify.lang.t('$vuetify.rents.admin.requested') + " " + this.material.name}}
                 </v-card-title>
                 <v-card-text>
                     {{this.begin + " " + $vuetify.lang.t('$vuetify.rents.admin.to') + " " + this.end}}
@@ -60,10 +60,10 @@
             makeVars() {
                 this.begin = this.formatDate(this.event.begin)
                 this.end = this.formatDate(this.event.end)
-                this.items.push($vuetify.lang.t('$vuetify.rents.admin.approve'))
-                this.items.push($vuetify.lang.t('$vuetify.rents.admin.notApprove'))
-                this.itemsToId[$vuetify.lang.t('$vuetify.rents.admin.approve')] = 1
-                this.itemsToId[$vuetify.lang.t('$vuetify.rents.admin.notApprove')] = 2
+                this.items.push(this.$vuetify.lang.t('$vuetify.rents.admin.approve'))
+                this.items.push(this.$vuetify.lang.t('$vuetify.rents.admin.notApprove'))
+                this.itemsToId[this.$vuetify.lang.t('$vuetify.rents.admin.approve')] = 1
+                this.itemsToId[this.$vuetify.lang.t('$vuetify.rents.admin.notApprove')] = 2
             },
             formatDate(date) {
                 let d = new Date(date)

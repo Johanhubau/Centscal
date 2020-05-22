@@ -107,7 +107,7 @@ export default {
     },
     occupations: {
         admin: {
-            requested: "Demandé",
+            requested: "a demandé",
             approveQ: "Approuver la demande?",
             to: "à",
             approve: "Approuver",
@@ -116,7 +116,7 @@ export default {
     },
     rents: {
         admin: {
-            requested: "Demandé",
+            requested: "a demandé",
             approveQ: "Approuver la demande?",
             to: "à",
             approve: "Approuver",

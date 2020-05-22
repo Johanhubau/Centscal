@@ -2103,8 +2103,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     viewDay: function viewDay(_ref2) {
       var date = _ref2.date;
-      this.focus = date;
-      this.type = 'day';
+
+      if (this.$vuetify.breakpoint.smAndUp) {
+        this.focus = date;
+        this.type = 'day';
+      }
     },
     getEventColor: function getEventColor(event) {
       return event.color;
@@ -2348,6 +2351,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -2757,6 +2761,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['association_id', 'rooms', 'materials', 'locale'],
   data: function data() {
@@ -3024,6 +3039,17 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3815,10 +3841,10 @@ __webpack_require__.r(__webpack_exports__);
     makeVars: function makeVars() {
       this.begin = this.formatDate(this.event.begin);
       this.end = this.formatDate(this.event.end);
-      this.items.push($vuetify.lang.t('$vuetify.occupations.admin.approve'));
-      this.items.push($vuetify.lang.t('$vuetify.occupations.admin.notApprove'));
-      this.itemsToId[$vuetify.lang.t('$vuetify.occupations.admin.approve')] = 1;
-      this.itemsToId[$vuetify.lang.t('$vuetify.occupations.admin.notApprove')] = 2;
+      this.items.push(this.$vuetify.lang.t('$vuetify.occupations.admin.approve'));
+      this.items.push(this.$vuetify.lang.t('$vuetify.occupations.admin.notApprove'));
+      this.itemsToId[this.$vuetify.lang.t('$vuetify.occupations.admin.approve')] = 1;
+      this.itemsToId[this.$vuetify.lang.t('$vuetify.occupations.admin.notApprove')] = 2;
     },
     formatDate: function formatDate(date) {
       var d = new Date(date);
@@ -3929,10 +3955,10 @@ __webpack_require__.r(__webpack_exports__);
     makeVars: function makeVars() {
       this.begin = this.formatDate(this.event.begin);
       this.end = this.formatDate(this.event.end);
-      this.items.push($vuetify.lang.t('$vuetify.rents.admin.approve'));
-      this.items.push($vuetify.lang.t('$vuetify.rents.admin.notApprove'));
-      this.itemsToId[$vuetify.lang.t('$vuetify.rents.admin.approve')] = 1;
-      this.itemsToId[$vuetify.lang.t('$vuetify.rents.admin.notApprove')] = 2;
+      this.items.push(this.$vuetify.lang.t('$vuetify.rents.admin.approve'));
+      this.items.push(this.$vuetify.lang.t('$vuetify.rents.admin.notApprove'));
+      this.itemsToId[this.$vuetify.lang.t('$vuetify.rents.admin.approve')] = 1;
+      this.itemsToId[this.$vuetify.lang.t('$vuetify.rents.admin.notApprove')] = 2;
     },
     formatDate: function formatDate(date) {
       var d = new Date(date);
@@ -41440,81 +41466,78 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c(
-        "v-row",
-        { staticClass: "mx-auto", attrs: { justify: "center" } },
-        [
-          _c(
-            "v-col",
-            { attrs: { cols: "2" } },
-            [
-              _c("v-card-title", [
-                _vm._v(
-                  _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.update"))
-                )
-              ])
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-col",
-            { attrs: { cols: "10" } },
-            [
+      _c("v-row", { staticClass: "mx-auto", attrs: { justify: "center" } }, [
+        _c(
+          "div",
+          { staticClass: "col-sm-2" },
+          [
+            _c("v-card-title", [
+              _vm._v(
+                _vm._s(_vm.$vuetify.lang.t("$vuetify.common.actions.update"))
+              )
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-sm-10" },
+          [
+            _c("v-row", { attrs: { justify: "center" } }, [
               _c(
-                "v-row",
+                "div",
+                { staticClass: "col-sm" },
                 [
-                  _c(
-                    "v-col",
-                    [
-                      _c("v-text-field", {
-                        attrs: {
-                          label: _vm.$vuetify.lang.t(
-                            "$vuetify.associations.dashboard.name"
-                          )
-                        },
-                        model: {
-                          value: _vm.name,
-                          callback: function($$v) {
-                            _vm.name = $$v
-                          },
-                          expression: "name"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          label: _vm.$vuetify.lang.t(
-                            "$vuetify.associations.dashboard.desc"
-                          )
-                        },
-                        model: {
-                          value: _vm.desc,
-                          callback: function($$v) {
-                            _vm.desc = $$v
-                          },
-                          expression: "desc"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-autocomplete", {
-                        attrs: {
-                          items: _vm.items,
-                          label: _vm.$vuetify.lang.t(
-                            "$vuetify.associations.dashboard.president"
-                          ),
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.user,
-                          callback: function($$v) {
-                            _vm.user = $$v
-                          },
-                          expression: "user"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-btn", { on: { click: _vm.update } }, [
+                  _c("v-text-field", {
+                    attrs: {
+                      label: _vm.$vuetify.lang.t(
+                        "$vuetify.associations.dashboard.name"
+                      )
+                    },
+                    model: {
+                      value: _vm.name,
+                      callback: function($$v) {
+                        _vm.name = $$v
+                      },
+                      expression: "name"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("v-text-field", {
+                    attrs: {
+                      label: _vm.$vuetify.lang.t(
+                        "$vuetify.associations.dashboard.desc"
+                      )
+                    },
+                    model: {
+                      value: _vm.desc,
+                      callback: function($$v) {
+                        _vm.desc = $$v
+                      },
+                      expression: "desc"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("v-autocomplete", {
+                    attrs: {
+                      items: _vm.items,
+                      label: _vm.$vuetify.lang.t(
+                        "$vuetify.associations.dashboard.president"
+                      ),
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.user,
+                      callback: function($$v) {
+                        _vm.user = $$v
+                      },
+                      expression: "user"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.$vuetify.breakpoint.smAndUp
+                    ? _c("v-btn", { on: { click: _vm.update } }, [
                         _vm._v(
                           _vm._s(
                             _vm.$vuetify.lang.t(
@@ -41523,35 +41546,53 @@ var render = function() {
                           )
                         )
                       ])
-                    ],
-                    1
-                  ),
+                    : _vm._e()
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "col-sm" },
+                [
+                  _c("v-color-picker", {
+                    staticClass: "mb-7",
+                    attrs: { "hide-mode-switch": "", mode: "hexa" },
+                    model: {
+                      value: _vm.color,
+                      callback: function($$v) {
+                        _vm.color = $$v
+                      },
+                      expression: "color"
+                    }
+                  }),
                   _vm._v(" "),
-                  _c(
-                    "v-col",
-                    [
-                      _c("v-color-picker", {
-                        attrs: { "hide-mode-switch": "", mode: "hexa" },
-                        model: {
-                          value: _vm.color,
-                          callback: function($$v) {
-                            _vm.color = $$v
-                          },
-                          expression: "color"
-                        }
-                      })
-                    ],
-                    1
-                  )
+                  _vm.$vuetify.breakpoint.xsOnly
+                    ? _c(
+                        "v-btn",
+                        {
+                          attrs: { block: _vm.$vuetify.breakpoint.xsOnly },
+                          on: { click: _vm.update }
+                        },
+                        [
+                          _vm._v(
+                            _vm._s(
+                              _vm.$vuetify.lang.t(
+                                "$vuetify.common.actions.update"
+                              )
+                            )
+                          )
+                        ]
+                      )
+                    : _vm._e()
                 ],
                 1
               )
-            ],
-            1
-          )
-        ],
-        1
-      ),
+            ])
+          ],
+          1
+        )
+      ]),
       _vm._v(" "),
       _c("v-row", { staticClass: "mx-auto" }),
       _vm._v(" "),
@@ -41820,7 +41861,8 @@ var render = function() {
                 { staticClass: "p-5" },
                 [
                   _c(
-                    "v-col",
+                    "div",
+                    { staticClass: "col-sm" },
                     [
                       _c("v-text-field", {
                         attrs: {
@@ -41983,32 +42025,34 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        {
-                          staticClass: "mr-4",
-                          attrs: { disabled: !_vm.valid, color: "success" },
-                          on: { click: _vm.validate }
-                        },
-                        [
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(
-                                _vm.$vuetify.lang.t(
-                                  "$vuetify.common.actions.validate"
-                                )
-                              ) +
-                              "\n                    "
+                      _vm.$vuetify.breakpoint.smAndUp
+                        ? _c(
+                            "v-btn",
+                            {
+                              staticClass: "mr-4",
+                              attrs: { disabled: !_vm.valid, color: "success" },
+                              on: { click: _vm.validate }
+                            },
+                            [
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(
+                                    _vm.$vuetify.lang.t(
+                                      "$vuetify.common.actions.validate"
+                                    )
+                                  ) +
+                                  "\n                    "
+                              )
+                            ]
                           )
-                        ]
-                      )
+                        : _vm._e()
                     ],
                     1
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-col",
-                    { attrs: { "align-self": "center" } },
+                    "div",
+                    { staticClass: "col-sm align-content-center" },
                     [
                       _c(
                         "v-row",
@@ -42196,7 +42240,33 @@ var render = function() {
                       )
                     ],
                     1
-                  )
+                  ),
+                  _vm._v(" "),
+                  _vm.$vuetify.breakpoint.xsOnly
+                    ? _c(
+                        "v-btn",
+                        {
+                          staticClass: "mr-4",
+                          attrs: {
+                            block: _vm.$vuetify.breakpoint.xsOnly,
+                            disabled: !_vm.valid,
+                            color: "success"
+                          },
+                          on: { click: _vm.validate }
+                        },
+                        [
+                          _vm._v(
+                            "\n                    " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                "
+                          )
+                        ]
+                      )
+                    : _vm._e()
                 ],
                 1
               )
@@ -42453,7 +42523,8 @@ var render = function() {
                 { staticClass: "p-5" },
                 [
                   _c(
-                    "v-col",
+                    "div",
+                    { staticClass: "col-sm" },
                     [
                       _c("v-text-field", {
                         attrs: {
@@ -42616,32 +42687,34 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        {
-                          staticClass: "mr-4",
-                          attrs: { disabled: !_vm.valid, color: "success" },
-                          on: { click: _vm.validate }
-                        },
-                        [
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(
-                                _vm.$vuetify.lang.t(
-                                  "$vuetify.common.actions.validate"
-                                )
-                              ) +
-                              "\n                    "
+                      _vm.$vuetify.breakpoint.smAndUp
+                        ? _c(
+                            "v-btn",
+                            {
+                              staticClass: "mr-4",
+                              attrs: { disabled: !_vm.valid, color: "success" },
+                              on: { click: _vm.validate }
+                            },
+                            [
+                              _vm._v(
+                                "\n                        " +
+                                  _vm._s(
+                                    _vm.$vuetify.lang.t(
+                                      "$vuetify.common.actions.validate"
+                                    )
+                                  ) +
+                                  "\n                    "
+                              )
+                            ]
                           )
-                        ]
-                      )
+                        : _vm._e()
                     ],
                     1
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-col",
-                    { attrs: { "align-self": "center" } },
+                    "div",
+                    { staticClass: "col-sm align-content-center" },
                     [
                       _c(
                         "v-row",
@@ -42829,7 +42902,33 @@ var render = function() {
                       )
                     ],
                     1
-                  )
+                  ),
+                  _vm._v(" "),
+                  _vm.$vuetify.breakpoint.xsOnly
+                    ? _c(
+                        "v-btn",
+                        {
+                          staticClass: "mr-4",
+                          attrs: {
+                            block: _vm.$vuetify.breakpoint.xsOnly,
+                            disabled: !_vm.valid,
+                            color: "success"
+                          },
+                          on: { click: _vm.validate }
+                        },
+                        [
+                          _vm._v(
+                            "\n                    " +
+                              _vm._s(
+                                _vm.$vuetify.lang.t(
+                                  "$vuetify.common.actions.validate"
+                                )
+                              ) +
+                              "\n                "
+                          )
+                        ]
+                      )
+                    : _vm._e()
                 ],
                 1
               )
@@ -43634,7 +43733,7 @@ var render = function() {
                               "$vuetify.rents.admin.requested"
                             ) +
                             " " +
-                            this.room.name
+                            this.material.name
                         ) +
                         "\n            "
                     )
@@ -102503,7 +102602,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   occupations: {
     admin: {
-      requested: "Demandé",
+      requested: "a demandé",
       approveQ: "Approuver la demande?",
       to: "à",
       approve: "Approuver",
@@ -102512,7 +102611,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   rents: {
     admin: {
-      requested: "Demandé",
+      requested: "a demandé",
       approveQ: "Approuver la demande?",
       to: "à",
       approve: "Approuver",

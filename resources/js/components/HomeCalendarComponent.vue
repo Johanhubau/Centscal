@@ -179,8 +179,10 @@
                 })
             },
             viewDay({date}) {
-                this.focus = date
-                this.type = 'day'
+                if(this.$vuetify.breakpoint.smAndUp){
+                    this.focus = date
+                    this.type = 'day'
+                }
             },
             getEventColor(event) {
                 return event.color

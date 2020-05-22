@@ -60,10 +60,10 @@
             makeVars() {
                 this.begin = this.formatDate(this.event.begin)
                 this.end = this.formatDate(this.event.end)
-                this.items.push($vuetify.lang.t('$vuetify.occupations.admin.approve'))
-                this.items.push($vuetify.lang.t('$vuetify.occupations.admin.notApprove'))
-                this.itemsToId[$vuetify.lang.t('$vuetify.occupations.admin.approve')] = 1
-                this.itemsToId[$vuetify.lang.t('$vuetify.occupations.admin.notApprove')] = 2
+                this.items.push(this.$vuetify.lang.t('$vuetify.occupations.admin.approve'))
+                this.items.push(this.$vuetify.lang.t('$vuetify.occupations.admin.notApprove'))
+                this.itemsToId[this.$vuetify.lang.t('$vuetify.occupations.admin.approve')] = 1
+                this.itemsToId[this.$vuetify.lang.t('$vuetify.occupations.admin.notApprove')] = 2
             },
             formatDate(date) {
                 let d = new Date(date)

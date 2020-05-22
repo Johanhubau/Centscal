@@ -6,6 +6,8 @@ return [
     'users' => 'Utilisateurs',
     'myAssociations' => 'Mes associations',
     'latestEvents' => 'Derniers :amount évènements',
-    'seeAllEvents' => 'Voir tous les évènements'
+    'seeAllEvents' => 'Voir tous les évènements',
+    'materials' => 'Equipements',
+    'rooms' => 'Salles'
 
 ];
