@@ -13,6 +13,7 @@
                             v-bind:occupation="{{$occupation}}"
                             v-bind:room="{{$occupation->room}}"
                             class="my-3"
+                            locale="{{App::getLocale()}}"
                         >
                         </update-occupation-card>
                     @endforeach

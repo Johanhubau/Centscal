@@ -31,3 +31,6 @@ $factory->define(User::class, function (Faker $faker) {
 $factory->state(User::class, 'gmail', [
    'email' => 'test@gmail.com',
 ]);
+$factory->state(User::class, 'admin', [
+    'role' => 'ROLE_ADMIN',
+]);

@@ -23,7 +23,7 @@ class EventTest extends TestCase
             'role' => 'ROLE_ADMIN'
         ]);
 
-        $this->postJson('login', [
+        $this->postJson('/en/login', [
             'email' => 'test@gmail.com',
             'password' => 'password'
         ]);
@@ -58,7 +58,7 @@ class EventTest extends TestCase
 
     public function testUnauthorizedStore(){
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/event', [
             'title' => 'Party',
@@ -129,7 +129,7 @@ class EventTest extends TestCase
             'association_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/event/1', [
             'name' => 'G07'
@@ -169,7 +169,7 @@ class EventTest extends TestCase
             'association_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->deleteJson('/api/event/1');
 

@@ -18,27 +18,30 @@
             </div>
         </div>
         <v-row class="mx-auto" justify="center">
-            <v-col cols="2">
-                <v-card-title>Update</v-card-title>
-            </v-col>
-            <v-col cols="10">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="name"></v-text-field>
-                        <v-text-field v-model="desc"></v-text-field>
+            <div class="col-sm-2">
+                <v-card-title>{{$vuetify.lang.t('$vuetify.common.actions.update')}}</v-card-title>
+            </div>
+            <div class="col-sm-10">
+                <v-row justify="center">
+                    <div class="col-sm">
+                        <v-text-field v-model="name"
+                                      :label="$vuetify.lang.t('$vuetify.associations.dashboard.name')"></v-text-field>
+                        <v-text-field v-model="desc"
+                                      :label="$vuetify.lang.t('$vuetify.associations.dashboard.desc')"></v-text-field>
                         <v-autocomplete
                             v-model="user"
                             :items="items"
-                            label="President"
+                            :label="$vuetify.lang.t('$vuetify.associations.dashboard.president')"
                             required
                         ></v-autocomplete>
-                        <v-btn @click="update">Update</v-btn>
-                    </v-col>
-                    <v-col>
-                        <v-color-picker hide-mode-switch mode="hexa" v-model="color"></v-color-picker>
-                    </v-col>
+                        <v-btn v-if="$vuetify.breakpoint.smAndUp" @click="update">{{$vuetify.lang.t('$vuetify.common.actions.update')}}</v-btn>
+                    </div>
+                    <div class="col-sm">
+                        <v-color-picker class="mb-7" hide-mode-switch mode="hexa" v-model="color"></v-color-picker>
+                        <v-btn v-if="$vuetify.breakpoint.xsOnly" :block="$vuetify.breakpoint.xsOnly" @click="update">{{$vuetify.lang.t('$vuetify.common.actions.update')}}</v-btn>
+                    </div>
                 </v-row>
-            </v-col>
+            </div>
         </v-row>
         <v-row class="mx-auto">
 
@@ -49,7 +52,7 @@
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{$vuetify.lang.t('$vuetify.common.actions.close')}}
             </v-btn>
         </v-snackbar>
     </v-card>
@@ -58,7 +61,7 @@
 <script>
     export default {
         name: "dashboardComponent",
-        props: ['association', 'users', 'first_name', 'last_name'],
+        props: ['association', 'users', 'first_name', 'last_name', 'locale'],
         data: () => ({
             name: '',
             desc: '',
@@ -71,6 +74,7 @@
             snackbarText: '',
         }),
         mounted() {
+            this.$vuetify.lang.current = this.locale
             this.makeVars()
         },
         methods: {
@@ -103,12 +107,15 @@
                 if(Object.keys(data).length !== 0){
                     axios.post('/api/association/' + this.association.id, data).then((response) => {
                         status = response.status;
-                        this.snackbarText = "Updated " + this.name;
+                        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.updated', [this.name])
                         this.snackbar = true;
                         this.association.name = this.name
                         this.association.desc = this.desc
                         this.association.color = this.color
                     })
+                }else{
+                    this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.nothing')
+                    this.snackbar = true
                 }
             }
         }

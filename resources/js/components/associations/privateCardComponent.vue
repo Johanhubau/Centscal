@@ -41,11 +41,11 @@
         </v-card>
         <v-snackbar v-model="snackbar"
                     :timeout="6000">
-            {{ snackbarText }}
+            {{$vuetify.lang.t('$vuetify.common.snackbar.deleted', [this.name])}}
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{$vuetify.lang.t('$vuetify.common.actions.close', [this.name])}}
             </v-btn>
         </v-snackbar>
     </div>
@@ -54,18 +54,19 @@
 <script>
     export default {
         name: "privateCardComponent",
-        props: ['id', 'name', 'desc', 'color'],
+        props: ['id', 'name', 'desc', 'color', 'locale'],
         data: () => ({
             isActive: false,
             snackbar: false,
-            snackbarText: '',
             show: true,
         }),
+        mounted() {
+            this.$vuetify.lang.current = this.locale
+        },
         methods: {
             deleteItem() {
                 axios.delete('/api/association/' + this.id, {}).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Deleted " + this.name;
                     this.snackbar = true;
                     this.show = false;
                 })

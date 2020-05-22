@@ -3,7 +3,7 @@
         <v-sheet height="64">
             <v-toolbar flat color="white">
                 <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
-                    Today
+                    {{$vuetify.lang.t('$vuetify.general.home.today')}}
                 </v-btn>
                 <v-btn fab text small color="grey darken-2" @click="prev">
                     <v-icon small>mdi-chevron-left</v-icon>
@@ -26,16 +26,16 @@
                     </template>
                     <v-list>
                         <v-list-item @click="type = 'day'">
-                            <v-list-item-title>Day</v-list-item-title>
+                            <v-list-item-title>{{$vuetify.lang.t('$vuetify.general.home.day')}}</v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="type = 'week'">
-                            <v-list-item-title>Week</v-list-item-title>
+                            <v-list-item-title>{{$vuetify.lang.t('$vuetify.general.home.week')}}</v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="type = 'month'">
-                            <v-list-item-title>Month</v-list-item-title>
+                            <v-list-item-title>{{$vuetify.lang.t('$vuetify.general.home.month')}}</v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="type = '4day'">
-                            <v-list-item-title>4 days</v-list-item-title>
+                            <v-list-item-title>{{$vuetify.lang.t('$vuetify.general.home.fday')}}</v-list-item-title>
                         </v-list-item>
                     </v-list>
                 </v-menu>
@@ -101,16 +101,11 @@
 
 <script>
     export default {
-        props: ['associations'],
+        props: ['associations', 'locale'],
         data: () => ({
             focus: '',
             type: 'month',
-            typeToLabel: {
-                month: 'Month',
-                week: 'Week',
-                day: 'Day',
-                '4day': '4 Days',
-            },
+            typeToLabel: {},
             start: null,
             end: null,
             selectedEvent: {},
@@ -154,6 +149,8 @@
             },
         },
         mounted() {
+            this.$vuetify.lang.current = this.locale
+            this.makeVars()
             this.$refs.calendar.checkChange()
             this.calendarHeight = this.$refs.calendarDiv.clientHeight - 75
         },
@@ -182,8 +179,10 @@
                 })
             },
             viewDay({date}) {
-                this.focus = date
-                this.type = 'day'
+                if(this.$vuetify.breakpoint.smAndUp){
+                    this.focus = date
+                    this.type = 'day'
+                }
             },
             getEventColor(event) {
                 return event.color
@@ -233,6 +232,12 @@
                 }
                 return d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate() + "T" + hours + ":" + min
             },
+            makeVars() {
+                this.typeToLabel['day'] = this.$vuetify.lang.t('$vuetify.general.home.day')
+                this.typeToLabel['week'] = this.$vuetify.lang.t('$vuetify.general.home.week')
+                this.typeToLabel['month'] = this.$vuetify.lang.t('$vuetify.general.home.month')
+                this.typeToLabel['4day'] = this.$vuetify.lang.t('$vuetify.general.home.fday')
+            }
         },
     }
 </script>

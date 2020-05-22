@@ -23,7 +23,7 @@ class MemberTest extends TestCase
             'role' => 'ROLE_ADMIN'
         ]);
 
-        $this->postJson('login', [
+        $this->postJson('/en/login', [
             'email' => 'test@gmail.com',
             'password' => 'password'
         ]);
@@ -57,7 +57,7 @@ class MemberTest extends TestCase
 
     public function testUnauthorizedStore(){
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/member', [
             'role' => 'SUPER_ADMIN',
@@ -120,7 +120,7 @@ class MemberTest extends TestCase
             'association_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/member/1', [
             'desc' => 'Microphone'
@@ -159,7 +159,7 @@ class MemberTest extends TestCase
             'association_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->deleteJson('/api/member/1');
 

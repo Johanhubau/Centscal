@@ -5,7 +5,7 @@
         <v-row
             justify="center" class="fill-height">
             <v-col>
-                <home-calendar-component v-bind:associations="{{\App\Association::all('id', 'name', 'color')}}"></home-calendar-component>
+                <home-calendar-component v-bind:associations="{{\App\Association::all('id', 'name', 'color')}}" locale="{{App::getLocale()}}"></home-calendar-component>
             </v-col>
         </v-row>
     </div>

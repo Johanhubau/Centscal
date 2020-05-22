@@ -23,7 +23,7 @@ class RentTest extends TestCase
             'role' => 'ROLE_ADMIN'
         ]);
 
-        $this->postJson('login', [
+        $this->postJson('/en/login', [
             'email' => 'test@gmail.com',
             'password' => 'password'
         ]);
@@ -69,7 +69,7 @@ class RentTest extends TestCase
 
     public function testUnauthorisedStore(){
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/rent', [
             'material_id' => '1',
@@ -128,7 +128,7 @@ class RentTest extends TestCase
             'event_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/rent/1', [
             'approved' => true
@@ -165,7 +165,7 @@ class RentTest extends TestCase
             'event_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->deleteJson('/api/rent/1');
 

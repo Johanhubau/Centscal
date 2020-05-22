@@ -23,7 +23,7 @@ class RoomTest extends TestCase
             'role' => 'ROLE_ADMIN'
         ]);
 
-        $this->postJson('login', [
+        $this->postJson('/en/login', [
             'email' => 'test@gmail.com',
             'password' => 'password'
         ]);
@@ -56,7 +56,7 @@ class RoomTest extends TestCase
 
     public function testUnauthorisedStore(){
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/room', [
             'name' => 'B201',
@@ -115,7 +115,7 @@ class RoomTest extends TestCase
             'owner_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/room/1', [
             'name' => 'G07'
@@ -152,7 +152,7 @@ class RoomTest extends TestCase
             'owner_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->deleteJson('/api/room/1');
 

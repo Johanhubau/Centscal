@@ -34,7 +34,7 @@
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{this.$vuetify.lang.t('$vuetify.common.actions.close')}}
             </v-btn>
         </v-snackbar>
     </div>
@@ -43,7 +43,7 @@
 <script>
     export default {
         name: "CardComponent",
-        props: ['material'],
+        props: ['material', 'locale'],
         data: () => ({
             isActive: false,
             snackbar: false,
@@ -53,13 +53,14 @@
             price: '',
         }),
         mounted() {
+            this.$vuetify.lang.current = this.locale
             this.makeVars()
         },
         methods: {
             deleteItem() {
                 axios.delete('/api/material/' + this.material.id, {}).then((response) => {
                     status = response.status;
-                    this.snackbarText = "Deleted " + this.material.name;
+                    this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.deleted', [this.material.name])
                     this.snackbar = true;
                     this.show = false;
                 })

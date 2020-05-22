@@ -23,7 +23,7 @@ class OptionTest extends TestCase
             'role' => 'ROLE_ADMIN'
         ]);
 
-        $this->postJson('login', [
+        $this->postJson('/en/login', [
             'email' => 'test@gmail.com',
             'password' => 'password'
         ]);
@@ -56,7 +56,7 @@ class OptionTest extends TestCase
 
     public function testUnauthorisedStore(){
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/option', [
             'name' => 'Premium',
@@ -115,7 +115,7 @@ class OptionTest extends TestCase
             'association_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/option/1', [
             'name' => 'Microphone'
@@ -151,7 +151,7 @@ class OptionTest extends TestCase
             'association_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->deleteJson('/api/option/1');
 

@@ -11,6 +11,7 @@
                         name="{{$user->first_name." ".$user->last_name}}"
                         role="{{$user->role}}"
                         class="my-5"
+                        locale="{{App::getLocale()}}"
                     ></private-user-card>
                 @endforeach
             </v-col>
@@ -24,7 +25,7 @@
             bottom
             right
             class="v-btn--example"
-            href="{{route('admin.users.create')}}"
+            href="{{route('admin.users.create', App::getLocale())}}"
         >
             <v-icon>mdi-plus</v-icon>
         </v-btn>

@@ -12,6 +12,7 @@
                         desc="{{$association->desc}}"
                         color="{{$association->color}}"
                         class="my-5"
+                        locale="{{App::getLocale()}}"
                     ></private-association-card>
                 @endforeach
             </v-col>
@@ -25,7 +26,7 @@
             bottom
             right
             class="v-btn--example"
-            href="{{route('admin.associations.create')}}"
+            href="{{route('admin.associations.create', App::getLocale())}}"
         >
             <v-icon>mdi-plus</v-icon>
         </v-btn>

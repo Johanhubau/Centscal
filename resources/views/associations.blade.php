@@ -12,6 +12,7 @@
                         desc="{{$association->desc}}"
                         color="{{$association->color}}"
                         class="my-5"
+                        locale="{{App::getLocale()}}"
                     ></public-association-card>
                 @endforeach
             </v-col>

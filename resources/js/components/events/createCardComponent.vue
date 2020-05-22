@@ -5,20 +5,24 @@
                 ref="form"
                 v-model="valid">
                 <v-row class="p-5">
-                    <v-col>
+                    <div class="col-sm">
                         <v-text-field
                             v-model="title"
                             :counter="255"
-                            :rules="titleRules"
-                            label="Title"
+                            :rules="[
+                v => !!v || this.$vuetify.lang.t('$vuetify.events.create.titleRequired'),
+                v => (v && v.length <= 255 && v.length >= 2) || this.$vuetify.lang.t('$vuetify.events.create.titleLength'),]"
+                            :label="this.$vuetify.lang.t('$vuetify.events.create.title')"
                             required
                         ></v-text-field>
 
                         <v-text-field
                             v-model="desc"
                             :counter="255"
-                            :rules="descRules"
-                            label="Description"
+                            :rules="[
+                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || this.$vuetify.lang.t('$vuetify.events.create.descLength'),
+            ]"
+                            :label="this.$vuetify.lang.t('$vuetify.events.create.desc')"
                             required
                         ></v-text-field>
 
@@ -26,7 +30,7 @@
                             v-model="room"
                             :items="computedRooms"
                             :counter="255"
-                            label="Location"
+                            :label="this.$vuetify.lang.t('$vuetify.events.create.room')"
                             required
                         ></v-autocomplete>
 
@@ -34,24 +38,28 @@
                             v-model="location"
                             v-if="this.room === 'Other'"
                             :counter="255"
-                            label="Other"
+                            :label="this.$vuetify.lang.t('$vuetify.events.create.location')"
                             required
-                            :rules="locRules">
+                            :rules="[
+                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || this.$vuetify.lang.t('$vuetify.events.create.locationLength'),
+            ]">
                         </v-text-field>
 
                         <v-text-field
                             v-model="link"
                             :counter="255"
-                            :rules="linkRules"
-                            label="Event link"
+                            :rules="[
+                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || this.$vuetify.lang.t('$vuetify.events.create.linkLength'),
+            ]"
+                            :label="this.$vuetify.lang.t('$vuetify.events.create.link')"
                             required
-                            hint="Remember to add the http:// or https:// in front of the link"
+                            :hint="$vuetify.lang.t('$vuetify.events.create.linkHint')"
                         ></v-text-field>
 
                         <v-autocomplete
                             v-model="selectedMaterials"
                             :items="computedMaterials"
-                            label="Equipment necessary"
+                            :label="this.$vuetify.lang.t('$vuetify.events.create.materials')"
                             chips
                             small-chips
                             multiple
@@ -59,41 +67,52 @@
                         </v-autocomplete>
 
                         <v-btn
+                            v-if="$vuetify.breakpoint.smAndUp"
                             :disabled="!valid"
                             color="success"
                             class="mr-4"
                             @click="validate"
                         >
-                            Validate
+                            {{$vuetify.lang.t('$vuetify.common.actions.validate')}}
                         </v-btn>
-                    </v-col>
-                    <v-col align-self="center">
+                    </div>
+                    <div class="col-sm align-content-center">
                         <v-row justify="center">
                             <transition name="fade" mode="out-in">
                                 <div v-if="current_step === 1" key="1">
-                                    <v-card-title>Select begin date</v-card-title>
+                                    <v-card-title>{{$vuetify.lang.t('$vuetify.events.create.beginDate')}}</v-card-title>
                                     <v-date-picker v-model="date_begin"></v-date-picker>
                                 </div>
                                 <div v-if="current_step === 2" key="2">
-                                    <v-card-title>Select begin time</v-card-title>
+                                    <v-card-title>{{$vuetify.lang.t('$vuetify.events.create.beginTime')}}</v-card-title>
                                     <v-time-picker v-model="time_begin" format="24hr"></v-time-picker>
                                 </div>
                                 <div v-if="current_step === 3" key="3">
-                                    <v-card-title>Select end date</v-card-title>
+                                    <v-card-title>{{$vuetify.lang.t('$vuetify.events.create.endDate')}}</v-card-title>
                                     <v-date-picker v-model="date_end"></v-date-picker>
                                 </div>
                                 <div v-if="current_step === 4" key="4">
-                                    <v-card-title>Select end time</v-card-title>
+                                    <v-card-title>{{$vuetify.lang.t('$vuetify.events.create.endTime')}}</v-card-title>
                                     <v-time-picker v-model="time_end" format="24hr"></v-time-picker>
                                 </div>
-                                <v-card-title v-if="current_step === 5" key="5">Done!</v-card-title>
+                                <v-card-title v-if="current_step === 5" key="5">{{$vuetify.lang.t('$vuetify.events.create.done')}}</v-card-title>
                             </transition>
                         </v-row>
                         <v-row justify="center" class="pt-3">
-                            <v-btn @click="previous_step" :disabled="current_step === 1">Back</v-btn>
-                            <v-btn @click="next_step" :disabled="current_step === 5">Next</v-btn>
+                            <v-btn @click="previous_step" :disabled="current_step === 1">{{$vuetify.lang.t('$vuetify.common.actions.previous')}}</v-btn>
+                            <v-btn @click="next_step" :disabled="current_step === 5">{{$vuetify.lang.t('$vuetify.common.actions.next')}}</v-btn>
                         </v-row>
-                    </v-col>
+                    </div>
+                    <v-btn
+                        v-if="$vuetify.breakpoint.xsOnly"
+                        :block="$vuetify.breakpoint.xsOnly"
+                        :disabled="!valid"
+                        color="success"
+                        class="mr-4"
+                        @click="validate"
+                    >
+                        {{$vuetify.lang.t('$vuetify.common.actions.validate')}}
+                    </v-btn>
                 </v-row>
             </v-form>
         </v-sheet>
@@ -103,7 +122,7 @@
             <v-btn dark
                    text
                    @click="snackbar = false">
-                Close
+                {{$vuetify.lang.t('$vuetify.common.actions.close')}}
             </v-btn>
         </v-snackbar>
     </div>
@@ -111,26 +130,13 @@
 
 <script>
     export default {
-        props: ['association_id', 'rooms', 'materials'],
+        props: ['association_id', 'rooms', 'materials', 'locale'],
         data: () => ({
             valid: true,
             title: '',
-            titleRules: [
-                v => !!v || 'Title is required',
-                v => (v && v.length <= 255 && v.length >= 2) || 'Title must be between 2 and 255 characters',
-            ],
             desc: '',
-            descRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Description must be between 2 and 255 characters',
-            ],
             location: '',
-            locRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Location must be between 2 and 255 characters',
-            ],
             link: '',
-            linkRules: [
-                v => ((v.length <= 255 && v.length >= 2) || v.length === 0) || 'Link must be between 2 and 255 characters',
-            ],
             current_step: 1,
             date_begin: '',
             time_begin: '',
@@ -157,6 +163,7 @@
         },
 
         mounted() {
+            this.$vuetify.lang.current = this.locale
             this.makeVars()
         },
 
@@ -168,7 +175,7 @@
                 let reserveMaterial = false;
 
                 if (this.begin > this.end) {
-                    this.snackbarText = "Beginning date should be before end date!";
+                    this.snackbarText = this.$vuetify.lang.t('$vuetify.events.create.dateOrder')
                     this.snackbar = true;
                     this.current_step = 1;
                 } else {
@@ -209,10 +216,10 @@
                                 })
                             )
                         }
-                        this.snackbarText = "Created " + this.title;
+                        this.snackbarText = this.$vuetify.lang.t('$vuetify.common.snackbar.created', [this.title])
                         this.snackbar = true;
                     }).finally(()=>{
-                        window.location.href = '/association/'+this.association_id
+                        window.location.href = '/' + this.locale + '/association/'+this.association_id
                     })
                 }
             },

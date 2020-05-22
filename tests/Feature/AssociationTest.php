@@ -23,7 +23,7 @@ class AssociationTest extends TestCase
             'role' => 'ROLE_ADMIN'
         ]);
 
-        $this->postJson('login', [
+        $this->postJson('/en/login', [
            'email' => 'test@gmail.com',
            'password' => 'password'
         ]);
@@ -53,7 +53,7 @@ class AssociationTest extends TestCase
 
     public function testUnauthorizedStore()
     {
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/association', [
             'name' => 'Association',
@@ -121,7 +121,7 @@ class AssociationTest extends TestCase
             'president_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->postJson('/api/association/1', [
             'color' => '#FAFAFA'
@@ -160,7 +160,7 @@ class AssociationTest extends TestCase
             'president_id' => '1'
         ]);
 
-        $this->postJson('logout');
+        $this->postJson('/en/logout');
 
         $response = $this->deleteJson('/api/association/1');
 
